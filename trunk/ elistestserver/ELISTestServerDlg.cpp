@@ -253,7 +253,7 @@ void CELISTestServerDlg::OnAccept()
 	if(!m_sListenSocket.Accept(*m_psConnectSocket)){
 		char t[50];
 		int e = GetLastError();
-		sprintf_s(t, "ServerSocket Accepted Error Code:%d", e);
+		sprintf(t, "ServerSocket Accepted Error Code:%d", e);
 		AfxMessageBox(_T(t), MB_YESNO, 0);
 		m_sListenSocket.Close();
 	}
@@ -287,70 +287,71 @@ void CELISTestServerDlg::OnReceive()
 	//char* buf=NULL;
 	m_rbuf=NULL;
 	//long l_buf[2];
-	char c_buf[4];
+	
 	char t[200];
 	//AfxMessageBox(_T("CAcceptedSocket OnReceive"), MB_YESNO, 0);
 	//sprintf(t, "%ld", sizeof(this->m_msDataHeader));
 	//AfxMessageBox(_T(t), MB_YESNO, 0);
 	
 	if (m_rStasus == SOCK_RECEIVE_HEADER) {
-		m_rbuf=new BUF_TYPE[SOCK_RECEIVE_HEADER_LEN];
-		memset(m_rbuf,0,SOCK_RECEIVE_HEADER_LEN);
-		this->m_len = this->m_psConnectSocket->Receive(m_rbuf, SOCK_RECEIVE_HEADER_LEN, 0);
+		BUF_TYPE header_buf[sizeof(long)];
+		//m_rbuf=new BUF_TYPE[SOCK_RECEIVE_HEADER_LEN];
+		memset(header_buf,0,sizeof(long));
+		memset(m_headerbuf,0,SOCK_RECEIVE_HEADER_LEN);
+		this->m_len = this->m_psConnectSocket->Receive(m_headerbuf, SOCK_RECEIVE_HEADER_LEN, 0);
 		//解析header，确定body长度
 		if(this->m_len != SOCKET_ERROR && this->m_len >0) {
-			memcpy(c_buf,m_rbuf,sizeof(long));
-			m_msDataType=atol(c_buf);
-			memcpy(c_buf,m_rbuf+sizeof(long),sizeof(long));
-			m_msDataLen=atol(c_buf);
-			//p_msDataHeader = (MasterData_Header*)this->m_rbuf;
-			//this->m_msDataHeader = *p_msDataHeader;
-			//buf = (long*)this->m_rbuf;
-			//this->m_bodyLen = this->m_msDataHeader.len - SOCK_RECEIVE_HEADER_LEN;
-			//this->m_bodyLen = buf[1] - SOCK_RECEIVE_HEADER_LEN;
+			//memcpy(m_headerbuf,m_rbuf,SOCK_RECEIVE_HEADER_LEN);
+			memcpy(header_buf,m_headerbuf,sizeof(long));
+			m_msDataType=*((long*)header_buf);
+			memcpy(header_buf,m_headerbuf+sizeof(long),sizeof(long));
+			m_msDataLen=*((long*)header_buf);
+			
 			m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
-			sprintf_s(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
-			//sprintf(t, "%s", this->m_rbuf);
-			AfxMessageBox(_T(t), MB_YESNO, 0);
+			//sprintf(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
+			
+			//AfxMessageBox(_T(t), MB_YESNO, 0);
 		}
 		m_rStasus = SOCK_RECEIVE_BODY;
+		
 
 	} else if(m_rStasus == SOCK_RECEIVE_BODY) {
 		//buf=new char[m_bodyLen];
 		//sprintf(t, "%ld", m_bodyLen);
 		//AfxMessageBox(_T(t), MB_YESNO, 0);
-		m_rbuf=new BUF_TYPE[m_bodyLen+1];//要多出1个byte的余量,否则m_rbuf长度会自动增长
-		memset(m_rbuf,0,m_bodyLen+1);
-		m_len = m_psConnectSocket->Receive(m_rbuf, m_bodyLen, 0);
+		m_rbuf=new BUF_TYPE[m_msDataLen+1];//要多出1个byte的余量,否则m_rbuf长度会自动增长
+		memset(m_rbuf,0,m_msDataLen+1);
+		memcpy(m_rbuf,m_headerbuf,SOCK_RECEIVE_HEADER_LEN);
+		m_len = m_psConnectSocket->Receive(m_rbuf+SOCK_RECEIVE_HEADER_LEN, m_bodyLen, 0);
 		
 		
-		if(m_len != SOCKET_ERROR && m_len > SOCK_RECEIVE_HEADER_LEN && m_len <= m_bodyLen){
+		if(m_len != SOCKET_ERROR && m_len > SOCK_RECEIVE_HEADER_LEN){
 			//把接收到的rbuf填入ReceiverQueue中
-			CMasterData* p_msData=new CMasterData(m_rbuf, m_len);
-			p_msData->msDataHeader.type=m_msDataType;
-			p_msData->msDataHeader.len=m_msDataLen;
+			CMasterData* p_msData=new CMasterData(m_rbuf, SOCK_RECEIVE_HEADER_LEN+m_len);
+			//p_msData->msDataHeader.type=m_msDataType;
+			//p_msData->msDataHeader.len=m_msDataLen;
 			//md.buf=new char[m_bodyLen];
 			//memcpy(md.buf,m_rbuf,m_bodyLen);
 			//md.buflen=m_bodyLen;
 			//p_msData->setBuf(m_rbuf);
 			//p_msData->setBufLen(m_len);
 			
-			sprintf_s(t, "%s", m_rbuf);
-			AfxMessageBox(_T(t), MB_YESNO, 0);
+			//sprintf(t, "%s", m_rbuf);
+			//AfxMessageBox(_T(t), MB_YESNO, 0);
 			//sprintf(t, "%s", md.buf.GetBuffer(md.buf.GetLength()));
 			//AfxMessageBox(_T(t), MB_YESNO, 0);
-			sprintf_s(t, "%s", p_msData->buf);
-			AfxMessageBox(_T(t), MB_YESNO, 0);
-			sprintf_s(t, "%ld", p_msData->buflen);
-			AfxMessageBox(_T(t), MB_YESNO, 0);
+			//sprintf(t, "%s", p_msData->buf);
+			//AfxMessageBox(_T(t), MB_YESNO, 0);
+			//sprintf(t, "%ld", p_msData->buflen);
+			//AfxMessageBox(_T(t), MB_YESNO, 0);
 
 			m_pmasterDataQueue->enQueue(p_msData);
 			//POSITION p=m_pmasterDataQueue->Dataqueue.GetHeadPosition();
 			
-			sprintf_s(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
-			AfxMessageBox(_T(t), MB_YESNO, 0);
+			//sprintf_s(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
+			//AfxMessageBox(_T(t), MB_YESNO, 0);
 
-			
+			delete m_rbuf;
 			delete p_msData;
 			
 		}

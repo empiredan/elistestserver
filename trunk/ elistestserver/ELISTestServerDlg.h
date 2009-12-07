@@ -46,6 +46,7 @@ public:
 	long m_msDataType;
 	long m_msDataLen;
 	BUF_TYPE* m_rbuf;
+	BUF_TYPE m_headerbuf[SOCK_RECEIVE_HEADER_LEN+1];
 
 	MasterDataQueue<CMasterData>* m_pmasterDataQueue;
 	//MasterDataQueue<CMasterData> mq;
