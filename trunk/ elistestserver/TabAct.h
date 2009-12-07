@@ -6,6 +6,7 @@
 #endif // _MSC_VER > 1000
 // TabAct.h : header file
 //
+#include "Resource.h"
 #include "MyListCtrl.h"
 /////////////////////////////////////////////////////////////////////////////
 // TabAct dialog
