@@ -69,9 +69,55 @@ void TabAct::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(TabAct, CDialog)
 	//{{AFX_MSG_MAP(TabAct)
-		// NOTE: the ClassWizard will add message map macros here
+	//ON_NOTIFY(HDN_ITEMDBLCLICK, IDC_LIST_ACT, OnItemdblclickListAct)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST_ACT, OnDblclkListAct)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
 // TabAct message handlers
+/*
+void TabAct::OnItemdblclickListAct(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	HD_NOTIFY *phdn = (HD_NOTIFY *) pNMHDR;
+	// TODO: Add your control notification handler code here
+	NMLISTVIEW* pNMLISTVIEW=(NMLISTVIEW*)pNMHDR;
+	int rowNo=pNMLISTVIEW->iItem;
+	int columeNo=pNMLISTVIEW->iSubItem;
+	AfxMessageBox(_T("Yes!"));
+	if (columeNo==6)
+	{
+		AfxMessageBox(_T("Yes!"));
+	}
+	*pResult = 0;
+
+
+}
+*/
+void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult) 
+{
+	// TODO: Add your control notification handler code here
+	NMLISTVIEW* pNMLISTVIEW=(NMLISTVIEW*)pNMHDR;
+	int rowNo=pNMLISTVIEW->iItem;
+	int columeNo=pNMLISTVIEW->iSubItem;
+
+	/*char t[20];
+	sprintf(t, "%d", rowNo);
+	AfxMessageBox(_T(t));*/
+	//AfxMessageBox(_T("Hello!"));
+
+	if (columeNo==6)
+	{
+		//AfxMessageBox(_T("Yes!"));
+		CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
+		openActDataFileDlg.m_ofn.lpstrInitialDir="D:\\vc6\\MyProjects";
+		CString strFilePath;
+		if (openActDataFileDlg.DoModal()==IDOK)
+		{
+			strFilePath=openActDataFileDlg.GetPathName();
+			m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
+		}
+
+	}
+	*pResult = 0;
+}

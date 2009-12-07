@@ -90,11 +90,15 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
-SOURCE=.\Data.cpp
+SOURCE=.\ActTable.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\DealThread.cpp
+SOURCE=.\CommandHandler.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\Data.cpp
 # End Source File
 # Begin Source File
 
@@ -110,19 +114,19 @@ SOURCE=.\ELISTestServerDlg.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\MessageSender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\MyListCtrl.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\MySocket.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=.\MyTabCtrl.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\Queue.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=.\SendThread.cpp
 # End Source File
 # Begin Source File
 
@@ -137,21 +141,25 @@ SOURCE=.\TabAct.cpp
 
 SOURCE=.\TabCalVer.cpp
 # End Source File
-# Begin Source File
-
-SOURCE=.\TimerThread.cpp
-# End Source File
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
-SOURCE=.\Data.h
+SOURCE=.\ActTable.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\DealThread.h
+SOURCE=.\CommandHandler.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\commands.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Data.h
 # End Source File
 # Begin Source File
 
@@ -163,7 +171,11 @@ SOURCE=.\ELISTestServerDlg.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\MasterHeader.h
+SOURCE=.\MessageSender.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\MyListCtrl.h
 # End Source File
 # Begin Source File
 
@@ -183,10 +195,6 @@ SOURCE=.\Resource.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\SendThread.h
-# End Source File
-# Begin Source File
-
 SOURCE=.\StdAfx.h
 # End Source File
 # Begin Source File
@@ -199,7 +207,7 @@ SOURCE=.\TabCalVer.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\TimerThread.h
+SOURCE=.\TimerDef.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

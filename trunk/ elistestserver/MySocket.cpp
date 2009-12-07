@@ -60,8 +60,8 @@ void MySocket::OnReceive(int nErrorCode)
 void MySocket::OnClose(int nErrorCode) 
 {
 	// TODO: Add your specialized code here and/or call the base class
-	if(nErrorCode==0)
-		this->Close();
+	//if(nErrorCode==0)
+		//this->Close();
 		//this->m_pELISTestServerDlg->OnClose();
 	CAsyncSocket::OnClose(nErrorCode);
 }
