@@ -38,6 +38,9 @@ public:
 	MySocket* m_psConnectSocket;
 	int m_rStasus;
 
+	CString m_actListRootFolder;
+	CString m_calverListRootFolder;
+
 	long m_len;
 	long m_bodyLen;
 	long m_msDataType;
@@ -106,6 +109,8 @@ protected:
 	afx_msg void OnSelchangeElistestserverTab(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnButtonActFolder();
 	afx_msg void OnTimer(UINT nIDEvent);
+	afx_msg void OnButtonServerPort();
+	afx_msg void OnButtonCalverFolder();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

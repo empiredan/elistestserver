@@ -8,9 +8,10 @@
 //
 #include "Resource.h"
 #include "MyListCtrl.h"
+
 /////////////////////////////////////////////////////////////////////////////
 // TabAct dialog
-
+class CELISTestServerDlg;
 class TabAct : public CDialog
 {
 // Construction
@@ -22,8 +23,10 @@ public:
 	enum { IDD = IDD_TAB_ACT };
 		// NOTE: the ClassWizard will add data members here
 	MyListCtrl m_listctrlAct;
+	CELISTestServerDlg* m_pELISTestServerDlg;
 	//}}AFX_DATA
-
+	
+	void setCElisTestServerDlg(CELISTestServerDlg* dlg);
 
 // Overrides
 	// ClassWizard generated virtual function overrides

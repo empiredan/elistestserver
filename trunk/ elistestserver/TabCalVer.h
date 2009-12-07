@@ -6,10 +6,11 @@
 #endif // _MSC_VER > 1000
 // TabCalVer.h : header file
 //
+#include "Resource.h"
 #include "MyListCtrl.h"
 /////////////////////////////////////////////////////////////////////////////
 // TabCalVer dialog
-
+class CELISTestServerDlg;
 class TabCalVer : public CDialog
 {
 // Construction
@@ -21,8 +22,10 @@ public:
 	enum { IDD = IDD_TAB_CALVER };
 		// NOTE: the ClassWizard will add data members here
 	MyListCtrl m_listctrlCalVer;
+	CELISTestServerDlg* m_pELISTestServerDlg;
 	//}}AFX_DATA
 
+	void setCElisTestServerDlg(CELISTestServerDlg* dlg);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
@@ -36,7 +39,7 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(TabCalVer)
-		// NOTE: the ClassWizard will add member functions here
+	afx_msg void OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

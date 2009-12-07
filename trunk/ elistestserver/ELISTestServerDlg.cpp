@@ -51,6 +51,7 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
 	//{{AFX_DATA_MAP(CAboutDlg)
+	
 	//}}AFX_DATA_MAP
 }
 
@@ -70,7 +71,7 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 		// NOTE: the ClassWizard will add member initialization here
 	//}}AFX_DATA_INIT
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
-	this->m_sPort=6050;
+	this->m_sPort=0;
 	this->m_psConnectSocket=NULL;
 	m_rStasus=SOCK_RECEIVE_HEADER;
 	m_pmasterDataQueue=new MasterDataQueue<CMasterData>;
@@ -109,8 +110,9 @@ void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CELISTestServerDlg)
 		// NOTE: the ClassWizard will add DDX and DDV calls here
 	DDX_Control(pDX, IDC_MY_TAB, m_tabMyTabCtrl);
-	
-	
+	DDX_Text(pDX, IDC_EDIT_SERVER_PORT, m_sPort);
+	DDX_Text(pDX, IDC_EDIT_ACT_FOLDER, m_actListRootFolder);
+	DDX_Text(pDX, IDC_EDIT_CALVER_FOLDER, m_calverListRootFolder);
 	//}}AFX_DATA_MAP
 }
 
@@ -123,9 +125,8 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_Cancel, OnButtonCancel)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_ELISTESTSERVER_TAB, OnSelchangeElistestserverTab)
 	ON_BN_CLICKED(IDC_BUTTON_ACT_FOLDER, OnButtonActFolder)
-
-	//ON_WM_TIMER()
-	//ON_BN_CLICKED(IDC_BUTTON1, &CELISTestServerDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON_SERVER_PORT, OnButtonServerPort)
+	ON_BN_CLICKED(IDC_BUTTON_CALVER_FOLDER, OnButtonCalverFolder)
 	//}}AFX_MSG_MAP
 
 	
@@ -170,25 +171,18 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	m_tabMyTabCtrl.InsertItem(1, _T("Cal/Ver"));
 	m_tabMyTabCtrl.Init();
 	
-	AfxSocketInit(NULL);
+	//m_tabMyTabCtrl.m_dlgAct->SetParent(this);
+	//m_tabMyTabCtrl.m_dlgCalVer->SetParent(this);
 
-	
-	if(!m_sListenSocket.Create(this->m_sPort)) {
-		AfxMessageBox(_T("Socket Error!"));
-		m_sListenSocket.Close();
-	}
-
-	if(!m_sListenSocket.Listen()){
-		int nErrorCode = m_sListenSocket.GetLastError();
-		if (nErrorCode != WSAEWOULDBLOCK) {
-			m_sListenSocket.Close(); 
-		}
-	}
+	m_tabMyTabCtrl.m_dlgAct->setCElisTestServerDlg(this);
+	m_tabMyTabCtrl.m_dlgCalVer->setCElisTestServerDlg(this);
 	
 	cmdh.start();
 	msgs.start();
 	ta = 5;
-	
+
+	UpdateData(FALSE);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -259,10 +253,23 @@ void CELISTestServerDlg::OnAccept()
 	if(!m_sListenSocket.Accept(*m_psConnectSocket)){
 		char t[50];
 		int e = GetLastError();
-		sprintf_s(t, "ServerSocket Accepted Error Code:%d", e);
+		sprintf(t, "ServerSocket Accepted Error Code:%d", e);
 		AfxMessageBox(_T(t), MB_YESNO, 0);
 		m_sListenSocket.Close();
 	}
+	else{
+		CString clientIP;
+		UINT clientPort;
+
+		m_psConnectSocket->GetPeerName(clientIP,clientPort);
+		
+		CString strClientPort;
+		strClientPort.Format("%d",clientPort);
+		
+		
+		GetDlgItem(IDC_STATIC_CLIENT_IP_PORT_VALUE)->SetWindowText(_T(clientIP+":"+strClientPort));
+	}
+	
 	/*
 	else{
 		int d=1000;
@@ -302,7 +309,7 @@ void CELISTestServerDlg::OnReceive()
 			//this->m_bodyLen = this->m_msDataHeader.len - SOCK_RECEIVE_HEADER_LEN;
 			//this->m_bodyLen = buf[1] - SOCK_RECEIVE_HEADER_LEN;
 			m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
-			sprintf_s(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
+			sprintf(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
 			//sprintf(t, "%s", this->m_rbuf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 		}
@@ -328,19 +335,19 @@ void CELISTestServerDlg::OnReceive()
 			//p_msData->setBuf(m_rbuf);
 			//p_msData->setBufLen(m_len);
 			
-			sprintf_s(t, "%s", m_rbuf);
+			sprintf(t, "%s", m_rbuf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 			//sprintf(t, "%s", md.buf.GetBuffer(md.buf.GetLength()));
 			//AfxMessageBox(_T(t), MB_YESNO, 0);
-			sprintf_s(t, "%s", p_msData->buf);
+			sprintf(t, "%s", p_msData->buf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
-			sprintf_s(t, "%ld", p_msData->buflen);
+			sprintf(t, "%ld", p_msData->buflen);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 
 			m_pmasterDataQueue->enQueue(p_msData);
 			//POSITION p=m_pmasterDataQueue->Dataqueue.GetHeadPosition();
 			
-			sprintf_s(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
+			sprintf(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 
 			
@@ -485,11 +492,87 @@ void CELISTestServerDlg::OnButtonActFolder()
     //弹出选择目录对话框
     LPITEMIDLIST lp = SHBrowseForFolder(&bi);
     if( lp && SHGetPathFromIDList(lp, szPath) ) {
-        str.Format("选择的目录为 %s",  szPath);
-        AfxMessageBox(_T(str));
+        str.Format("%s",  szPath);
+        //AfxMessageBox(_T(str));
+		GetDlgItem(IDC_EDIT_ACT_FOLDER)->SetWindowText(str);
+		//m_actListRootFolder=str;
     } else {
-        AfxMessageBox(_T("无效的目录，请重新选择"));
+        //AfxMessageBox(_T("无效的目录，请重新选择!"));
     }
 
+	
+}
+
+void CELISTestServerDlg::OnButtonServerPort() 
+{
+	// TODO: Add your control notification handler code here
+
+	UpdateData(TRUE);
+	GetDlgItem(IDC_BUTTON_SERVER_PORT)->EnableWindow(FALSE);
+	GetDlgItem(IDC_EDIT_SERVER_PORT)->EnableWindow(FALSE);
+
+
+	AfxSocketInit(NULL);
+	
+	
+	if(!m_sListenSocket.Create(this->m_sPort)) {
+		AfxMessageBox(_T("Socket Error!"));
+		m_sListenSocket.Close();
+	}else{
+
+		CString serverIP;
+		CString serverPort;
+		serverPort.Format("%d",m_sPort);
+		
+		
+		//CString serverADDR=serverIP+":"+CString(serverPort);
+		char   name[256];  
+		hostent*   pHost;  
+		gethostname(name,   128);//获得主机名  
+		pHost   =   gethostbyname(name);//获得主机结构  
+		serverIP   =   inet_ntoa(*((in_addr   *)pHost->h_addr));
+		
+		GetDlgItem(IDC_STATIC_SERVER_IP_PORT_VALUE)->SetWindowText(_T(serverIP+":"+serverPort));
+	}
+	
+	if(!m_sListenSocket.Listen()){
+		int nErrorCode = m_sListenSocket.GetLastError();
+		if (nErrorCode != WSAEWOULDBLOCK) {
+			m_sListenSocket.Close(); 
+		}
+	}
+
+	
+	
+
+	
+}
+
+void CELISTestServerDlg::OnButtonCalverFolder() 
+{
+	// TODO: Add your control notification handler code here
+	char szPath[MAX_PATH]; //存放选择的目录路径
+    CString str;
+    ZeroMemory(szPath, sizeof(szPath)); 
+    BROWSEINFO bi;
+    bi.hwndOwner = m_hWnd;
+    bi.pidlRoot = NULL;
+    bi.pszDisplayName = szPath;
+    bi.lpszTitle = "请选择CAL/VER数据文件的目录:";
+    bi.ulFlags = BIF_USENEWUI;//0
+    bi.lpfn = NULL;
+    bi.lParam = 0;
+    bi.iImage = 0;
+	
+    //弹出选择目录对话框
+    LPITEMIDLIST lp = SHBrowseForFolder(&bi);
+    if( lp && SHGetPathFromIDList(lp, szPath) ) {
+        str.Format("%s",  szPath);
+        //AfxMessageBox(_T(str));
+		GetDlgItem(IDC_EDIT_CALVER_FOLDER)->SetWindowText(str);
+		//m_actListRootFolder=str;
+    } else {
+        //AfxMessageBox(_T("无效的目录，请重新选择!"));
+    }
 	
 }
