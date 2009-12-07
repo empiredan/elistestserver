@@ -389,6 +389,7 @@ void CELISTestServerDlg::OnButtonCancel()
 }
 
 
+
 void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
 	SetTimer(nIDEvent, uElapse, NULL);
 }
@@ -432,6 +433,15 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	AfxMessageBox(_T("DepthTimer triggered, implement me!!!"));
 }
 
+void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
+	if(acttab != NULL) {
+		delete acttab;
+		acttab = NULL;
+	}
+	acttab = tb;
+	AfxMessageBox(_T("SetACTTable, implement me!!!, update the CList control on ACT tab page"));
+}
+
 
 
 void CELISTestServerDlg::OnSelchangeElistestserverTab(NMHDR* pNMHDR, LRESULT* pResult) 
@@ -454,6 +464,7 @@ void CELISTestServerDlg::OnSelchangeElistestserverTab(NMHDR* pNMHDR, LRESULT* pR
 
 	}
 }
+
 
 void CELISTestServerDlg::OnButtonActFolder() 
 {
