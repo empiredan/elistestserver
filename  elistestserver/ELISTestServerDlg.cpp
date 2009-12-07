@@ -319,6 +319,8 @@ void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
 	CreateTimer(LOGDATA_TIMER, uElapse);
 }
 void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
+	//每当Socket处Accept成功时，都要调用这个函数
+	//创建一个Timer定期反馈深度信息给主控机。
 	CreateTimer(DEPTH_TIMER, uElapse);
 }
 void CELISTestServerDlg::StopTimer(UINT_PTR nIDEvent) {
@@ -359,6 +361,8 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	CDPMDisplayParameter dpmp;
 	CFrontData *fd = new CFrontData();
 
+	//下面这些参数应该从根据实际模拟的进程计算出来
+	//填写
 	dpmp.ddp.corr_Depth = 10;
 	dpmp.ddp.true_Depth = 11;
 	dpmp.ddp.speed = 1;
@@ -367,11 +371,18 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	dpmp.ddp.time = 1;
 	dpmp.ddp.nreserved2 = 0;
 
+	//构造这个数据后将其放入SendQueue即可
+	//MessageSender线程会自动从队列中取出
+	//FrontData数据并发送之
 	fd->SetData(dpmp);
 	fq.en(fd);
 }
 
 void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
+	if(acttab != NULL) {
+		delete acttab;
+		acttab = NULL;
+	}
 	acttab = tb;
 	AfxMessageBox(_T("SetACTTable, implement me!!!, update the CList control on ACT tab page"));
 }
