@@ -6,7 +6,6 @@
 #include "Data.h"
 #include "Queue.h"
 #include "TimerDef.h"
-#include "ActTable.h"
 
 #pragma once
 
@@ -22,7 +21,6 @@ public:
 	DWORD wid;
 	CELISTestServerDlg *dlg;
 	BOOL finish;
-	long headSize;
 public:
 	//用这个函数结束线程的while循环
 	void setFinish(BOOL op) {
@@ -39,16 +37,6 @@ public:
 //以下函数定义各种命令的处理
 public:
 	void NetCmd_InitServiceTable(CMasterData *d);
-	void NetCmd_CalibPara(CMasterData *d);
-	void NetCmd_CalibStart(CMasterData *d);
-	void NetCmd_CalibStop(CMasterData *d);
-	void NetCmd_CtrlWorkState(CMasterData *d);
-	void NetCmd_SetStandbyTimeInterval(CMasterData *d);
-	void NetCmd_CtrlRecStop(CMasterData *d);
-	void NetCmd_CtrlActSwitch(CMasterData *d);
-	void NetCmd_CtrlActDeactivate(CMasterData *d);
-	//void (CMasterData *d);
-	//void (CMasterData *d);
 };
 
 

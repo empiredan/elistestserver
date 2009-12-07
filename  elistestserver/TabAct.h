@@ -6,9 +6,7 @@
 #endif // _MSC_VER > 1000
 // TabAct.h : header file
 //
-
-#include "Resource.h"
-
+#include "MyListCtrl.h"
 /////////////////////////////////////////////////////////////////////////////
 // TabAct dialog
 
@@ -22,7 +20,7 @@ public:
 	//{{AFX_DATA(TabAct)
 	enum { IDD = IDD_TAB_ACT };
 		// NOTE: the ClassWizard will add data members here
-	CListCtrl m_listctrlAct;
+	MyListCtrl m_listctrlAct;
 	//}}AFX_DATA
 
 
@@ -38,8 +36,8 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(TabAct)
-		// NOTE: the ClassWizard will add member functions here
-	//virtual BOOL OnInitDialog();
+	//afx_msg void OnItemdblclickListAct(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

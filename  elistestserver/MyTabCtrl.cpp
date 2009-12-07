@@ -53,35 +53,57 @@ void MyTabCtrl::Init()
 	m_dlgAct->Create(IDD_TAB_ACT, this);
 	m_dlgCalVer->Create(IDD_TAB_CALVER, this);
 	
-	
+	//点击一个ITEM就可使CListCtrl一整行被选择
+	this->m_dlgAct->m_listctrlAct.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+
 	//The First Tab 
 	LVCOLUMN lvcol;
 	lvcol.mask=LVCF_FMT|LVCF_SUBITEM|LVCF_TEXT|LVCF_WIDTH;
 	lvcol.fmt=LVCFMT_CENTER;
-	lvcol.iSubItem=1;
+	lvcol.iSubItem=0;
 	lvcol.cx=50;
 	lvcol.pszText="ACT #";
 	this->m_dlgAct->m_listctrlAct.InsertColumn(0,&lvcol);
 	
+	lvcol.iSubItem=1;
 	lvcol.cx=90;
 	lvcol.pszText="Tool Series";
 	this->m_dlgAct->m_listctrlAct.InsertColumn(1,&lvcol);
 	
+	lvcol.iSubItem=2;
 	lvcol.cx=80;
 	lvcol.pszText="Subset #";
 	this->m_dlgAct->m_listctrlAct.InsertColumn(2,&lvcol);
 	
+	lvcol.iSubItem=3;
 	lvcol.cx=120;
 	lvcol.pszText="Depth Samplerate";
 	this->m_dlgAct->m_listctrlAct.InsertColumn(3,&lvcol);
 	
+	lvcol.iSubItem=4;
 	lvcol.cx=100;
 	lvcol.pszText="Time Interval";
 	this->m_dlgAct->m_listctrlAct.InsertColumn(4,&lvcol);
 	
+	lvcol.iSubItem=5;
 	lvcol.cx=130;
 	lvcol.pszText="Change Mapping Mode";
 	this->m_dlgAct->m_listctrlAct.InsertColumn(5,&lvcol);
+
+	lvcol.iSubItem=6;
+	lvcol.cx=130;
+	lvcol.pszText="Data File";
+	this->m_dlgAct->m_listctrlAct.InsertColumn(6,&lvcol);
+
+	this->m_dlgAct->m_listctrlAct.InsertItem(0,"0");
+	this->m_dlgAct->m_listctrlAct.SetItemText(0,1,"1");
+	this->m_dlgAct->m_listctrlAct.SetItemText(0,2,"2");
+	this->m_dlgAct->m_listctrlAct.SetItemText(0,3,"3");
+	this->m_dlgAct->m_listctrlAct.SetItemText(0,4,"4");
+	this->m_dlgAct->m_listctrlAct.SetItemText(0,5,"5");
+	this->m_dlgAct->m_listctrlAct.SetItemText(0,6,"6");
+	//this->m_dlgAct->m_listctrlAct.SetItemText(0,1,new CButton);
 	
 	//The Second Tab 
 	lvcol.cx=90;

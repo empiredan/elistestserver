@@ -1,5 +1,5 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
+// Microsoft Developer Studio generated include file.
 // Used by ELISTestServer.rc
 //
 #define IDM_ABOUTBOX                    0x0010
@@ -16,7 +16,31 @@
 #define IDC_Cancel                      1002
 #define IDC_LIST_ACT                    1002
 #define IDC_LIST_CALVER                 1003
-#define IDC_BUTTON1                     1004
+#define IDC_STATIC_DEPTH                1004
+#define IDC_STATIC_SPEED                1005
+#define IDC_EDIT_DEPTH                  1006
+#define IDC_EDIT_SPEED                  1007
+#define IDC_STATIC_MODE                 1008
+#define IDC_STATIC_MODE_VALUE           1009
+#define IDC_STATIC_DIRECTION            1010
+#define IDC_STATIC_DIRECTION_VALUE      1011
+#define IDC_STATIC_SERVER_PORT          1012
+#define IDC_EDIT_SERVER_PORT            1013
+#define IDC_BUTTON_SERVER_PORT          1014
+#define IDC_STATIC_SERVER_IP_PORT       1015
+#define IDC_STATIC_CLIENT_IP_PORT       1016
+#define IDC_STATIC_SERVER_IP_PORT_VALUE 1017
+#define IDC_STATIC_CLIENT_IP_PORT_VALUE 1018
+#define IDC_STATIC_MAIN                 1019
+#define IDC_STATIC_DATA_BUFFER_SIZE     1020
+#define IDC_EDIT_DATA_BUFFER_SIZE       1021
+#define IDC_BUTTON_DATA_BUFFER_SIZE     1022
+#define IDC_STATIC_ACT_FOLDER           1023
+#define IDC_EDIT_ACT_FOLDER             1024
+#define IDC_EDIT_CALVER_FOLDER          1025
+#define IDC_STATIC_CALVER_FOLDER        1026
+#define IDC_BUTTON_ACT_FOLDER           1027
+#define IDC_BUTTON_CALVER_FOLDER        1028
 
 // Next default values for new objects
 // 
@@ -24,7 +48,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1005
+#define _APS_NEXT_CONTROL_VALUE         1020
 #define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif

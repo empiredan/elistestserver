@@ -3,39 +3,48 @@
 
 
 CData::CData() {
-	buf = new unsigned char[DEFAULT_BUF_LEN];
+	buf = new BUF_TYPE[DEFAULT_BUF_LEN];
 	buflen = DEFAULT_BUF_LEN;
 }
-CData::CData(void *buf, int len) {
-	this->buf = new unsigned char[len];
+
+CData::CData(BUF_TYPE* bf, long len) {
+	this->buf = new BUF_TYPE[len];
 	buflen = len;
 	if(buf == NULL) {
 		AfxMessageBox("Creating Data buffer not allocated");
 	} else {
-		memcpy(this->buf, buf, len);
+		memcpy(this->buf, bf, len);
 	}
 }
 
 CData::~CData() {
 	if(buf != NULL) {
-		//AfxMessageBox("FrontData buf is not null", MB_YESNO, 0);
+
 		delete []buf;
 	}
 }
 
-void CData::SetData(void *buf, int len) {
+void CData::setData(BUF_TYPE* bf, long len) {
 	if(len > DEFAULT_BUF_LEN) {
 		delete []this->buf;
-		this->buf = new unsigned char[len];
+		this->buf = new BUF_TYPE[len];
 		this->buflen = len;
 	}
-	memcpy(this->buf, buf, len);
+	memcpy(this->buf, bf, len);
 }
+
+/*
+void CData::setBuf(BUF_TYPE* b){
+	buf=b;
+}
+void CData::setBufLen(long bl){
+	buflen=bl;
+}
+*/
 
 CMasterData::CMasterData():CData() {
 }
-CMasterData::CMasterData(void *buf, int len):CData(buf, len) {
-	//CData::SetData(buf, len);
+CMasterData::CMasterData(BUF_TYPE* bf, long len):CData(bf, len) {
 }
 CMasterData::~CMasterData() {
 	//CData::~CData();
@@ -44,16 +53,7 @@ CMasterData::~CMasterData() {
 
 CFrontData::CFrontData():CData() {
 }
-CFrontData::CFrontData(void *buf, int len):CData(buf, len) {
-}
-void CFrontData::SetData(CDPMDisplayParameter &dp) {
-	//char b[100];
-	//int *t;
-	memcpy(buf, &(dp.ddp), sizeof(CDPMDisplayParameter::DPM_DISPLAY_PARA));
-
-	//t = (int*)buf;
-	//sprintf_s(b, "%ld,%ld", t[0], t[1]);
-	//AfxMessageBox(_T(b));
+CFrontData::CFrontData(BUF_TYPE* bf, long len):CData(bf, len) {
 }
 CFrontData::~CFrontData() {
 	//CData::~CData();

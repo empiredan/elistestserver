@@ -13,6 +13,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#define   BIF_NEWDIALOGSTYLE    0x0040   
+#define   BIF_USENEWUI (BIF_NEWDIALOGSTYLE | BIF_EDITBOX)      
 /////////////////////////////////////////////////////////////////////////////
 // CAboutDlg dialog used for App About
 
@@ -62,7 +64,7 @@ END_MESSAGE_MAP()
 // CELISTestServerDlg dialog
 
 CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CELISTestServerDlg::IDD, pParent), mq(), fq(), cmdh(), msgs()
+	: CDialog(CELISTestServerDlg::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CELISTestServerDlg)
 		// NOTE: the ClassWizard will add member initialization here
@@ -71,23 +73,34 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	this->m_sPort=6050;
 	this->m_psConnectSocket=NULL;
 	m_rStasus=SOCK_RECEIVE_HEADER;
+	m_pmasterDataQueue=new MasterDataQueue<CMasterData>;
+	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
-//add----------------------------------------------------------------------------------start----
 	cmdh.setParentWindow(this);
 	msgs.setParentWindow(this);
-	acttab = NULL; //091206
-//add----------------------------------------------------------------------------------end----
 }
 
 CELISTestServerDlg::~CELISTestServerDlg()
 {
-	//m_sListenSocket.Close();
-	//m_psConnectSocket->Close();
-	if(m_psConnectSocket) {
+	//delete this->m_pmasterDataQueue;
+	//m_pmasterDataQueue=NULL;
+	m_sListenSocket.Close();
+	
+	if(m_psConnectSocket){
+		m_psConnectSocket->Close();
+		//m_psConnectSocket->Close();
 		delete m_psConnectSocket;
 		m_psConnectSocket=NULL;
 	}
+	if(m_pmasterDataQueue){
+		delete m_pmasterDataQueue;
+		m_pmasterDataQueue=NULL;
+		//char* t="m_pmasterDataQueue deconstructed!";
+		//AfxMessageBox(_T(t), MB_YESNO, 0);
+	}
+	
+
 }
 
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
@@ -96,6 +109,8 @@ void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 	//{{AFX_DATA_MAP(CELISTestServerDlg)
 		// NOTE: the ClassWizard will add DDX and DDV calls here
 	DDX_Control(pDX, IDC_MY_TAB, m_tabMyTabCtrl);
+	
+	
 	//}}AFX_DATA_MAP
 }
 
@@ -107,12 +122,14 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_Ok, OnButtonOk)
 	ON_BN_CLICKED(IDC_Cancel, OnButtonCancel)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_ELISTESTSERVER_TAB, OnSelchangeElistestserverTab)
+	ON_BN_CLICKED(IDC_BUTTON_ACT_FOLDER, OnButtonActFolder)
+
+	//ON_WM_TIMER()
+	//ON_BN_CLICKED(IDC_BUTTON1, &CELISTestServerDlg::OnBnClickedButton1)
 	//}}AFX_MSG_MAP
 
-//add----------------------------------------------------------------------------------start----
-	ON_WM_TIMER()
-	ON_BN_CLICKED(IDC_BUTTON1, &CELISTestServerDlg::OnBnClickedButton1)
-//add----------------------------------------------------------------------------------end----
+	
+
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -152,6 +169,7 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	m_tabMyTabCtrl.InsertItem(0, _T("ACT"));
 	m_tabMyTabCtrl.InsertItem(1, _T("Cal/Ver"));
 	m_tabMyTabCtrl.Init();
+	
 	AfxSocketInit(NULL);
 
 	
@@ -166,16 +184,13 @@ BOOL CELISTestServerDlg::OnInitDialog()
 			m_sListenSocket.Close(); 
 		}
 	}
-
-//add----------------------------------------------------------------------------------start----	
+	
 	cmdh.start();
 	msgs.start();
 	ta = 5;
-//add----------------------------------------------------------------------------------end----
-
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
-
 
 void CELISTestServerDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -228,24 +243,36 @@ HCURSOR CELISTestServerDlg::OnQueryDragIcon()
 
 void CELISTestServerDlg::OnClose()
 {
+	
 	//m_psConnectSocket->Close();		
+
 }
 
 void CELISTestServerDlg::OnAccept()
 {
 	
 	//this->m_sConnectSocket;
-	StopDepthTimer();
+	//AfxMessageBox(_T(this->m_sConnectSocket));
+	//AfxMessageBox(_T("Hello!"));
 	m_psConnectSocket =new MySocket;
 	m_psConnectSocket->SetParent(this);
-	if(!m_sListenSocket.Accept(*m_psConnectSocket)) {
+	if(!m_sListenSocket.Accept(*m_psConnectSocket)){
 		char t[50];
 		int e = GetLastError();
-		sprintf_s(t, "ServerSocket Accepted Error Code:%d", e);
+		sprintf(t, "ServerSocket Accepted Error Code:%d", e);
 		AfxMessageBox(_T(t), MB_YESNO, 0);
 		m_sListenSocket.Close();
 	}
-	//CreateDepthTimer(DEPTH_TIMER_INTERVAL);
+	/*
+	else{
+		int d=1000;
+		char c[4];
+		itoa(d,c,10);
+		m_psConnectSocket->Send(c,sizeof(d));
+	}
+	*/
+
+		
 }
 void CELISTestServerDlg::OnReceive()
 {
@@ -253,42 +280,159 @@ void CELISTestServerDlg::OnReceive()
 	//char* buf=NULL;
 	m_rbuf=NULL;
 	//long l_buf[2];
-	//char c_buf[4];
-	//char t[200];
+	char c_buf[4];
+	char t[200];
 	//AfxMessageBox(_T("CAcceptedSocket OnReceive"), MB_YESNO, 0);
 	//sprintf(t, "%ld", sizeof(this->m_msDataHeader));
 	//AfxMessageBox(_T(t), MB_YESNO, 0);
 	
 	if (m_rStasus == SOCK_RECEIVE_HEADER) {
+		m_rbuf=new BUF_TYPE[SOCK_RECEIVE_HEADER_LEN];
+		memset(m_rbuf,0,SOCK_RECEIVE_HEADER_LEN);
+		this->m_len = this->m_psConnectSocket->Receive(m_rbuf, SOCK_RECEIVE_HEADER_LEN, 0);
+		//解析header，确定body长度
+		if(this->m_len != SOCKET_ERROR && this->m_len >0) {
+			memcpy(c_buf,m_rbuf,sizeof(long));
+			m_msDataType=atol(c_buf);
+			memcpy(c_buf,m_rbuf+sizeof(long),sizeof(long));
+			m_msDataLen=atol(c_buf);
+			//p_msDataHeader = (MasterData_Header*)this->m_rbuf;
+			//this->m_msDataHeader = *p_msDataHeader;
+			//buf = (long*)this->m_rbuf;
+			//this->m_bodyLen = this->m_msDataHeader.len - SOCK_RECEIVE_HEADER_LEN;
+			//this->m_bodyLen = buf[1] - SOCK_RECEIVE_HEADER_LEN;
+			m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
+			sprintf(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
+			//sprintf(t, "%s", this->m_rbuf);
+			AfxMessageBox(_T(t), MB_YESNO, 0);
+		}
 		m_rStasus = SOCK_RECEIVE_BODY;
+
 	} else if(m_rStasus == SOCK_RECEIVE_BODY) {
 		//buf=new char[m_bodyLen];
 		//sprintf(t, "%ld", m_bodyLen);
 		//AfxMessageBox(_T(t), MB_YESNO, 0);
-		m_rbuf=new char[m_bodyLen+1];//要多出1个byte的余量,否则m_rbuf长度会自动增长
+		m_rbuf=new BUF_TYPE[m_bodyLen+1];//要多出1个byte的余量,否则m_rbuf长度会自动增长
 		memset(m_rbuf,0,m_bodyLen+1);
-		this->m_len = this->m_psConnectSocket->Receive(m_rbuf, m_bodyLen, 0);
+		m_len = m_psConnectSocket->Receive(m_rbuf, m_bodyLen, 0);
+		
+		
+		if(m_len != SOCKET_ERROR && m_len > SOCK_RECEIVE_HEADER_LEN && m_len <= m_bodyLen){
+			//把接收到的rbuf填入ReceiverQueue中
+			CMasterData* p_msData=new CMasterData(m_rbuf, m_len);
+			p_msData->msDataHeader.type=m_msDataType;
+			p_msData->msDataHeader.len=m_msDataLen;
+			//md.buf=new char[m_bodyLen];
+			//memcpy(md.buf,m_rbuf,m_bodyLen);
+			//md.buflen=m_bodyLen;
+			//p_msData->setBuf(m_rbuf);
+			//p_msData->setBufLen(m_len);
+			
+			sprintf(t, "%s", m_rbuf);
+			AfxMessageBox(_T(t), MB_YESNO, 0);
+			//sprintf(t, "%s", md.buf.GetBuffer(md.buf.GetLength()));
+			//AfxMessageBox(_T(t), MB_YESNO, 0);
+			sprintf(t, "%s", p_msData->buf);
+			AfxMessageBox(_T(t), MB_YESNO, 0);
+			sprintf(t, "%ld", p_msData->buflen);
+			AfxMessageBox(_T(t), MB_YESNO, 0);
+
+			m_pmasterDataQueue->enQueue(p_msData);
+			//POSITION p=m_pmasterDataQueue->Dataqueue.GetHeadPosition();
+			
+			sprintf(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
+			AfxMessageBox(_T(t), MB_YESNO, 0);
+
+			
+			delete p_msData;
+			
+		}
 		m_rStasus = SOCK_RECEIVE_HEADER;
 	}
+	/*if(buf){
+		delete buf;
+	}*/
+	/*
 	if(m_rbuf){
 		delete m_rbuf;
 	}
+	*/
 
 }
 
 void CELISTestServerDlg::OnButtonOk() 
 {
 	// TODO: Add your control notification handler code here
-	this->OnClose();
+	/*m_sListenSocket.Close();
+	if(m_psConnectSocket){
+		m_psConnectSocket->Close();
+		delete m_psConnectSocket;
+	}
+	this->DestroyWindow();
+	*/
+	DestroyWindow();
 	
 }
 
 void CELISTestServerDlg::OnButtonCancel() 
 {
 	// TODO: Add your control notification handler code here
-	this->OnClose();
+	/*m_sListenSocket.Close();
+	if(m_psConnectSocket){
+		m_psConnectSocket->Close();
+		delete m_psConnectSocket;
+	}
+	this->DestroyWindow();
+	*/
+	DestroyWindow();
 	
 }
+
+
+void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
+	SetTimer(nIDEvent, uElapse, NULL);
+}
+void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
+	CreateTimer(LOGDATA_TIMER, uElapse);
+}
+void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
+	CreateTimer(DEPTH_TIMER, uElapse);
+}
+void CELISTestServerDlg::StopTimer(UINT_PTR nIDEvent) {
+	KillTimer(nIDEvent);
+}
+void CELISTestServerDlg::StopLogTimer() {
+	StopTimer(LOGDATA_TIMER);
+}
+void CELISTestServerDlg::StopDepthTimer() {
+	StopTimer(DEPTH_TIMER);
+}
+
+void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
+	switch(nIDEvent) {
+	case LOGDATA_TIMER:
+		//从文件中读取相应的log数据，构造ACT表
+		//生成FrontData类型对象，将其入SendQueue队列
+		//构造ACT表的依据是CommandHandler线程中执行NetCmd_InitServiceTable
+		//时解析的参数和相关数据结构，这个数据结构应该专门定义一个类
+		//并在本Dialog里保持这个类的一个对象。
+		LogDataTimerHandler();
+		break;
+	case DEPTH_TIMER:
+		DepthTimerHandler();
+	default:
+		AfxMessageBox(_T("OnTimer can not find appropriate timer type"));
+		break;
+	}
+}
+void CELISTestServerDlg::LogDataTimerHandler() {
+	AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
+}
+void CELISTestServerDlg::DepthTimerHandler() {
+	AfxMessageBox(_T("DepthTimer triggered, implement me!!!"));
+}
+
+
 
 void CELISTestServerDlg::OnSelchangeElistestserverTab(NMHDR* pNMHDR, LRESULT* pResult) 
 {
@@ -311,126 +455,30 @@ void CELISTestServerDlg::OnSelchangeElistestserverTab(NMHDR* pNMHDR, LRESULT* pR
 	}
 }
 
-//add----------------------------------------------------------------------------------start----
-void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
-	SetTimer(nIDEvent, uElapse, NULL);
-}
-void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
-	CreateTimer(LOGDATA_TIMER, uElapse);
-}
-void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
-	//每当Socket处Accept成功时，都要调用这个函数
-	//创建一个Timer定期反馈深度信息给主控机。
-	CreateTimer(DEPTH_TIMER, uElapse);
-}
-void CELISTestServerDlg::StopTimer(UINT_PTR nIDEvent) {
-	KillTimer(nIDEvent);
-}
-void CELISTestServerDlg::StopLogTimer() {
-	StopTimer(LOGDATA_TIMER);
-}
-void CELISTestServerDlg::StopDepthTimer() {
-	StopTimer(DEPTH_TIMER);
-}
-
-void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
-	char b[100];
-	switch(nIDEvent) {
-		case LOGDATA_TIMER:
-			//从文件中读取相应的log数据，构造ACT表
-			//生成FrontData类型对象，将其入SendQueue队列
-			//构造ACT表的依据是CommandHandler线程中执行NetCmd_InitServiceTable
-			//时解析的参数和相关数据结构，这个数据结构应该专门定义一个类
-			//并在本Dialog里保持这个类的一个对象。
-			LogDataTimerHandler();
-		break;
-		case DEPTH_TIMER:
-			DepthTimerHandler();
-		break;
-		default:
-			sprintf_s(b, "OnTimer can not find appropriate timer:%d", nIDEvent);
-			AfxMessageBox(_T(b));
-		break;
-	}
-}
-void CELISTestServerDlg::LogDataTimerHandler() {
-	AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
-}
-void CELISTestServerDlg::DepthTimerHandler() {
-	//AfxMessageBox(_T("DepthTimer triggered, implement me!!!"));
-	CDPMDisplayParameter dpmp;
-	CFrontData *fd = new CFrontData();
-
-	//下面这些参数应该从根据实际模拟的进程计算出来
-	//填写
-	dpmp.ddp.corr_Depth = 10;
-	dpmp.ddp.true_Depth = 11;
-	dpmp.ddp.speed = 1;
-	dpmp.ddp.totalTension = 5;
-	dpmp.ddp.differTension = 2;
-	dpmp.ddp.time = 1;
-	dpmp.ddp.nreserved2 = 0;
-
-	//构造这个数据后将其放入SendQueue即可
-	//MessageSender线程会自动从队列中取出
-	//FrontData数据并发送之
-	fd->SetData(dpmp);
-	fq.en(fd);
-}
-
-void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
-	if(acttab != NULL) {
-		delete acttab;
-		acttab = NULL;
-	}
-	acttab = tb;
-	AfxMessageBox(_T("SetACTTable, implement me!!!, update the CList control on ACT tab page"));
-}
-//add----------------------------------------------------------------------------------end----
-void CELISTestServerDlg::OnBnClickedButton1()
+void CELISTestServerDlg::OnButtonActFolder() 
 {
 	// TODO: Add your control notification handler code here
-	/*
-	unsigned char buf[100];
-	buf[0] = (unsigned char)ta;
-	buf[1] = (unsigned char)ta+1;
-	ta++;
-	CMasterData *d = new CMasterData(buf, 2);
-	mq.en(d);
-	size_t s = sizeof(long) + sizeof(long) + 3*(sizeof(RTCSubset));
-	unsigned char *buf = new unsigned char[s];
-	long *t;
-	int *ta;
-	t = (long*)buf;
-	t[0] = 3;
-	t[1] = 9999;
-	ta = (int*)(buf+sizeof(long)+sizeof(long));
-	ta[0] = 1;
-	ta[1] = -1;
-	ta = (int*)(buf+sizeof(long)+sizeof(long)+sizeof(RTCSubset));
-	ta[0] = 2;
-	ta[1] = -11;
-	CActTable *tb = CActTable::AllocateActTable(buf, s);
-	//CActTable *tb = (CActTable*)buf;
-	char test[1024];
+	char szPath[MAX_PATH]; //存放选择的目录路径
+    CString str;
+    ZeroMemory(szPath, sizeof(szPath)); 
+    BROWSEINFO bi;
+    bi.hwndOwner = m_hWnd;
+    bi.pidlRoot = NULL;
+    bi.pszDisplayName = szPath;
+    bi.lpszTitle = "请选择ACT数据文件的目录:";
+    bi.ulFlags = BIF_USENEWUI;//0
+    bi.lpfn = NULL;
+    bi.lParam = 0;
+    bi.iImage = 0;
+	
+    //弹出选择目录对话框
+    LPITEMIDLIST lp = SHBrowseForFolder(&bi);
+    if( lp && SHGetPathFromIDList(lp, szPath) ) {
+        str.Format("选择的目录为 %s",  szPath);
+        AfxMessageBox(_T(str));
+    } else {
+        AfxMessageBox(_T("无效的目录，请重新选择"));
+    }
 
-	sprintf_s(test, "actNum:%ld,DepthInterruptMode:%ld",tb->actNum,tb->nDepthInterruptMode);
-	sprintf_s(test, "%s,pSaList[0].actNo:%d,pSaList[0].switchOn:%d",test,tb->pSaList[0].actNo,tb->pSaList[0].switchOn);
-	sprintf_s(test, "%s,pSaList[1].actNo:%d,pSaList[1].switchOn:%d",test,tb->pSaList[1].actNo,tb->pSaList[1].switchOn);
-	AfxMessageBox(_T(test));
-
-	CreateDepthTimer(DEPTH_TIMER_INTERVAL);
-	*/
-	int abc[5];
-	abc[0] = 2;
-	abc[1] = 2;
-	abc[2] = 2;
-	abc[3] = 2;
-	abc[4] = 4;
-	char fabc[500];
-	int lcm;
-	lcm = CUtils::lcm(abc, 5);
-	sprintf_s(fabc, "lcm:%d", lcm);
-	AfxMessageBox(_T(fabc));
+	
 }
-

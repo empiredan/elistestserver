@@ -6,7 +6,7 @@
 #endif // _MSC_VER > 1000
 // TabCalVer.h : header file
 //
-
+#include "MyListCtrl.h"
 /////////////////////////////////////////////////////////////////////////////
 // TabCalVer dialog
 
@@ -20,7 +20,7 @@ public:
 	//{{AFX_DATA(TabCalVer)
 	enum { IDD = IDD_TAB_CALVER };
 		// NOTE: the ClassWizard will add data members here
-	CListCtrl m_listctrlCalVer;
+	MyListCtrl m_listctrlCalVer;
 	//}}AFX_DATA
 
 

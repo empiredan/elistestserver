@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+//Microsoft Developer Studio generated resource script.
 //
 #include "resource.h"
 
@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Chinese (P.R.C.) resources
+// Chinese (中国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 #ifdef _WIN32
@@ -27,18 +27,18 @@ LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
     "#define _AFX_NO_OLE_RESOURCES\r\n"
@@ -66,52 +66,83 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME           ICON                    "res\\ELISTestServer.ico"
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\ELISTestServer.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
 // Dialog
 //
 
-IDD_ABOUTBOX DIALOG  0, 0, 235, 55
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "关于 ELISTestServer"
 FONT 9, "宋体"
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
-    LTEXT           "ELISTestServer 1.0 版",IDC_STATIC,40,10,119,8,SS_NOPREFIX
+    LTEXT           "ELISTestServer 1.0 版",IDC_STATIC,40,10,119,8,
+                    SS_NOPREFIX
     LTEXT           "版权所有 (C) 2009",IDC_STATIC,40,25,119,8
     DEFPUSHBUTTON   "确定",IDOK,178,7,50,14,WS_GROUP
 END
 
-IDD_ELISTESTSERVER_DIALOG DIALOGEX 0, 0, 471, 376
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+IDD_ELISTESTSERVER_DIALOG DIALOGEX 0, 0, 471, 463
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
 CAPTION "ELISTestServer"
-FONT 9, "宋体", 0, 0, 0x1
+FONT 9, "宋体"
 BEGIN
-    GROUPBOX        "MainSetting",IDC_STATIC,17,13,438,82
-    CONTROL         "Tab1",IDC_ELISTESTSERVER_TAB,"SysTabControl32",0x0,16,102,438,225
-    PUSHBUTTON      "Ok",IDC_Ok,109,339,60,19
-    PUSHBUTTON      "Cancel",IDC_Cancel,293,339,60,19
-    PUSHBUTTON      "Button1",IDC_BUTTON1,377,57,50,14
+    GROUPBOX        "参数设定与显示",IDC_STATIC_MAIN,17,13,438,170
+    CONTROL         "Tab1",IDC_ELISTESTSERVER_TAB,"SysTabControl32",0x0,15,
+                    193,438,225
+    PUSHBUTTON      "Ok",IDC_Ok,109,428,60,19
+    PUSHBUTTON      "Cancel",IDC_Cancel,293,427,60,19
+    LTEXT           "深度:",IDC_STATIC_DEPTH,25,39,32,16
+    LTEXT           "速度:",IDC_STATIC_SPEED,25,73,29,15
+    EDITTEXT        IDC_EDIT_DEPTH,62,36,74,20,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_SPEED,62,69,73,21,ES_AUTOHSCROLL
+    LTEXT           "Mode:",IDC_STATIC_MODE,143,40,20,18
+    LTEXT           "",IDC_STATIC_MODE_VALUE,172,37,55,20
+    LTEXT           "Direction:",IDC_STATIC_DIRECTION,141,74,41,15
+    LTEXT           "",IDC_STATIC_DIRECTION_VALUE,190,74,23,17
+    LTEXT           "服务器端口设置:",IDC_STATIC_SERVER_PORT,25,109,66,16
+    EDITTEXT        IDC_EDIT_SERVER_PORT,101,107,62,17,ES_AUTOHSCROLL
+    PUSHBUTTON      "Set",IDC_BUTTON_SERVER_PORT,167,107,30,16
+    LTEXT           "服务器IP和端口:",IDC_STATIC_SERVER_IP_PORT,27,147,80,16
+    LTEXT           "客户端IP和端口:",IDC_STATIC_CLIENT_IP_PORT,233,146,80,
+                    16
+    LTEXT           "",IDC_STATIC_SERVER_IP_PORT_VALUE,115,146,80,16
+    LTEXT           "",IDC_STATIC_CLIENT_IP_PORT_VALUE,322,145,80,16
+    LTEXT           "数据缓冲区大小(M字节):",IDC_STATIC_DATA_BUFFER_SIZE,235,
+                    110,91,16
+    EDITTEXT        IDC_EDIT_DATA_BUFFER_SIZE,339,107,62,18,ES_AUTOHSCROLL
+    PUSHBUTTON      "Set",IDC_BUTTON_DATA_BUFFER_SIZE,406,107,30,16
+    LTEXT           "ACT数据文件目录:",IDC_STATIC_ACT_FOLDER,235,40,68,16
+    EDITTEXT        IDC_EDIT_ACT_FOLDER,310,37,104,17,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CALVER_FOLDER,319,73,110,17,ES_AUTOHSCROLL
+    LTEXT           "Cal/Ver数据文件目录:",IDC_STATIC_CALVER_FOLDER,229,75,
+                    81,16
+    PUSHBUTTON      "...",IDC_BUTTON_ACT_FOLDER,419,38,15,14
+    PUSHBUTTON      "...",IDC_BUTTON_CALVER_FOLDER,433,73,15,14
 END
 
-IDD_TAB_ACT DIALOG  0, 0, 471, 302
-STYLE DS_SETFONT | WS_CHILD
+IDD_TAB_ACT DIALOG DISCARDABLE  0, 0, 471, 302
+STYLE WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
-    CONTROL         "List1",IDC_LIST_ACT,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,7,437,278
+    CONTROL         "List1",IDC_LIST_ACT,"SysListView32",LVS_REPORT | 
+                    LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,7,7,437,278
 END
 
-IDD_TAB_CALVER DIALOG  0, 0, 452, 312
-STYLE DS_SETFONT | WS_CHILD
+IDD_TAB_CALVER DIALOG DISCARDABLE  0, 0, 452, 312
+STYLE WS_CHILD
 FONT 8, "MS Sans Serif"
 BEGIN
-    CONTROL         "List1",IDC_LIST_CALVER,"SysListView32",LVS_REPORT | WS_BORDER | WS_TABSTOP,7,7,434,277
+    CONTROL         "List1",IDC_LIST_CALVER,"SysListView32",LVS_REPORT | 
+                    WS_BORDER | WS_TABSTOP,7,7,434,277
 END
 
 
+#ifndef _MAC
 /////////////////////////////////////////////////////////////////////////////
 //
 // Version
@@ -134,13 +165,15 @@ BEGIN
     BEGIN
         BLOCK "080404B0"
         BEGIN
-            VALUE "FileDescription", "ELISTestServer Microsoft 基础类应用程序"
-            VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "ELISTestServer"
-            VALUE "LegalCopyright", "版权所有 (C) 2009"
-            VALUE "OriginalFilename", "ELISTestServer.EXE"
-            VALUE "ProductName", "ELISTestServer 应用程序"
-            VALUE "ProductVersion", "1, 0, 0, 1"
+            VALUE "CompanyName", "\0"
+            VALUE "FileDescription", "ELISTestServer Microsoft 基础类应用程序\0"
+            VALUE "FileVersion", "1, 0, 0, 1\0"
+            VALUE "InternalName", "ELISTestServer\0"
+            VALUE "LegalCopyright", "版权所有 (C) 2009\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "ELISTestServer.EXE\0"
+            VALUE "ProductName", "ELISTestServer 应用程序\0"
+            VALUE "ProductVersion", "1, 0, 0, 1\0"
         END
     END
     BLOCK "VarFileInfo"
@@ -149,6 +182,8 @@ BEGIN
     END
 END
 
+#endif    // !_MAC
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -156,7 +191,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO DISCARDABLE 
 BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
@@ -171,7 +206,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 464
         TOPMARGIN, 7
-        BOTTOMMARGIN, 369
+        BOTTOMMARGIN, 456
     END
 
     IDD_TAB_ACT, DIALOG
@@ -198,13 +233,13 @@ END
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE DISCARDABLE 
 BEGIN
     IDS_ABOUTBOX            "关于 ELISTestServer(&A)..."
     IDP_SOCKETS_INIT_FAILED "Windows 通信端口初始化失败。"
 END
 
-#endif    // Chinese (P.R.C.) resources
+#endif    // Chinese (中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

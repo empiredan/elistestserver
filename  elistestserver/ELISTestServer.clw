@@ -3,11 +3,11 @@
 [General Info]
 Version=1
 LastClass=CELISTestServerDlg
-LastTemplate=CAsyncSocket
+LastTemplate=CListCtrl
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "ELISTestServer.h"
 
-ClassCount=7
+ClassCount=8
 Class1=CELISTestServerApp
 Class2=CELISTestServerDlg
 Class3=CAboutDlg
@@ -21,6 +21,7 @@ Resource4=IDD_ELISTESTSERVER_DIALOG
 Class5=TabCalVer
 Class6=MyTabCtrl
 Class7=MySocket
+Class8=MyListCtrl
 Resource5=IDD_TAB_CALVER
 
 [CLS:CELISTestServerApp]
@@ -58,17 +59,41 @@ Control4=IDOK,button,1342373889
 [DLG:IDD_ELISTESTSERVER_DIALOG]
 Type=1
 Class=CELISTestServerDlg
-ControlCount=4
-Control1=IDC_STATIC,button,1342177287
+ControlCount=28
+Control1=IDC_STATIC_MAIN,button,1342177287
 Control2=IDC_ELISTESTSERVER_TAB,SysTabControl32,1342177280
 Control3=IDC_Ok,button,1342242816
 Control4=IDC_Cancel,button,1342242816
+Control5=IDC_STATIC_DEPTH,static,1342308352
+Control6=IDC_STATIC_SPEED,static,1342308352
+Control7=IDC_EDIT_DEPTH,edit,1350631552
+Control8=IDC_EDIT_SPEED,edit,1350631552
+Control9=IDC_STATIC_MODE,static,1342308352
+Control10=IDC_STATIC_MODE_VALUE,static,1342308352
+Control11=IDC_STATIC_DIRECTION,static,1342308352
+Control12=IDC_STATIC_DIRECTION_VALUE,static,1342308352
+Control13=IDC_STATIC_SERVER_PORT,static,1342308352
+Control14=IDC_EDIT_SERVER_PORT,edit,1350631552
+Control15=IDC_BUTTON_SERVER_PORT,button,1342242816
+Control16=IDC_STATIC_SERVER_IP_PORT,static,1342308352
+Control17=IDC_STATIC_CLIENT_IP_PORT,static,1342308352
+Control18=IDC_STATIC_SERVER_IP_PORT_VALUE,static,1342308352
+Control19=IDC_STATIC_CLIENT_IP_PORT_VALUE,static,1342308352
+Control20=IDC_STATIC_DATA_BUFFER_SIZE,static,1342308352
+Control21=IDC_EDIT_DATA_BUFFER_SIZE,edit,1350631552
+Control22=IDC_BUTTON_DATA_BUFFER_SIZE,button,1342242816
+Control23=IDC_STATIC_ACT_FOLDER,static,1342308352
+Control24=IDC_EDIT_ACT_FOLDER,edit,1350631552
+Control25=IDC_EDIT_CALVER_FOLDER,edit,1350631552
+Control26=IDC_STATIC_CALVER_FOLDER,static,1342308352
+Control27=IDC_BUTTON_ACT_FOLDER,button,1342242816
+Control28=IDC_BUTTON_CALVER_FOLDER,button,1342242816
 
 [DLG:IDD_TAB_ACT]
 Type=1
 Class=TabAct
 ControlCount=1
-Control1=IDC_LIST_ACT,SysListView32,1350631425
+Control1=IDC_LIST_ACT,SysListView32,1350631433
 
 [CLS:TabAct]
 Type=0
@@ -77,6 +102,7 @@ ImplementationFile=TabAct.cpp
 BaseClass=CDialog
 Filter=D
 LastObject=IDC_LIST_ACT
+VirtualFilter=dWC
 
 [CLS:TabCalVer]
 Type=0
@@ -109,4 +135,13 @@ BaseClass=CAsyncSocket
 Filter=N
 LastObject=MySocket
 VirtualFilter=q
+
+[CLS:MyListCtrl]
+Type=0
+HeaderFile=MyListCtrl.h
+ImplementationFile=MyListCtrl.cpp
+BaseClass=CListCtrl
+Filter=W
+VirtualFilter=FWC
+LastObject=MyListCtrl
 

@@ -12,20 +12,15 @@
 //#include "MasterHeader.h"
 #include "MyTabCtrl.h"
 #include "MySocket.h"
-
-//add------------------------------------------------------------------------------start------
 #include "Data.h"
 #include "Queue.h"
 #include "MessageSender.h"
 #include "CommandHandler.h"
 
 #include "TimerDef.h"
-#include "Utils.h"
 
 #include "ActTable.h"
-#include "DPMDisplayParameter.h"
-//add------------------------------------------------------------------------------end------
-
+//#include "DealThread.h"
 //#include <deque>
 //using namespace std;
 /////////////////////////////////////////////////////////////////////////////
@@ -37,21 +32,44 @@ class CELISTestServerDlg : public CDialog
 public:
 	CELISTestServerDlg(CWnd* pParent = NULL);	// standard constructor
 	virtual ~CELISTestServerDlg();
+
+	UINT m_sPort;
 	MySocket m_sListenSocket;
 	MySocket* m_psConnectSocket;
 	int m_rStasus;
-	//char m_rbuf[200];
-	//MasterData_Header m_msDataHeader;
+
 	long m_len;
 	long m_bodyLen;
 	long m_msDataType;
 	long m_msDataLen;
-	char* m_rbuf;
-	//MasterDataQueue m_masterDataQueue;
-	//CWinThread *hp;
+	BUF_TYPE* m_rbuf;
+
+	MasterDataQueue<CMasterData>* m_pmasterDataQueue;
+	//MasterDataQueue<CMasterData> mq;
+	FrontDataQueue<CFrontData> fq;
+	CCommandHandler cmdh;
+	CMessageSender msgs;
+	unsigned char ta;
+
 	void OnReceive();
 	void OnAccept();
 	void OnClose();
+
+	MasterDataQueue<CMasterData>* getMasterDataQueue() {
+		return m_pmasterDataQueue;
+	}
+	void CreateTimer(UINT_PTR nIDEvent, UINT uElapse);
+	void CreateLogTimer(UINT uElapse);
+	void CreateDepthTimer(UINT uElapse);
+	void StopTimer(UINT_PTR nIDEvent);
+	void StopLogTimer();
+	void StopDepthTimer();
+	FrontDataQueue<CFrontData>* getFrontDataQueue() {
+		return &fq;
+	}
+	
+	void DepthTimerHandler();
+	void LogDataTimerHandler();
 	//DWORD WINAPI WriteCmdRecvQueFunc(LPVOID lpParameter);
 
 // Dialog Data
@@ -59,8 +77,9 @@ public:
 	enum { IDD = IDD_ELISTESTSERVER_DIALOG };
 		// NOTE: the ClassWizard will add data members here
 	MyTabCtrl m_tabMyTabCtrl;
+	CButton* m_fileButton;
 	
-	UINT m_sPort;
+	
 	//}}AFX_DATA
 
 	// ClassWizard generated virtual function overrides
@@ -82,39 +101,10 @@ protected:
 	afx_msg void OnButtonOk();
 	afx_msg void OnButtonCancel();
 	afx_msg void OnSelchangeElistestserverTab(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnBnClickedButton1();
+	afx_msg void OnButtonActFolder();
+	afx_msg void OnTimer(UINT nIDEvent);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
-
-//add----------------------------------------------------------------------------------start----
-public:
-	afx_msg void OnTimer(UINT nIDEvent);
-public:
-	MasterDataQueue mq;
-	FrontDataQueue fq;
-	CCommandHandler cmdh;
-	CMessageSender msgs;
-	unsigned char ta;
-	CActTable *acttab;
-public:
-	MasterDataQueue* getMasterDataQueue() {
-		return &mq;
-	}
-	void CreateTimer(UINT_PTR nIDEvent, UINT uElapse);
-	void CreateLogTimer(UINT uElapse);
-	void CreateDepthTimer(UINT uElapse);
-	void StopTimer(UINT_PTR nIDEvent);
-	void StopLogTimer();
-	void StopDepthTimer();
-	FrontDataQueue* getFrontDataQueue() {
-		return &fq;
-	}
-
-	void DepthTimerHandler();
-	void LogDataTimerHandler();
-
-	void SetACTTable(CActTable *tb);//091206
-//add----------------------------------------------------------------------------------end----
 };
 
 //{{AFX_INSERT_LOCATION}}
