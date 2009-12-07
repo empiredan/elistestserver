@@ -2,7 +2,7 @@
 
 [General Info]
 Version=1
-LastClass=CELISTestServerDlg
+LastClass=TabCalVer
 LastTemplate=CListCtrl
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "ELISTestServer.h"
@@ -13,9 +13,9 @@ Class2=CELISTestServerDlg
 Class3=CAboutDlg
 
 ResourceCount=5
-Resource1=IDD_TAB_ACT
+Resource1=IDD_ABOUTBOX
 Resource2=IDR_MAINFRAME
-Resource3=IDD_ABOUTBOX
+Resource3=IDD_TAB_ACT
 Class4=TabAct
 Resource4=IDD_ELISTESTSERVER_DIALOG
 Class5=TabCalVer
@@ -83,8 +83,8 @@ Control20=IDC_STATIC_DATA_BUFFER_SIZE,static,1342308352
 Control21=IDC_EDIT_DATA_BUFFER_SIZE,edit,1350631552
 Control22=IDC_BUTTON_DATA_BUFFER_SIZE,button,1342242816
 Control23=IDC_STATIC_ACT_FOLDER,static,1342308352
-Control24=IDC_EDIT_ACT_FOLDER,edit,1350631552
-Control25=IDC_EDIT_CALVER_FOLDER,edit,1350631552
+Control24=IDC_EDIT_ACT_FOLDER,edit,1484849280
+Control25=IDC_EDIT_CALVER_FOLDER,edit,1484849280
 Control26=IDC_STATIC_CALVER_FOLDER,static,1342308352
 Control27=IDC_BUTTON_ACT_FOLDER,button,1342242816
 Control28=IDC_BUTTON_CALVER_FOLDER,button,1342242816
@@ -111,6 +111,7 @@ ImplementationFile=TabCalVer.cpp
 BaseClass=CDialog
 Filter=D
 LastObject=IDC_LIST_CALVER
+VirtualFilter=dWC
 
 [DLG:IDD_TAB_CALVER]
 Type=1

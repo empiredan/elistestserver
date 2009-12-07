@@ -2,8 +2,9 @@
 //
 
 #include "stdafx.h"
-#include "ELISTestServer.h"
 #include "TabAct.h"
+#include "ELISTestServer.h"
+#include "ELISTestServerDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -23,6 +24,12 @@ TabAct::TabAct(CWnd* pParent /*=NULL*/)
 	//}}AFX_DATA_INIT
 	
 }
+
+void TabAct::setCElisTestServerDlg(CELISTestServerDlg* dlg)
+{
+	m_pELISTestServerDlg=dlg;
+}
+
 /*
 BOOL TabAct::OnInitDialog()
 {
@@ -94,6 +101,7 @@ void TabAct::OnItemdblclickListAct(NMHDR* pNMHDR, LRESULT* pResult)
 
 }
 */
+
 void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult) 
 {
 	// TODO: Add your control notification handler code here
@@ -109,14 +117,35 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 	if (columeNo==6)
 	{
 		//AfxMessageBox(_T("Yes!"));
-		CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
-		openActDataFileDlg.m_ofn.lpstrInitialDir="D:\\vc6\\MyProjects";
-		CString strFilePath;
-		if (openActDataFileDlg.DoModal()==IDOK)
+		//CELISTestServerDlg* parentDlg=(CELISTestServerDlg*)(this->GetParent());
+		m_pELISTestServerDlg->UpdateData(TRUE);
+		CString actListRootFolder=m_pELISTestServerDlg->m_actListRootFolder;
+		if (actListRootFolder=="")
 		{
-			strFilePath=openActDataFileDlg.GetPathName();
-			m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
+			char t[50];
+			sprintf(t, "%s", "ACT数据文件目录不能为空!");
+			AfxMessageBox(_T(t));
+		}else{
+
+			WIN32_FIND_DATA fd;
+			HANDLE hFind = FindFirstFile(actListRootFolder, &fd);
+			if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
+				//目录存在
+				CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
+				openActDataFileDlg.m_ofn.lpstrInitialDir=actListRootFolder;
+				CString strFilePath;
+				if (openActDataFileDlg.DoModal()==IDOK)
+				{
+					strFilePath=openActDataFileDlg.GetPathName();
+					m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
+				}
+			}else{
+				char t[50];
+				sprintf(t, "%s", "此目录已不存在!");
+				AfxMessageBox(_T(t));
+			}
 		}
+		
 
 	}
 	*pResult = 0;
