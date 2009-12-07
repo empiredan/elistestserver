@@ -28,7 +28,7 @@ public:
 };
 
 template<class DATA_TYPE>
-CDataQueue<DATA_TYPE>::CDataQueue()
+CDataQueue<DATA_TYPE>::CDataQueue():dataMtx(), dataEvt()
 {
 	
 }
