@@ -223,24 +223,8 @@
 				>
 			</File>
 			<File
-				RelativePath="Data.cpp"
+				RelativePath=".\Data.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\DPMDisplayParameter.cpp"
@@ -311,6 +295,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\MyListCtrl.cpp"
+				>
+			</File>
+			<File
 				RelativePath="MySocket.cpp"
 				>
 				<FileConfiguration
@@ -332,26 +320,6 @@
 			</File>
 			<File
 				RelativePath="MyTabCtrl.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="Queue.cpp"
 				>
 				<FileConfiguration
 					Name="Release|Win32"
@@ -471,6 +439,10 @@
 			</File>
 			<File
 				RelativePath=".\MessageSender.h"
+				>
+			</File>
+			<File
+				RelativePath=".\MyListCtrl.h"
 				>
 			</File>
 			<File

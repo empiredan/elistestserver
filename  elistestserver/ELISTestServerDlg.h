@@ -49,6 +49,7 @@ public:
 	FrontDataQueue<CFrontData> fq;
 	CCommandHandler cmdh;
 	CMessageSender msgs;
+	CActTable *acttab;
 	unsigned char ta;
 
 	void OnReceive();
@@ -70,6 +71,8 @@ public:
 	
 	void DepthTimerHandler();
 	void LogDataTimerHandler();
+	void SetACTTable(CActTable *tb);
+
 	//DWORD WINAPI WriteCmdRecvQueFunc(LPVOID lpParameter);
 
 // Dialog Data
