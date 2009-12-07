@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "ActTable.h"
 
+#include "Utils.h"
+
 
 CActTable::CActTable(void)
 {
@@ -14,6 +16,22 @@ CActTable::~CActTable(void)
 	}
 }
 
+void CActTable::MaximumCommonSampleRate(int dpthandtime[]) {
+	int i;
+	int *dpthrate;
+	int *timerate;
+
+	ASSERT(actNum > 0);
+	dpthrate =  new int[actNum];
+	timerate = new int[actNum];
+	for(i = 0; i < actNum; i++) {
+		dpthrate[i] = pSaList[i].depthSampleRate;
+		timerate[i] = pSaList[i].timeInterval;
+	}
+	dpthandtime[0] = CUtils::lcm(dpthrate, actNum);
+	dpthandtime[1] = CUtils::lcm(timerate, actNum);
+}
+
 
 //CActTable* CActTable::AllocateActTable(long actNum, unsigned char *buf, int len) {
 CActTable* CActTable::AllocateActTable(long actNum, unsigned char *buf, int len) {
@@ -22,7 +40,6 @@ CActTable* CActTable::AllocateActTable(long actNum, unsigned char *buf, int len)
 	//actNum在调用前由调用者从socket接收到的buf中解析出来
 	CActTable *rtn;
 	long *f;
-	size_t size;
 	ASSERT(actNum >= 0);
 	
 	rtn = new CActTable();

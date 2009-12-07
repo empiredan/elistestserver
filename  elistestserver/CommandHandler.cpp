@@ -29,7 +29,7 @@ void CCommandHandler::start() {
 DWORD CCommandHandler::handle(LPVOID param) {
 	CCommandHandler *handler = (CCommandHandler *)param;
 	CMasterData *d;
-	MasterDataQueue *q;
+	CDataQueue<CMasterData> *q;
 	long cmdtype;
 	
 	//
@@ -37,7 +37,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 	q = handler->dlg->getMasterDataQueue();
 	
 	while(!handler->finish) {
-		d = q->de();
+		d = q->deQueue();
 		//sprintf_s(t, "Command Handler handle:::buf[0]=%d,buf[1]=%d", d->buf[0], d->buf[1]);
 		//AfxMessageBox(_T(t));
 		if( d == NULL) {

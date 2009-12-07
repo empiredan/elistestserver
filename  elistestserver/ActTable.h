@@ -10,8 +10,8 @@ public:
 	int	actNo;
 	int	switchOn;
 	int	actDone;
-	int DepthSampleRate;
-	int TimeInterval;
+	int	depthSampleRate;
+	int	timeInterval;
 
 	//下面的是RtcSUBSET_CMD
 	int	toolAddress;
@@ -31,6 +31,8 @@ public:
 public:
 	CActTable::CActTable(void);
 	CActTable::~CActTable(void);
+public:
+	void MaximumCommonSampleRate(int dpthandtime[]);
 public:
 	static CActTable* AllocateActTable(long actNum, unsigned char *buf, int len);
 	static CActTable* AllocateActTable(unsigned char  *buf, int len);

@@ -259,7 +259,7 @@ void CELISTestServerDlg::OnAccept()
 	if(!m_sListenSocket.Accept(*m_psConnectSocket)){
 		char t[50];
 		int e = GetLastError();
-		sprintf(t, "ServerSocket Accepted Error Code:%d", e);
+		sprintf_s(t, "ServerSocket Accepted Error Code:%d", e);
 		AfxMessageBox(_T(t), MB_YESNO, 0);
 		m_sListenSocket.Close();
 	}
@@ -302,7 +302,7 @@ void CELISTestServerDlg::OnReceive()
 			//this->m_bodyLen = this->m_msDataHeader.len - SOCK_RECEIVE_HEADER_LEN;
 			//this->m_bodyLen = buf[1] - SOCK_RECEIVE_HEADER_LEN;
 			m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
-			sprintf(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
+			sprintf_s(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
 			//sprintf(t, "%s", this->m_rbuf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 		}
@@ -328,19 +328,19 @@ void CELISTestServerDlg::OnReceive()
 			//p_msData->setBuf(m_rbuf);
 			//p_msData->setBufLen(m_len);
 			
-			sprintf(t, "%s", m_rbuf);
+			sprintf_s(t, "%s", m_rbuf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 			//sprintf(t, "%s", md.buf.GetBuffer(md.buf.GetLength()));
 			//AfxMessageBox(_T(t), MB_YESNO, 0);
-			sprintf(t, "%s", p_msData->buf);
+			sprintf_s(t, "%s", p_msData->buf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
-			sprintf(t, "%ld", p_msData->buflen);
+			sprintf_s(t, "%ld", p_msData->buflen);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 
 			m_pmasterDataQueue->enQueue(p_msData);
 			//POSITION p=m_pmasterDataQueue->Dataqueue.GetHeadPosition();
 			
-			sprintf(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
+			sprintf_s(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
 			AfxMessageBox(_T(t), MB_YESNO, 0);
 
 			
