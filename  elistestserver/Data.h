@@ -31,8 +31,8 @@ public:
 	CMasterData();
 	CMasterData(BUF_TYPE* bf, long len);
 	virtual ~CMasterData();
-public:
-	MasterData_Header msDataHeader;
+//public:
+	//MasterData_Header msDataHeader;
 };
 
 //前端机上准备的要发给主控机的数据

@@ -123,7 +123,7 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 		if (actListRootFolder=="")
 		{
 			char t[50];
-			sprintf_s(t, "%s", "ACT数据文件目录不能为空!");
+			sprintf(t, "%s", "ACT数据文件目录不能为空!");
 			AfxMessageBox(_T(t));
 		}else{
 
@@ -141,7 +141,7 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 				}
 			}else{
 				char t[50];
-				sprintf_s(t, "%s", "此目录已不存在!");
+				sprintf(t, "%s", "此目录已不存在!");
 				AfxMessageBox(_T(t));
 			}
 		}

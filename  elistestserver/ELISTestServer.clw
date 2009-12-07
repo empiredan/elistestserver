@@ -13,11 +13,11 @@ Class2=CELISTestServerDlg
 Class3=CAboutDlg
 
 ResourceCount=5
-Resource1=IDD_ABOUTBOX
+Resource1=IDD_ELISTESTSERVER_DIALOG
 Resource2=IDR_MAINFRAME
 Resource3=IDD_TAB_ACT
 Class4=TabAct
-Resource4=IDD_ELISTESTSERVER_DIALOG
+Resource4=IDD_ABOUTBOX
 Class5=TabCalVer
 Class6=MyTabCtrl
 Class7=MySocket
