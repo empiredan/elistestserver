@@ -102,6 +102,14 @@ SOURCE=.\Data.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DepthPanelReadTensionAngle.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\DepthPanelTensionFactor.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DPMDisplayParameter.cpp
 # End Source File
 # Begin Source File
@@ -134,8 +142,20 @@ SOURCE=.\MyTabCtrl.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\SingleACQDataReady.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\SpeedFast.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\StdAfx.cpp
 # ADD CPP /Yc"stdafx.h"
+# End Source File
+# Begin Source File
+
+SOURCE=.\SubsetData.cpp
 # End Source File
 # Begin Source File
 
@@ -144,6 +164,14 @@ SOURCE=.\TabAct.cpp
 # Begin Source File
 
 SOURCE=.\TabCalVer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\UpholeSendDataReady.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\WorkMode.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -164,6 +192,14 @@ SOURCE=.\commands.h
 # Begin Source File
 
 SOURCE=.\Data.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DepthPanelReadTensionAngle.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DepthPanelTensionFactor.h
 # End Source File
 # Begin Source File
 
@@ -203,7 +239,19 @@ SOURCE=.\Resource.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\SingleACQDataReady.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SpeedFast.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\StdAfx.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SubsetData.h
 # End Source File
 # Begin Source File
 
@@ -216,6 +264,18 @@ SOURCE=.\TabCalVer.h
 # Begin Source File
 
 SOURCE=.\TimerDef.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\UpholeSendDataReady.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\Utils.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\WorkMode.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
