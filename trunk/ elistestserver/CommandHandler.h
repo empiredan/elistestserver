@@ -47,6 +47,24 @@ public:
 	void NetCmd_CtrlRecStop(CMasterData *d);
 	void NetCmd_CtrlActSwitch(CMasterData *d);
 	void NetCmd_CtrlActDeactivate(CMasterData *d);
+	
+	void NetCmd_InitConfigParameter(CMasterData *d);
+	void NetCmd_CtrlStandbytimeInterval(CMasterData *d);
+	void NetCmd_CtrlRecstop(CMasterData *d);
+	void NetCmd_CtrlACTSwitch(CMasterData *d);
+	void NetCmd_SnglCtl(CMasterData *d);
+	void NetCmd_DepthInternal(CMasterData *d);
+	void NetCmd_DepthDirection(CMasterData *d);
+	void NetCmd_DepthSpeed(CMasterData *d);
+	void NetCmd_TrueDepth(CMasterData *d);
+	void NetCmd_CorrectedDepth(CMasterData *d);
+	void NetCmd_ManualDepthCorrection(CMasterData *d);
+	void NetCmd_AutoDepthCorrection(CMasterData *d);
+	void NetCmd_DepthLock(CMasterData *d);
+	void NetCmd_DepthUnlock(CMasterData *d);
+	void NetCmd_DepthTensionFactor(CMasterData *d);
+	void NetCmd_DepthTensionAngle(CMasterData *d);
+	void NetCmd_DepthCHT(CMasterData *d);
 	//void (CMasterData *d);
 	//void (CMasterData *d);
 };
