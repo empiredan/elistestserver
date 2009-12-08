@@ -8,6 +8,15 @@
 #include "TimerDef.h"
 #include "ActTable.h"
 
+#include "DepthPanelReadTensionAngle.h"
+#include "DepthPanelTensionFactor.h"
+#include "DPMDisplayParameter.h"
+#include "SingleACQDataReady.h"
+#include "SubsetData.h"
+#include "UpholeSendDataReady.h"
+#include "WorkMode.h"
+
+
 #pragma once
 
 class CELISTestServerDlg;
@@ -22,7 +31,7 @@ public:
 	DWORD wid;
 	CELISTestServerDlg *dlg;
 	BOOL finish;
-	long headSize;
+	ULONG headSize;
 public:
 	//用这个函数结束线程的while循环
 	void setFinish(BOOL op) {
