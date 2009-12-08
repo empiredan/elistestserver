@@ -45,7 +45,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 		}
 		//在这里处理各种命令，调用相应的
 		//命令解析函数来做。
-		cmdtype = d->buf[0];
+		cmdtype = ntohl(d->buf[0]);
 		
 		switch(cmdtype) {
 			case NET_CMDTYPE_INIT_SERVICE_TABLE:
