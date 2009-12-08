@@ -9,12 +9,23 @@ public:
 	CData();
 	CData(BUF_TYPE* bf, ULONG len);
 	virtual ~CData();
+public:
 	virtual void setData(BUF_TYPE* bf, ULONG len);
+	//确保buf的总长度够用
+	//调完这个函数buflen的大小应>=sizeNeeded
+	virtual void assureCapacity(ULONG sizeNeeded);
+	//设置buf的前两个long，
+	//设置完这个命令头后，pBuf会前进2×sizeof(ULONG)
+	//contentlen也会相应增加为2×sizeof(ULONG)
+	virtual void setHeader(ULONG cmdType, ULONG cmdLen);
 	//void setBuf(BUF_TYPE* b);
 	//void setBufLen(long bl);
 public:
-	BUF_TYPE* buf;
+	//pBuf作为临时指针，指向buf中的第一个空位置
+	BUF_TYPE *buf, *pBuf;
+	//buflen是buf的有效长度，contentlen应该小于等于buflen
 	ULONG buflen;
+	//contentlen记录当前buf中已经有多少有效数据了
 	ULONG contentlen;
 	//CString buf;
 };
