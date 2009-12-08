@@ -347,8 +347,10 @@ void CELISTestServerDlg::OnButtonOk()
 	}
 	this->DestroyWindow();
 	*/
+	msgs.finish = TRUE;
+	cmdh.finish = TRUE;
+
 	DestroyWindow();
-	
 }
 
 void CELISTestServerDlg::OnButtonCancel() 
@@ -361,8 +363,10 @@ void CELISTestServerDlg::OnButtonCancel()
 	}
 	this->DestroyWindow();
 	*/
+	msgs.finish = TRUE;
+	cmdh.finish = TRUE;
+
 	DestroyWindow();
-	
 }
 
 
