@@ -16,9 +16,12 @@
 #define IDC_Cancel                      1002
 #define IDC_LIST_ACT                    1002
 #define IDC_LIST_CALVER                 1003
-#define IDC_STATIC_DEPTH                1004
-#define IDC_STATIC_SPEED                1005
-#define IDC_EDIT_DEPTH                  1006
+
+#define IDC_STATIC_TRUE_DEPTH           1004
+
+#define IDC_STATIC_CORRECTED_DEPTH      1005
+
+#define IDC_EDIT_TRUE_DEPTH             1006
 #define IDC_EDIT_SPEED                  1007
 #define IDC_STATIC_MODE                 1008
 #define IDC_STATIC_MODE_VALUE           1009
@@ -32,6 +35,7 @@
 #define IDC_STATIC_SERVER_IP_PORT_VALUE 1017
 #define IDC_STATIC_CLIENT_IP_PORT_VALUE 1018
 #define IDC_STATIC_MAIN                 1019
+#define IDC_STATIC_SET_PARAM            1019
 #define IDC_STATIC_DATA_BUFFER_SIZE     1020
 #define IDC_EDIT_DATA_BUFFER_SIZE       1021
 #define IDC_BUTTON_DATA_BUFFER_SIZE     1022
@@ -41,6 +45,20 @@
 #define IDC_STATIC_CALVER_FOLDER        1026
 #define IDC_BUTTON_ACT_FOLDER           1027
 #define IDC_BUTTON_CALVER_FOLDER        1028
+#define IDC_STATIC_CONNECT              1029
+#define IDC_STATIC_SHOW_PARAM           1030
+#define IDC_STATIC_TRUE_DEPTH_SHOW      1031
+#define IDC_EDIT_CORRECTED_DEPTH        1032
+#define IDC_BUTTON_TRUE_DEPTH           1033
+#define IDC_BUTTON_CORRECTED_DEPTH      1034
+#define IDC_BUTTON_SPEED                1035
+#define IDC_STATIC_DATA                 1036
+#define IDC_STATIC_CORRECTED_SHOW       1037
+#define IDC_STATIC_SPEED_SHOW           1038
+#define IDC_STATIC_TRUE_DEPTH_SHOW_VALUE 1039
+#define IDC_STATIC_CORRECTED_SHOW_VALUE 1040
+#define IDC_STATIC_SPEED_SHOW_VALUE     1041
+#define IDC_STATIC_SPEED                1042
 
 // Next default values for new objects
 // 
@@ -48,7 +66,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif

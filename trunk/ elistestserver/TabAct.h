@@ -40,8 +40,10 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(TabAct)
-	//afx_msg void OnItemdblclickListAct(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnPaint();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

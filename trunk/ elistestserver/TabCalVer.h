@@ -40,6 +40,8 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(TabCalVer)
 	afx_msg void OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

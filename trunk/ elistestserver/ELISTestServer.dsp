@@ -102,6 +102,10 @@ SOURCE=.\Data.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DPMDisplayParameter.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\ELISTestServer.cpp
 # End Source File
 # Begin Source File
@@ -160,6 +164,10 @@ SOURCE=.\commands.h
 # Begin Source File
 
 SOURCE=.\Data.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DPMDisplayParameter.h
 # End Source File
 # Begin Source File
 
