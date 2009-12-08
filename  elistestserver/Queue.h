@@ -59,7 +59,6 @@ void CDataQueue<DATA_TYPE>::enQueue(DATA_TYPE* data)
 template<class DATA_TYPE>
 DATA_TYPE* CDataQueue<DATA_TYPE>::deQueue()
 {
-	
 	   DATA_TYPE* d;
 	   CSingleLock l(&dataMtx);
 	   while(dataQueue.IsEmpty()) {
@@ -71,15 +70,11 @@ DATA_TYPE* CDataQueue<DATA_TYPE>::deQueue()
 	   }
 	   l.Unlock();
 	return d;
-	   
-	   
-	   
 }
 /////////////////////////////////////////////////////////////////
 template<class DATA_TYPE>
 class MasterDataQueue:public CDataQueue<DATA_TYPE>
 {
-
 public:
 	MasterDataQueue();
     ~MasterDataQueue();

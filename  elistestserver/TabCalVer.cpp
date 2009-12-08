@@ -65,7 +65,7 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 		if (calverListRootFolder=="")
 		{
 			char t[50];
-			sprintf(t, "%s", "Cal/Ver数据文件目录不能为空!");
+			sprintf_s(t, "%s", "Cal/Ver数据文件目录不能为空!");
 			AfxMessageBox(_T(t));
 		}else{
 
@@ -83,7 +83,7 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 				}
 			}else{
 				char t[50];
-				sprintf(t, "%s", "此目录已不存在!");
+				sprintf_s(t, "%s", "此目录已不存在!");
 				AfxMessageBox(_T(t));
 			}
 		}

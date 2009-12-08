@@ -11,7 +11,7 @@
 
 #define SOCK_RECEIVE_HEADER 0x0001
 #define SOCK_RECEIVE_BODY 0x0002
-#define SOCK_RECEIVE_HEADER_LEN sizeof(MasterData_Header)
+
 /////////////////////////////////////////////////////////////////////////////
 // MySocket command target
 class CELISTestServerDlg;

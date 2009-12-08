@@ -52,7 +52,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 				//call NetCmd_InitServiceTable(*cmdBuffer)
 				handler->NetCmd_InitServiceTable(d);
 			break;
-
+			
 			default:
 				AfxMessageBox(_T("CCommandHandler::handle command type not defined"));
 			break;
@@ -75,6 +75,8 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	dlg->SetACTTable(tb);
 	tb->MaximumCommonSampleRate(rate);
 
+	
+	
 	//最后所有的解析和设置都好了之后
 	//用新计算得到的logTimerInterval值重新启动log timer
 	dlg->StopLogTimer();
