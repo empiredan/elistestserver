@@ -409,24 +409,24 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 }
 void CELISTestServerDlg::DepthTimerHandler() {
 	//AfxMessageBox(_T("DepthTimer triggered, implement me!!!"));
-	CDPMDisplayParameter dpmp;
-	CFrontData *fd = new CFrontData();
+	CDPMDisplayParameter *dpmp = new CDPMDisplayParameter();
+	//CFrontData *fd = new CFrontData();
 
 	//下面这些参数应该从根据实际模拟的进程计算出来
 	//填写
-	dpmp.ddp.corr_Depth = 10;
-	dpmp.ddp.true_Depth = 11;
-	dpmp.ddp.speed = 1;
-	dpmp.ddp.totalTension = 5;
-	dpmp.ddp.differTension = 2;
-	dpmp.ddp.time = 1;
-	dpmp.ddp.nreserved2 = 0;
+	dpmp->ddp.corr_Depth = 10;
+	dpmp->ddp.true_Depth = 11;
+	dpmp->ddp.speed = 1;
+	dpmp->ddp.totalTension = 5;
+	dpmp->ddp.differTension = 2;
+	dpmp->ddp.time = 1;
+	dpmp->ddp.nreserved2 = 0;
 
 	//构造这个数据后将其放入SendQueue即可
 	//MessageSender线程会自动从队列中取出
 	//FrontData数据并发送之
-	fd->setData(dpmp);
-	fq.enQueue(fd);
+	dpmp->setData(dpmp->ddp);
+	fq.enQueue(dpmp);
 }
 
 void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
