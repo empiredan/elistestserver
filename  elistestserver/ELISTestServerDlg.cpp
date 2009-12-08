@@ -253,7 +253,7 @@ void CELISTestServerDlg::OnAccept()
 	if(!m_sListenSocket.Accept(*m_psConnectSocket)){
 		char t[50];
 		int e = GetLastError();
-		sprintf_s(t, "ServerSocket Accepted Error Code:%d", e);
+		sprintf(t, "ServerSocket Accepted Error Code:%d", e);
 		AfxMessageBox(_T(t), MB_YESNO, 0);
 		m_sListenSocket.Close();
 	} else {
