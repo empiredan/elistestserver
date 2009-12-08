@@ -7,7 +7,7 @@ CData::CData() {
 	buflen = DEFAULT_BUF_LEN;
 }
 
-CData::CData(BUF_TYPE* bf, long len) {
+CData::CData(BUF_TYPE* bf, ULONG len) {
 	this->buf = new BUF_TYPE[len];
 	buflen = len;
 	if(buf == NULL) {
@@ -24,7 +24,7 @@ CData::~CData() {
 	}
 }
 
-void CData::setData(BUF_TYPE* bf, long len) {
+void CData::setData(BUF_TYPE* bf, ULONG len) {
 	if(len > DEFAULT_BUF_LEN) {
 		delete []this->buf;
 		this->buf = new BUF_TYPE[len];
@@ -44,7 +44,7 @@ void CData::setBufLen(long bl){
 
 CMasterData::CMasterData():CData() {
 }
-CMasterData::CMasterData(BUF_TYPE* bf, long len):CData(bf, len) {
+CMasterData::CMasterData(BUF_TYPE* bf, ULONG len):CData(bf, len) {
 }
 CMasterData::~CMasterData() {
 	//CData::~CData();
@@ -53,7 +53,20 @@ CMasterData::~CMasterData() {
 
 CFrontData::CFrontData():CData() {
 }
-CFrontData::CFrontData(BUF_TYPE* bf, long len):CData(bf, len) {
+CFrontData::CFrontData(BUF_TYPE* bf, ULONG len):CData(bf, len) {
+}
+void CFrontData::setData(CDPMDisplayParameter &dp) {
+	ULONG *t;
+	if(this->buflen < dp.getCmdLength()) {
+		delete []this->buf;
+		this->buf = new BUF_TYPE[dp.getCmdLength()];
+		this->buflen = dp.getCmdLength();
+	}
+	t = (ULONG*)buf;
+	t[0] = dp.getCmdType();
+	t[1] = dp.getCmdLength();
+	memcpy(buf+SOCK_RECEIVE_HEADER_LEN, &(dp.ddp), sizeof(CDPMDisplayParameter::DPM_DISPLAY_PARA));
+	contentlen = dp.getCmdLength();
 }
 CFrontData::~CFrontData() {
 	//CData::~CData();

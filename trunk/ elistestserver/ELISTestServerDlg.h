@@ -15,11 +15,13 @@
 #include "Data.h"
 #include "Queue.h"
 #include "MessageSender.h"
+#include "commands.h"
 #include "CommandHandler.h"
 
-#include "TimerDef.h"
-
+#include "Utils.h"
 #include "ActTable.h"
+#include "DPMDisplayParameter.h"
+#include "TimerDef.h"
 //#include "DealThread.h"
 //#include <deque>
 //using namespace std;
@@ -41,12 +43,10 @@ public:
 	CString m_actListRootFolder;
 	CString m_calverListRootFolder;
 
-	long m_len;
-	long m_bodyLen;
-	long m_msDataType;
-	long m_msDataLen;
-	BUF_TYPE* m_rbuf;
-	BUF_TYPE m_headerbuf[SOCK_RECEIVE_HEADER_LEN+1];
+	ULONG m_bodyLen;
+	ULONG m_msDataLen;
+	ULONG m_rbuflen;
+	BUF_TYPE *m_rbuf;
 
 	MasterDataQueue<CMasterData>* m_pmasterDataQueue;
 	//MasterDataQueue<CMasterData> mq;

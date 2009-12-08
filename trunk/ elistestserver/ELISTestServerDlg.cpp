@@ -6,6 +6,7 @@
 #include "ELISTestServerDlg.h"
 
 
+
 //#include "stdio.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,6 +76,8 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	this->m_psConnectSocket=NULL;
 	m_rStasus=SOCK_RECEIVE_HEADER;
 	m_pmasterDataQueue=new MasterDataQueue<CMasterData>;
+	m_rbuf = new BUF_TYPE[DEFAULT_BUF_LEN];
+	m_rbuflen = DEFAULT_BUF_LEN;
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -101,7 +104,9 @@ CELISTestServerDlg::~CELISTestServerDlg()
 		//AfxMessageBox(_T(t), MB_YESNO, 0);
 	}
 	
-
+	if(m_rbuf != NULL) {
+		delete [] m_rbuf;
+	}
 }
 
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
@@ -127,10 +132,8 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_ACT_FOLDER, OnButtonActFolder)
 	ON_BN_CLICKED(IDC_BUTTON_SERVER_PORT, OnButtonServerPort)
 	ON_BN_CLICKED(IDC_BUTTON_CALVER_FOLDER, OnButtonCalverFolder)
+	ON_WM_TIMER()
 	//}}AFX_MSG_MAP
-
-	
-
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -253,11 +256,10 @@ void CELISTestServerDlg::OnAccept()
 	if(!m_sListenSocket.Accept(*m_psConnectSocket)){
 		char t[50];
 		int e = GetLastError();
-		sprintf(t, "ServerSocket Accepted Error Code:%d", e);
+		sprintf_s(t, "ServerSocket Accepted Error Code:%d", e);
 		AfxMessageBox(_T(t), MB_YESNO, 0);
 		m_sListenSocket.Close();
-	}
-	else{
+	} else {
 		CString clientIP;
 		UINT clientPort;
 
@@ -265,107 +267,74 @@ void CELISTestServerDlg::OnAccept()
 		
 		CString strClientPort;
 		strClientPort.Format("%d",clientPort);
-		
-		
-		GetDlgItem(IDC_STATIC_CLIENT_IP_PORT_VALUE)->SetWindowText(_T(clientIP+":"+strClientPort));
-	}
-	
-	/*
-	else{
-		int d=1000;
-		char c[4];
-		itoa(d,c,10);
-		m_psConnectSocket->Send(c,sizeof(d));
-	}
-	*/
 
-		
+		GetDlgItem(IDC_STATIC_CLIENT_IP_PORT_VALUE)->SetWindowText(_T(clientIP+":"+strClientPort));
+
+		//Accept成功，启动DepthTimer进行定期传输
+		//深度数据
+		StopDepthTimer();
+		CreateDepthTimer(DEPTH_TIMER_INTERVAL);
+	}
 }
 void CELISTestServerDlg::OnReceive()
 {
-	//MasterData_Header* p_msDataHeader;
-	//char* buf=NULL;
-	m_rbuf=NULL;
-	//long l_buf[2];
-	
-	char t[200];
+	//char t[200];
 	//AfxMessageBox(_T("CAcceptedSocket OnReceive"), MB_YESNO, 0);
 	//sprintf(t, "%ld", sizeof(this->m_msDataHeader));
-	//AfxMessageBox(_T(t), MB_YESNO, 0);
+	long *t;
+	ULONG len;
 	
 	if (m_rStasus == SOCK_RECEIVE_HEADER) {
-		BUF_TYPE header_buf[sizeof(long)];
-		//m_rbuf=new BUF_TYPE[SOCK_RECEIVE_HEADER_LEN];
-		memset(header_buf,0,sizeof(long));
-		memset(m_headerbuf,0,SOCK_RECEIVE_HEADER_LEN);
-		this->m_len = this->m_psConnectSocket->Receive(m_headerbuf, SOCK_RECEIVE_HEADER_LEN, 0);
+		len = m_psConnectSocket->Receive(m_rbuf, SOCK_RECEIVE_HEADER_LEN, 0);
 		//解析header，确定body长度
-		if(this->m_len != SOCKET_ERROR && this->m_len >0) {
-			//memcpy(m_headerbuf,m_rbuf,SOCK_RECEIVE_HEADER_LEN);
-			memcpy(header_buf,m_headerbuf,sizeof(long));
-			m_msDataType=*((long*)header_buf);
-			memcpy(header_buf,m_headerbuf+sizeof(long),sizeof(long));
-			m_msDataLen=*((long*)header_buf);
-			
+		if(len != SOCKET_ERROR && len == SOCK_RECEIVE_HEADER_LEN) {
+			t = (long*)m_rbuf;			
+			m_msDataLen = t[1];
 			m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
-			//sprintf(t, "CAcceptedSocket:CMD:%ld,len:%ld,bodyLen:%ld", m_msDataType, m_msDataLen, m_bodyLen);
 			
-			//AfxMessageBox(_T(t), MB_YESNO, 0);
+			if(m_bodyLen <= 0) {
+				AfxMessageBox(_T("OnReceive Strange Err: message body have 0 length"));
+			} else {
+				m_rStasus = SOCK_RECEIVE_BODY;
+			}
+		} else {
+			AfxMessageBox(_T("OnReceive receive header error"));
 		}
-		m_rStasus = SOCK_RECEIVE_BODY;
-		
-
 	} else if(m_rStasus == SOCK_RECEIVE_BODY) {
-		//buf=new char[m_bodyLen];
-		//sprintf(t, "%ld", m_bodyLen);
-		//AfxMessageBox(_T(t), MB_YESNO, 0);
-		m_rbuf=new BUF_TYPE[m_msDataLen+1];//要多出1个byte的余量,否则m_rbuf长度会自动增长
-		memset(m_rbuf,0,m_msDataLen+1);
-		memcpy(m_rbuf,m_headerbuf,SOCK_RECEIVE_HEADER_LEN);
-		m_len = m_psConnectSocket->Receive(m_rbuf+SOCK_RECEIVE_HEADER_LEN, m_bodyLen, 0);
+		if((m_bodyLen + SOCK_RECEIVE_HEADER_LEN) > m_rbuflen) {
+			BUF_TYPE *bft;
+			bft = new BUF_TYPE[m_bodyLen + SOCK_RECEIVE_HEADER_LEN];
+
+			ASSERT(bft != NULL);
+			
+			memcpy(bft, m_rbuf, SOCK_RECEIVE_HEADER_LEN);
+			delete []m_rbuf;
+			m_rbuf = bft;
+			m_rbuflen = m_bodyLen + SOCK_RECEIVE_HEADER_LEN;
+		}
+		len = m_psConnectSocket->Receive(m_rbuf+SOCK_RECEIVE_HEADER_LEN, m_bodyLen, 0);
 		
-		
-		if(m_len != SOCKET_ERROR && m_len > SOCK_RECEIVE_HEADER_LEN){
+		if(len != SOCKET_ERROR && len > 0) {
 			//把接收到的rbuf填入ReceiverQueue中
-			CMasterData* p_msData=new CMasterData(m_rbuf, SOCK_RECEIVE_HEADER_LEN+m_len);
-			//p_msData->msDataHeader.type=m_msDataType;
-			//p_msData->msDataHeader.len=m_msDataLen;
-			//md.buf=new char[m_bodyLen];
-			//memcpy(md.buf,m_rbuf,m_bodyLen);
-			//md.buflen=m_bodyLen;
-			//p_msData->setBuf(m_rbuf);
-			//p_msData->setBufLen(m_len);
-			
-			//sprintf(t, "%s", m_rbuf);
-			//AfxMessageBox(_T(t), MB_YESNO, 0);
-			//sprintf(t, "%s", md.buf.GetBuffer(md.buf.GetLength()));
-			//AfxMessageBox(_T(t), MB_YESNO, 0);
-			//sprintf(t, "%s", p_msData->buf);
-			//AfxMessageBox(_T(t), MB_YESNO, 0);
-			//sprintf(t, "%ld", p_msData->buflen);
-			//AfxMessageBox(_T(t), MB_YESNO, 0);
-
+			CMasterData* p_msData=new CMasterData();
+			p_msData->setData(m_rbuf, len + SOCK_RECEIVE_HEADER_LEN);
 			m_pmasterDataQueue->enQueue(p_msData);
-			//POSITION p=m_pmasterDataQueue->Dataqueue.GetHeadPosition();
-			
-			//sprintf_s(t, "%s", m_pmasterDataQueue->dataQueue.GetHead()->buf);
-			//AfxMessageBox(_T(t), MB_YESNO, 0);
-
-			delete m_rbuf;
-			delete p_msData;
-			
+		} else {
+			if(len <= 0) {
+				AfxMessageBox(_T("OnReceive body length received <=0"));
+			} else {
+				AfxMessageBox(_T("OnReceive Socket error"));
+			}
 		}
 		m_rStasus = SOCK_RECEIVE_HEADER;
+	} else {
+		AfxMessageBox(_T("OnReceive wrong status"));
+		m_rStasus = SOCK_RECEIVE_HEADER;
 	}
-	/*if(buf){
-		delete buf;
-	}*/
-	/*
-	if(m_rbuf){
-		delete m_rbuf;
-	}
-	*/
-
+	
+	//CAsyncSocket的使用好像要求这个地方要再次回调原
+	//Socket 的OnReceive，要看一下！！！！！！！！！！
+	//m_psConnectSocket->OnReceive(nErrorCode);
 }
 
 void CELISTestServerDlg::OnButtonOk() 
@@ -429,16 +398,35 @@ void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
 		break;
 	case DEPTH_TIMER:
 		DepthTimerHandler();
+	break;
 	default:
 		AfxMessageBox(_T("OnTimer can not find appropriate timer type"));
 		break;
 	}
 }
 void CELISTestServerDlg::LogDataTimerHandler() {
-	AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
+	//AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
 }
 void CELISTestServerDlg::DepthTimerHandler() {
-	AfxMessageBox(_T("DepthTimer triggered, implement me!!!"));
+	//AfxMessageBox(_T("DepthTimer triggered, implement me!!!"));
+	CDPMDisplayParameter dpmp;
+	CFrontData *fd = new CFrontData();
+
+	//下面这些参数应该从根据实际模拟的进程计算出来
+	//填写
+	dpmp.ddp.corr_Depth = 10;
+	dpmp.ddp.true_Depth = 11;
+	dpmp.ddp.speed = 1;
+	dpmp.ddp.totalTension = 5;
+	dpmp.ddp.differTension = 2;
+	dpmp.ddp.time = 1;
+	dpmp.ddp.nreserved2 = 0;
+
+	//构造这个数据后将其放入SendQueue即可
+	//MessageSender线程会自动从队列中取出
+	//FrontData数据并发送之
+	fd->setData(dpmp);
+	fq.enQueue(fd);
 }
 
 void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206

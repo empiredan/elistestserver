@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "commands.h"
+
 class CDPMDisplayParameter
 {
 public:
@@ -17,9 +19,22 @@ public:
 		int   nreserved2;			//±£¡Ù
 	} DPM_DISPLAY_PARA;
 	DPM_DISPLAY_PARA ddp;
+	ULONG cmdType;
+	ULONG cmdLen;
+	ULONG bodyLen;
 public:
 	CDPMDisplayParameter(void);
 	virtual ~CDPMDisplayParameter(void);
+public:
+	ULONG getCmdLength() {
+		return cmdLen;
+	}
+	ULONG getCmdType() {
+		return cmdType;
+	}
+	ULONG getBodyLength() {
+		return bodyLen;
+	}
 };
 
 #endif

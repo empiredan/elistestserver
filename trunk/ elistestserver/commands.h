@@ -1,6 +1,12 @@
 //网络传输类型定义
 #ifndef __COMMANDS_H__
 #define __COMMANDS_H__
+
+#define DEFAULT_BUF_LEN 50000
+typedef BYTE BUF_TYPE; 
+#define SOCK_RECEIVE_HEADER_LEN (2*sizeof(ULONG))
+
+
 /*!  command type*/
 /*! type mask */
 #define NET_CMD_MASK								( (ULONG)0xff00 )
