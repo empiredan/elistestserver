@@ -53,7 +53,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 				handler->NetCmd_InitServiceTable(d);
 			break;
 			case NET_CMDTYPE_INIT_CONFIG_PARAMETER:
-				//
+				handler->NetCmd_InitConfigParameter(d);
 			break;
 			case NET_CMDTYPE_CTRL_DEACTIVATE:
 				handler->NetCmd_CtrlActDeactivate(d);
@@ -62,10 +62,13 @@ DWORD CCommandHandler::handle(LPVOID param) {
 				handler->NetCmd_CtrlWorkState(d);
 			break;
 			case NET_CMDTYPE_CTRL_STANDBYTIME_INTERVAL:
+				handler->NetCmd_CtrlStandbytimeInterval(d);
 			break;
 			case NET_CMDTYPE_CTRL_RECSTOP:
+				handler->NetCmd_CtrlRecstop(d);
 			break;
 			case NET_CMDTYPE_CTRL_ACTSWITCH:
+				handler->NetCmd_CtrlACTSwitch(d);
 			break;
 			//以下为刻度命令类型
 			case NET_CMDTYPE_CALIB_PARA:
@@ -79,32 +82,75 @@ DWORD CCommandHandler::handle(LPVOID param) {
 			break;
 			//单次控制命令
 			case NET_CMDTYPE_SNGL_CTLCMD:
+				handler->NetCmd_SnglCtl(d);
+			break;
+			//设置深度中断为内部或外部,
+			//命令长度：4个字节，命令：0为内部，1为外部中断
+			case NET_CMDTYPE_DEPTH_INTERNAL:
+				handler->NetCmd_DepthInternal(d);
+			break;
+			//内部方式下，设置方向,
+			//命令长度：4个字节，命令： 0为上，1为下
+			case NET_CMDTYPE_DEPTH_DIRECTION:
+				handler->NetCmd_DepthDirection(d);
+			break;
+			//在内部方式下，设置速度
+			//命令长度：4个字节，命令：速度值
+			case NET_CMDTYPE_DEPTH_SPEED:
+				handler->NetCmd_DepthSpeed(d);
+			break;
+			//设置真实深度
+			//命令长度：4个字节，命令：深度值，DU数
+			case NET_CMDTYPE_DEPTH_TRUEDEPTH:
+				handler->NetCmd_TrueDepth(d);
+			break;
+			//设置深度
+			//命令长度：4个字节，命令：深度值，DU数
+			case NET_CMDTYPE_DEPTH_CORRECTEDDEPTH:
+				handler->NetCmd_CorrectedDepth(d);
+			break;
+			//手动校正（加减）深度
+			//命令长度：8个字节，前4 byte为加减命令：0为减，1为加，
+			//后4 byte为公英制命令，0为英制， 1为公制
+			case NET_CMDTYPE_DEPTH_MANUALDEPTHCORR:
+				handler->NetCmd_ManualDepthCorrection(d);
+			break;
+			//自动校正（加减）深度
+			//命令长度：8个字节，前4 byte为控制命令：0为停止校正，1为开始校正，
+			//后4 byte为校正间隔
+			case NET_CMDTYPE_DEPTH_AUTODEPTHCORR:
+				handler->NetCmd_AutoDepthCorrection(d);
+			break;
+			//深度板锁定
+			//命令长度：4个字节，命令：1
+			case NET_CMDTYPE_DEPTH_LOCK:
+				handler->NetCmd_DepthLock(d);
+			break;
+			//深度板解锁
+			//命令长度：4个字节，命令：0
+			case NET_CMDTYPE_DEPTH_UNLOCK:
+				handler->NetCmd_DepthUnlock(d);
+			break;
+			//通知发送张力因数
+			//命令长度：4个字节，命令：1
+			//返回：4个字节，高16位maxTension，低16位offsetTension，
+			//返回类型：NET_RETURN_DEPTHPANEL_READTENSIONFACTOR
+			case NET_CMDTYPE_DEPTH_TENSIONFACTOR:
+				handler->NetCmd_DepthTensionFactor(d);
+			break;
+			//通知发送张力角度
+			//命令长度：4个字节，命令：1
+			//返回：4个字节，张力角度，
+			//返回类型：NET_RETURN_DEPTHPANEL_READTENSIONANGLE
+			case NET_CMDTYPE_DEPTH_TENSIONANGLE:
+				handler->NetCmd_DepthTensionAngle(d);
+			break;
+			//通知发送CHT
+			//命令长度：4个字节，命令：CHT值
+			case NET_CMDTYPE_DEPTH_CHT:
+				handler->NetCmd_DepthCHT(d);
 			break;
 			/*
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
-			case :
-			break;
 			case :
 			break;
 			case :
@@ -193,13 +239,13 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 
 
 void CCommandHandler::NetCmd_CalibPara(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -209,13 +255,13 @@ void CCommandHandler::NetCmd_CalibPara(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CalibPara"));
 }
 void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -225,13 +271,13 @@ void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CalibStart"));
 }
 void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -241,13 +287,13 @@ void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CalibStop"));
 }
 void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -257,13 +303,13 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlWorkState"));
 }
 void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -273,13 +319,13 @@ void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_SetStandbyTimeInterval"));
 }
 void CCommandHandler::NetCmd_CtrlRecStop(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -289,13 +335,13 @@ void CCommandHandler::NetCmd_CtrlRecStop(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlRecStop"));
 }
 void CCommandHandler::NetCmd_CtrlActSwitch(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -305,13 +351,13 @@ void CCommandHandler::NetCmd_CtrlActSwitch(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlActSwitch"));
 }
 void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
-	unsigned char *bodyBuf;
-	long bodyLen;
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
 
-	long *head;
-	long cmdType, totalLen;
+	ULONG *head;
+	ULONG cmdType, totalLen;
 
-	head = (long*)d->buf;
+	head = (ULONG*)d->buf;
 	cmdType = d->buf[0];
 	totalLen = d->buf[1];
 
@@ -319,4 +365,57 @@ void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
 	bodyBuf = d->buf + headSize;
 
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlActDeactivate"));
+}
+
+
+void CCommandHandler::NetCmd_InitConfigParameter(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_InitConfigParameter"));
+}
+void CCommandHandler::NetCmd_CtrlStandbytimeInterval(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlStandbytimeInterval"));
+}
+void CCommandHandler::NetCmd_CtrlRecstop(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlRecstop"));
+}
+void CCommandHandler::NetCmd_CtrlACTSwitch(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlACTSwitch"));
+}
+void CCommandHandler::NetCmd_SnglCtl(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_SnglCtl"));
+}
+void CCommandHandler::NetCmd_DepthInternal(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthInternal"));
+}
+void CCommandHandler::NetCmd_DepthDirection(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthDirection"));
+}
+void CCommandHandler::NetCmd_DepthSpeed(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthSpeed"));
+}
+void CCommandHandler::NetCmd_TrueDepth(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_TrueDepth"));
+}
+void CCommandHandler::NetCmd_CorrectedDepth(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CorrectedDepth"));
+}
+void CCommandHandler::NetCmd_ManualDepthCorrection(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_ManualDepthCorrection"));
+}
+void CCommandHandler::NetCmd_AutoDepthCorrection(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_AutoDepthCorrection"));
+}
+void CCommandHandler::NetCmd_DepthLock(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthLock"));
+}
+void CCommandHandler::NetCmd_DepthUnlock(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthUnlock"));
+}
+void CCommandHandler::NetCmd_DepthTensionFactor(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthTensionFactor"));
+}
+void CCommandHandler::NetCmd_DepthTensionAngle(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthTensionAngle"));
+}
+void CCommandHandler::NetCmd_DepthCHT(CMasterData *d) {
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthCHT"));
 }
