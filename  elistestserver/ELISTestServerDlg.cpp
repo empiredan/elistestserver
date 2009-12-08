@@ -6,7 +6,6 @@
 #include "ELISTestServerDlg.h"
 
 
-
 //#include "stdio.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -240,9 +239,7 @@ HCURSOR CELISTestServerDlg::OnQueryDragIcon()
 
 void CELISTestServerDlg::OnClose()
 {
-	
 	//m_psConnectSocket->Close();		
-
 }
 
 void CELISTestServerDlg::OnAccept()
@@ -281,14 +278,14 @@ void CELISTestServerDlg::OnReceive()
 	//char t[200];
 	//AfxMessageBox(_T("CAcceptedSocket OnReceive"), MB_YESNO, 0);
 	//sprintf(t, "%ld", sizeof(this->m_msDataHeader));
-	long *t;
+	ULONG *t;
 	ULONG len;
 	
 	if (m_rStasus == SOCK_RECEIVE_HEADER) {
 		len = m_psConnectSocket->Receive(m_rbuf, SOCK_RECEIVE_HEADER_LEN, 0);
 		//解析header，确定body长度
 		if(len != SOCKET_ERROR && len == SOCK_RECEIVE_HEADER_LEN) {
-			t = (long*)m_rbuf;			
+			t = (ULONG*)m_rbuf;			
 			m_msDataLen = t[1];
 			m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
 			
