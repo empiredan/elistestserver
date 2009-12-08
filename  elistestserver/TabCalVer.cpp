@@ -43,6 +43,8 @@ void TabCalVer::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(TabCalVer, CDialog)
 	//{{AFX_MSG_MAP(TabCalVer)
 	ON_NOTIFY(NM_DBLCLK, IDC_LIST_CALVER, OnDblclkListCalver)
+	ON_WM_HSCROLL()
+	ON_WM_VSCROLL()
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -65,7 +67,7 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 		if (calverListRootFolder=="")
 		{
 			char t[50];
-			sprintf_s(t, "%s", "Cal/Ver数据文件目录不能为空!");
+			sprintf(t, "%s", "Cal/Ver数据文件目录不能为空!");
 			AfxMessageBox(_T(t));
 		}else{
 
@@ -83,7 +85,7 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 				}
 			}else{
 				char t[50];
-				sprintf_s(t, "%s", "此目录已不存在!");
+				sprintf(t, "%s", "此目录已不存在!");
 				AfxMessageBox(_T(t));
 			}
 		}
@@ -91,4 +93,115 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 
 	}
 	*pResult = 0;
+}
+
+void TabCalVer::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+{
+	// TODO: Add your message handler code here and/or call default
+	SCROLLINFO hScrollInfo;
+	GetScrollInfo(SB_HORZ, &hScrollInfo);
+	int oPos = hScrollInfo.nPos;
+	int min = hScrollInfo.nMin;
+	int max = hScrollInfo.nMax;
+	int thumbwidth = hScrollInfo.nPage;
+	
+	switch(nSBCode){
+	case SB_THUMBTRACK:
+		ScrollWindow(-(nPos-oPos),0);//滚动条向右移动时,dlg窗口其实是在向左移动.pos表示原始位置,nPos表示新位置
+		//RedrawWindow();
+		SetScrollPos(SB_HORZ,nPos);
+		break;
+	case SB_LINELEFT://滚动条向左移动
+		if (oPos!=0)
+		{
+			ScrollWindow(1,0);//dlg窗口向右移动
+			SetScrollPos(SB_HORZ,oPos-1);//滚动条向左移动
+		}
+		break;
+	case SB_LINERIGHT://滚动条向右移动
+		if (oPos+thumbwidth<=max)
+		{
+			ScrollWindow(-1,0);//dlg窗口向左移动
+			SetScrollPos(SB_HORZ,oPos+1);//滚动条向右移动
+		}
+		break;
+	case SB_PAGELEFT:
+		if (oPos>=thumbwidth)
+		{
+			ScrollWindow(thumbwidth,0);//dlg窗口向右移动
+			SetScrollPos(SB_HORZ,oPos-thumbwidth);//滚动条向左移动
+		}else{
+			ScrollWindow(oPos,0);//dlg窗口向右移动
+			SetScrollPos(SB_HORZ,0);//滚动条移到最左端
+		}
+		break;
+	case SB_PAGERIGHT:
+		if (oPos+thumbwidth<=max-thumbwidth)
+		{
+			ScrollWindow(-thumbwidth,0);//dlg窗口向左移动
+			SetScrollPos(SB_HORZ,oPos+thumbwidth);//滚动条向右移动
+		}else{
+			ScrollWindow(-(max-(oPos+thumbwidth)),0);//dlg窗口向左移动
+			SetScrollPos(SB_HORZ,max-thumbwidth);//滚动条移到最右端
+		}
+		break;
+	}
+	CDialog::OnHScroll(nSBCode, nPos, pScrollBar);
+}
+
+void TabCalVer::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
+{
+	// TODO: Add your message handler code here and/or call default
+	
+	SCROLLINFO vScrollInfo;
+	GetScrollInfo(SB_VERT, &vScrollInfo);
+	int oPos = vScrollInfo.nPos;
+	int min = vScrollInfo.nMin;
+	int max = vScrollInfo.nMax;
+	int thumbwidth = vScrollInfo.nPage;
+	
+	switch(nSBCode){
+	case SB_THUMBTRACK:
+		ScrollWindow(0,-(nPos-oPos));//滚动条向右移动时,dlg窗口其实是在向左移动.pos表示原始位置,nPos表示新位置
+		//RedrawWindow();
+		SetScrollPos(SB_VERT,nPos);
+		break;
+	case SB_LINEUP://滚动条向左移动
+		if (oPos!=0)
+		{
+			ScrollWindow(0,1);//dlg窗口向右移动
+			//RedrawWindow();
+			SetScrollPos(SB_VERT,oPos-1);//滚动条向左移动
+		}
+		break;
+	case SB_LINEDOWN://滚动条向右移动
+		if (oPos+thumbwidth<=max)
+		{
+			ScrollWindow(0,-1);//dlg窗口向左移动
+			SetScrollPos(SB_VERT,oPos+1);//滚动条向右移动
+		}
+		break;
+	case SB_PAGEUP:
+		if (oPos>=thumbwidth)
+		{
+			ScrollWindow(0,thumbwidth);//dlg窗口向右移动
+			SetScrollPos(SB_VERT,oPos-thumbwidth);//滚动条向左移动
+		}else{
+			ScrollWindow(0,oPos);//dlg窗口向右移动
+			SetScrollPos(SB_VERT,0);//滚动条移到最左端
+		}
+		break;
+	case SB_PAGEDOWN:
+		if (oPos+thumbwidth<=max-thumbwidth)
+		{
+			ScrollWindow(0,-thumbwidth);//dlg窗口向左移动
+			SetScrollPos(SB_VERT,oPos+thumbwidth);//滚动条向右移动
+		}else{
+			ScrollWindow(0,-(max-(oPos+thumbwidth)));//dlg窗口向左移动
+			SetScrollPos(SB_VERT,max-thumbwidth);//滚动条移到最右端
+		}
+		break;
+	}
+
+	CDialog::OnVScroll(nSBCode, nPos, pScrollBar);
 }

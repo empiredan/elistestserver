@@ -55,7 +55,12 @@ void MyTabCtrl::Init()
 	
 	//点击一个ITEM就可使CListCtrl一整行被选择
 	this->m_dlgAct->m_listctrlAct.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	//this->m_dlgAct->m_listctrlAct.EnsureVisible(6,FALSE);
+	
 	this->m_dlgCalVer->m_listctrlCalVer.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	//this->m_dlgCalVer->m_listctrlCalVer.EnsureVisible(8,FALSE);
+	
+	
 
 	//The First Tab 
 	LVCOLUMN lvcol;
