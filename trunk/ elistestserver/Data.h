@@ -2,7 +2,7 @@
 #define DATA_H
 
 #include "commands.h"
-#include "DPMDisplayParameter.h"
+//#include "DPMDisplayParameter.h"
 
 class CData {
 public:
@@ -31,7 +31,6 @@ public:
 };
 
 
-
 //主控机上发给前端机的数据
 class CMasterData:public CData {
 public:
@@ -46,8 +45,21 @@ public:
 	CFrontData();
 	CFrontData(BUF_TYPE* bf, ULONG len);
 	virtual ~CFrontData();
+
 public:
-	virtual void setData(CDPMDisplayParameter &dp);
+	ULONG cmdType;
+	ULONG cmdLen;
+	ULONG bodyLen;
+public:
+	ULONG getCmdLength() {
+		return cmdLen;
+	}
+	ULONG getCmdType() {
+		return cmdType;
+	}
+	ULONG getBodyLength() {
+		return bodyLen;
+	}
 };
 
 

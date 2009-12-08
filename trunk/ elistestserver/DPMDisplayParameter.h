@@ -4,8 +4,9 @@
 #pragma once
 
 #include "commands.h"
+#include "Data.h"
 
-class CDPMDisplayParameter
+class CDPMDisplayParameter:public CFrontData
 {
 public:
 	typedef struct {
@@ -19,22 +20,12 @@ public:
 		int   nreserved2;			//±£¡Ù
 	} DPM_DISPLAY_PARA;
 	DPM_DISPLAY_PARA ddp;
-	ULONG cmdType;
-	ULONG cmdLen;
-	ULONG bodyLen;
 public:
 	CDPMDisplayParameter(void);
+	CDPMDisplayParameter(BUF_TYPE* bf, ULONG len);
 	virtual ~CDPMDisplayParameter(void);
 public:
-	ULONG getCmdLength() {
-		return cmdLen;
-	}
-	ULONG getCmdType() {
-		return cmdType;
-	}
-	ULONG getBodyLength() {
-		return bodyLen;
-	}
+	virtual void setData(DPM_DISPLAY_PARA &dp);
 };
 
 #endif
