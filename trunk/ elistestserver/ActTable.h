@@ -25,8 +25,8 @@ public:
 class CActTable
 {
 public:
-	long actNum;
-	long nDepthInterruptMode;
+	ULONG actNum;
+	ULONG nDepthInterruptMode;
 	RTCSubset *pSaList;
 public:
 	CActTable::CActTable(void);
@@ -34,7 +34,7 @@ public:
 public:
 	void MaximumCommonSampleRate(int dpthandtime[]);
 public:
-	static CActTable* AllocateActTable(long actNum, unsigned char *buf, int len);
+	static CActTable* AllocateActTable(ULONG actNum, unsigned char *buf, int len);
 	static CActTable* AllocateActTable(unsigned char  *buf, int len);
 };
 

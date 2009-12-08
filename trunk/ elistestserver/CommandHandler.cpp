@@ -11,7 +11,7 @@
 CCommandHandler::CCommandHandler() {
 	this->dlg = dlg;
 	finish = FALSE;
-	headSize = 2*sizeof(long);
+	headSize = SOCK_RECEIVE_HEADER_LEN;
 }
 CCommandHandler::~CCommandHandler(void)
 {
@@ -30,7 +30,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 	CCommandHandler *handler = (CCommandHandler *)param;
 	CMasterData *d;
 	CDataQueue<CMasterData> *q;
-	long cmdtype;
+	ULONG cmdtype;
 	
 	//
 	char t[512];
@@ -197,7 +197,11 @@ DWORD CCommandHandler::handle(LPVOID param) {
 			break;
 			*/
 			default:
-				AfxMessageBox(_T("CCommandHandler::handle command type not defined"));
+				char cmdtp[500];
+				ULONG *cmdtpt;
+				cmdtpt = (ULONG*)d->buf;
+				sprintf(cmdtp, "CCommandHandler::handle, type%lx not defined", cmdtpt[1]);
+				AfxMessageBox(_T(cmdtp));
 			break;
 		}
 	}
@@ -218,13 +222,10 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	dlg->SetACTTable(tb);
 	tb->MaximumCommonSampleRate(rate);
 
-	
-	
 	//最后所有的解析和设置都好了之后
 	//用新计算得到的logTimerInterval值重新启动log timer
 	dlg->StopLogTimer();
 	dlg->CreateLogTimer(logTimerInterval);
-	
 	
 	//别忘了在这里要delete CMasterData类型的指针d。
 	//因为原则上，这里把这个收到的前端机发送过来的数据
@@ -236,7 +237,6 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	//应该把它们通过对应的数据结构拷贝出去。
 	delete d;
 }
-
 
 void CCommandHandler::NetCmd_CalibPara(CMasterData *d) {
 	BUF_TYPE *bodyBuf;

@@ -14,12 +14,12 @@ public:
 	//确保buf的总长度够用
 	//调完这个函数buflen的大小应>=sizeNeeded
 	virtual void assureCapacity(ULONG sizeNeeded);
-	//设置buf的前两个long，
+	//设置buf的前两个ULONG，
 	//设置完这个命令头后，pBuf会前进2×sizeof(ULONG)
 	//contentlen也会相应增加为2×sizeof(ULONG)
 	virtual void setHeader(ULONG cmdType, ULONG cmdLen);
 	//void setBuf(BUF_TYPE* b);
-	//void setBufLen(long bl);
+	//void setBufLen(ULONG bl);
 public:
 	//pBuf作为临时指针，指向buf中的第一个空位置
 	BUF_TYPE *buf, *pBuf;
