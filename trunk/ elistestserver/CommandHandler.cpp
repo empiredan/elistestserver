@@ -52,7 +52,104 @@ DWORD CCommandHandler::handle(LPVOID param) {
 				//call NetCmd_InitServiceTable(*cmdBuffer)
 				handler->NetCmd_InitServiceTable(d);
 			break;
-			
+			case NET_CMDTYPE_INIT_CONFIG_PARAMETER:
+				//
+			break;
+			case NET_CMDTYPE_CTRL_DEACTIVATE:
+				handler->NetCmd_CtrlActDeactivate(d);
+			break;
+			case NET_CMDTYPE_CTRL_WORK_STATE:
+				handler->NetCmd_CtrlWorkState(d);
+			break;
+			case NET_CMDTYPE_CTRL_STANDBYTIME_INTERVAL:
+			break;
+			case NET_CMDTYPE_CTRL_RECSTOP:
+			break;
+			case NET_CMDTYPE_CTRL_ACTSWITCH:
+			break;
+			//以下为刻度命令类型
+			case NET_CMDTYPE_CALIB_PARA:
+				handler->NetCmd_CalibPara(d);
+			break;
+			case NET_CMDTYPE_CALIB_START:
+				handler->NetCmd_CalibStart(d);
+			break;
+			case NET_CMDTYPE_CALIB_STOP:
+				handler->NetCmd_CalibStop(d);
+			break;
+			//单次控制命令
+			case NET_CMDTYPE_SNGL_CTLCMD:
+			break;
+			/*
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			case :
+			break;
+			*/
 			default:
 				AfxMessageBox(_T("CCommandHandler::handle command type not defined"));
 			break;
