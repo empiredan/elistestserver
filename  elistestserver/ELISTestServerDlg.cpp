@@ -253,7 +253,7 @@ void CELISTestServerDlg::OnAccept()
 	if(!m_sListenSocket.Accept(*m_psConnectSocket)){
 		char t[50];
 		int e = GetLastError();
-		sprintf_s(t, "ServerSocket Accepted Error Code:%d", e);
+		sprintf(t, "ServerSocket Accepted Error Code:%d", e);
 		AfxMessageBox(_T(t), MB_YESNO, 0);
 		m_sListenSocket.Close();
 	} else {
@@ -298,6 +298,13 @@ void CELISTestServerDlg::OnReceive()
 			AfxMessageBox(_T("OnReceive receive header error"));
 		}
 	} else if(m_rStasus == SOCK_RECEIVE_BODY) {
+/*<<<<<<< .mine
+		
+		m_rbuf=new BUF_TYPE[m_msDataLen+1];//要多出1个byte的余量,否则m_rbuf长度会自动增长
+		memset(m_rbuf,0,m_msDataLen+1);
+		memcpy(m_rbuf,m_headerbuf,SOCK_RECEIVE_HEADER_LEN);
+		m_len = m_psConnectSocket->Receive(m_rbuf+SOCK_RECEIVE_HEADER_LEN, m_bodyLen, 0);
+=======*/
 		if((m_bodyLen + SOCK_RECEIVE_HEADER_LEN) > m_rbuflen) {
 			BUF_TYPE *bft;
 			bft = new BUF_TYPE[m_bodyLen + SOCK_RECEIVE_HEADER_LEN];
@@ -310,28 +317,53 @@ void CELISTestServerDlg::OnReceive()
 			m_rbuflen = m_bodyLen + SOCK_RECEIVE_HEADER_LEN;
 		}
 		len = m_psConnectSocket->Receive(m_rbuf+SOCK_RECEIVE_HEADER_LEN, m_bodyLen, 0);
+//>>>>>>> .r15
 		
 		if(len != SOCKET_ERROR && len > 0) {
 			//把接收到的rbuf填入ReceiverQueue中
+/*<<<<<<< .mine
+			CMasterData* p_msData=new CMasterData(m_rbuf, SOCK_RECEIVE_HEADER_LEN+m_len);
+=======*/
 			CMasterData* p_msData=new CMasterData();
 			p_msData->setData(m_rbuf, len + SOCK_RECEIVE_HEADER_LEN);
+//>>>>>>> .r15
 			m_pmasterDataQueue->enQueue(p_msData);
+/*<<<<<<< .mine
+			
+			if (p_msData)
+			{
+				delete p_msData;
+			}
+			
+			
+		}
+
+		if (m_rbuf)
+		{
+			delete m_rbuf;
+=======*/
 		} else {
 			if(len <= 0) {
 				AfxMessageBox(_T("OnReceive body length received <=0"));
 			} else {
 				AfxMessageBox(_T("OnReceive Socket error"));
 			}
+//>>>>>>> .r15
 		}
+		
 		m_rStasus = SOCK_RECEIVE_HEADER;
 	} else {
 		AfxMessageBox(_T("OnReceive wrong status"));
 		m_rStasus = SOCK_RECEIVE_HEADER;
 	}
+/*<<<<<<< .mine
+
+=======*/
 	
 	//CAsyncSocket的使用好像要求这个地方要再次回调原
 	//Socket 的OnReceive，要看一下！！！！！！！！！！
 	//m_psConnectSocket->OnReceive(nErrorCode);
+//>>>>>>> .r15
 }
 
 void CELISTestServerDlg::OnButtonOk() 

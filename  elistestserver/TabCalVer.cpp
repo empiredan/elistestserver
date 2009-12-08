@@ -81,7 +81,7 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 				if (openActDataFileDlg.DoModal()==IDOK)
 				{
 					strFilePath=openActDataFileDlg.GetPathName();
-					m_listctrlCalVer.SetItemText(rowNo, 6, strFilePath);
+					m_listctrlCalVer.SetItemText(rowNo, 8, strFilePath);
 				}
 			}else{
 				char t[50];
