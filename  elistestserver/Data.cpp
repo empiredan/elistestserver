@@ -10,13 +10,15 @@ CData::CData() {
 }
 
 CData::CData(BUF_TYPE* bf, ULONG len) {
-	this->buf = new BUF_TYPE[len];
-	buflen = len;
-	if(buf == NULL) {
-		AfxMessageBox("Creating Data buffer not allocated");
-	} else {
-		memcpy(this->buf, bf, len);
+	this->buf = NULL;
+	this->pBuf = NULL;
+	contentlen = 0;
+	buflen = 0;
+
+	if(len < DEFAULT_BUF_LEN) {
+		assureCapacity(DEFAULT_BUF_LEN);
 	}
+	setData(bf, len);
 }
 
 CData::~CData() {
@@ -41,6 +43,7 @@ void CData::assureCapacity(ULONG sizeNeeded) {
 		} else {//这不应该出现,contentlen必须已经是0
 			contentlen = 0;
 		}
+
 		this->buf = buft;
 		this->pBuf = (this->buf + contentlen);
 	}
@@ -76,17 +79,10 @@ CMasterData::~CMasterData() {
 	//CData::~CData();
 }
 
-
-
 //CFrontData----------------
 CFrontData::CFrontData():CData() {
 }
 CFrontData::CFrontData(BUF_TYPE* bf, ULONG len):CData(bf, len) {
-}
-void CFrontData::setData(CDPMDisplayParameter &dp) {
-	setHeader(dp.getCmdType(), dp.getCmdLength());
-	//memcpy(buf+SOCK_RECEIVE_HEADER_LEN, &(dp.ddp), sizeof(CDPMDisplayParameter::DPM_DISPLAY_PARA));
-	CData::setData((BUF_TYPE*)&(dp.ddp), sizeof(CDPMDisplayParameter::DPM_DISPLAY_PARA));
 }
 CFrontData::~CFrontData() {
 	//CData::~CData();

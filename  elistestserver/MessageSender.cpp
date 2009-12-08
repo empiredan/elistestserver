@@ -29,6 +29,8 @@ DWORD CMessageSender::handle(LPVOID param) {
 	CFrontData *d;
 	FrontDataQueue<CFrontData> *q;
 	int err;
+	//int *t;
+	//char oo[1024];
 	
 	q = handler->dlg->getFrontDataQueue();
 	//AfxMessageBox(_T("MessageSenderStarted:::"));
@@ -38,13 +40,17 @@ DWORD CMessageSender::handle(LPVOID param) {
 			continue;
 		}
 		//
-		//AfxMessageBox(_T("err = handler->dlg->m_psConnectSocket->Send(d->buf, d->buflen);"));
+		//t = (int*)(d->buf+SOCK_RECEIVE_HEADER_LEN);
+		//sprintf(oo, "corr_Depth:%d,true_Depth:%d", t[0], t[1]);
+		//AfxMessageBox(_T(oo));
+		
 		err = handler->dlg->m_psConnectSocket->Send(d->buf, d->contentlen);
 		if(err == SOCKET_ERROR) {
 			AfxMessageBox(_T("Sending Messages Socket error"));
 			delete d;
 			continue;
 		}
+		
 		//这里也不能忘记删除CFrontData类型的对象
 		//这个CFrontData类型对象可能是由定时器，或者
 		//CommandHendler等线程扔到队列中的，在那些

@@ -227,6 +227,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\DepthPanelReadTensionAngle.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\DepthPanelTensionFactor.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\DPMDisplayParameter.cpp"
 				>
 			</File>
@@ -339,6 +347,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\SingleACQDataReady.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\SpeedFast.cpp"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.cpp"
 				>
 				<FileConfiguration
@@ -359,6 +375,10 @@
 						UsePrecompiledHeader="1"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath=".\SubsetData.cpp"
+				>
 			</File>
 			<File
 				RelativePath="TabAct.cpp"
@@ -400,6 +420,14 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath=".\UpholeSendDataReady.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\WorkMode.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -419,6 +447,14 @@
 			</File>
 			<File
 				RelativePath="Data.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DepthPanelReadTensionAngle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DepthPanelTensionFactor.h"
 				>
 			</File>
 			<File
@@ -458,7 +494,19 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SingleACQDataReady.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SpeedFast.h"
+				>
+			</File>
+			<File
 				RelativePath="StdAfx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\SubsetData.h"
 				>
 			</File>
 			<File
@@ -474,7 +522,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UpholeSendDataReady.h"
+				>
+			</File>
+			<File
 				RelativePath=".\Utils.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WorkMode.h"
 				>
 			</File>
 		</Filter>
