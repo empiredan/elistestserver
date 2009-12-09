@@ -29,8 +29,8 @@ DWORD CMessageSender::handle(LPVOID param) {
 	CFrontData *d;
 	FrontDataQueue<CFrontData> *q;
 	int err;
-	//int *t;
-	//char oo[1024];
+	//
+	//
 	
 	q = handler->dlg->getFrontDataQueue();
 	//AfxMessageBox(_T("MessageSenderStarted:::"));
@@ -57,6 +57,13 @@ DWORD CMessageSender::handle(LPVOID param) {
 		//定时器或者线程里，都是通过new的办法创建
 		//这些对象的！！
 		delete d;
+
+		ULONG *t;	
+		char oo[1024];
+		t = (ULONG*)d->buf;
+		sprintf(oo, "Send CMD::::%lx\n", t[0]);
+		handler->dlg->log.Write(oo, strlen(oo));
+		handler->dlg->log.Flush();
 	}
 
 	return 0;
