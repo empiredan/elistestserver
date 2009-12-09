@@ -1,8 +1,7 @@
 #pragma once
 #include "data.h"
 
-class CUpholeSendDataReady :
-	public CFrontData
+class CUpholeSendDataReady :public CFrontData
 {
 public:
 	CUpholeSendDataReady(void);

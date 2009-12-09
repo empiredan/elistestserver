@@ -434,9 +434,15 @@ void CCommandHandler::NetCmd_CtrlACTSwitch(CMasterData *d) {
 }
 void CCommandHandler::NetCmd_SnglCtl(CMasterData *d) {
 	char logdata[1024];
-	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_SnglCtl\n");
+	sprintf(logdata, "implement me CCommandHandler::NetCmd_SnglCtl\n");
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
+
+	ULONG *t;
+	t = (ULONG*)d->buf;
+	ULONG cmd = ntohl(t[0]);
+	CUpholeSendDataReady *dd = new CUpholeSendDataReady((BUF_TYPE*)&cmd, sizeof(ULONG));
+	dlg->getFrontDataQueue()->enQueue(dd);
 }
 void CCommandHandler::NetCmd_DepthInternal(CMasterData *d) {
 	char logdata[1024];
