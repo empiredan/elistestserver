@@ -35,9 +35,18 @@ void CWorkModeSetter::fillWorkMode(BUF_TYPE *buf, ULONG len) {
 void CWorkModeSetter::fillStandByTimeInterval(BUF_TYPE *buf, ULONG len) {
 	UINT32 *t;
 	t = (UINT32*)buf;
+	//StandbyTime interval
 	standByTimeInterval = ntohl(t[0]);
 }
 void CWorkModeSetter::fillDeactivated(BUF_TYPE *buf, ULONG len) {
+	UINT32 *t;
+	t = (UINT32*)buf;
+	//RtcSYS_DEACTIVE_CMD
+	deactivated = ntohl(t[0]);
 }
 void CWorkModeSetter::fillRecStop(BUF_TYPE *buf, ULONG len) {
+	UINT32 *t;
+	t = (UINT32*)buf;
+	//RtcSYS_RECSTOP_CMD
+	recstop = ntohl(t[0]);
 }

@@ -83,6 +83,7 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	acttab = NULL;
 	calibpara = NULL;
+	wms = new CWorkModeSetter();
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
