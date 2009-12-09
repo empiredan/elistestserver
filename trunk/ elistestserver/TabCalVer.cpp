@@ -5,7 +5,11 @@
 #include "TabCalVer.h"
 #include "ELISTestServer.h"
 #include "ELISTestServerDlg.h"
+
 #include "MyTabCtrl.h"
+#include "CalibParameter.h"
+#include "ActTable.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -33,6 +37,39 @@ void TabCalVer::setCElisTestServerDlg(CELISTestServerDlg* dlg)
 void TabCalVer::setTabCtrl(MyTabCtrl* tab)
 {
 	m_ptabCtrl=tab;
+}
+
+void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
+{
+	this->m_listctrlCalVer.DeleteAllItems();
+	
+	int toolADDR=clibparam->getToolADDR();
+	int subsetNo=clibparam->getSubsetNo();
+	int actNo;
+
+	for (int i=0;i<acttbl->actNum;i++)
+	{
+		char str[50];
+		
+		if (acttbl->pSaList[i].toolAddress==toolADDR && acttbl->pSaList[i].subsetNo==subsetNo)
+		{
+			actNo=acttbl->pSaList[i].actNo;
+		}
+		
+	}
+
+	char str[50];
+		
+	itoa(actNo,str,10);
+	this->m_listctrlCalVer.InsertItem(i,str);
+		
+	itoa(toolADDR,str,10);
+	this->m_listctrlCalVer.SetItemText(0,1,str);
+		
+	itoa(subsetNo,str,10);
+	this->m_listctrlCalVer.SetItemText(0,2,str);
+		
+	
 }
 
 void TabCalVer::DoDataExchange(CDataExchange* pDX)
@@ -63,7 +100,7 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 	int rowNo=pNMLISTVIEW->iItem;
 	int columeNo=pNMLISTVIEW->iSubItem;
 
-	if (columeNo==8)
+	if (columeNo==3)
 	{
 		//AfxMessageBox(_T("Yes!"));
 		//CELISTestServerDlg* parentDlg=(CELISTestServerDlg*)(this->GetParent());
@@ -211,6 +248,7 @@ void TabCalVer::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CDialog::OnVScroll(nSBCode, nPos, pScrollBar);
 }
 
+
 BOOL TabCalVer::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
@@ -225,8 +263,8 @@ BOOL TabCalVer::OnInitDialog()
 	//this->m_listctrlCalVer.GetClientRect(&listRect);
 	SCROLLINFO hScrollInfo;
 	hScrollInfo.fMask=SIF_ALL;
-	hScrollInfo.nPage=84.5;
-	hScrollInfo.nMax=845-tabCtrlRect.Width()+60;//-dlgRect.Width()845
+	hScrollInfo.nPage=34;
+	hScrollInfo.nMax=340-tabCtrlRect.Width()+31;//-dlgRect.Width()845
 	hScrollInfo.nMin=0;
 	hScrollInfo.nPos=0;
 	hScrollInfo.nTrackPos=0;
@@ -242,50 +280,25 @@ BOOL TabCalVer::OnInitDialog()
 	lvcol.mask=LVCF_FMT|LVCF_SUBITEM|LVCF_TEXT|LVCF_WIDTH;
 	lvcol.fmt=LVCFMT_CENTER;
 	lvcol.iSubItem=0;
-	lvcol.cx=90;
-	lvcol.pszText="Series ID";
+	lvcol.cx=50;
+	lvcol.pszText="ACT #";
 	this->m_listctrlCalVer.InsertColumn(0,&lvcol);
 	
 	lvcol.iSubItem=1;
-	lvcol.cx=75;
-	lvcol.pszText="CV Name";
+	lvcol.cx=90;
+	lvcol.pszText="Tool Series";
 	this->m_listctrlCalVer.InsertColumn(1,&lvcol);
 	
 	lvcol.iSubItem=2;
-	lvcol.cx=110;
-	lvcol.pszText="Tool Asset No";
+	lvcol.cx=80;
+	lvcol.pszText="Subset #";
 	this->m_listctrlCalVer.InsertColumn(2,&lvcol);
 	
 	lvcol.iSubItem=3;
-	lvcol.cx=90;
-	lvcol.pszText="CP";
-	this->m_listctrlCalVer.InsertColumn(3,&lvcol);
-	
-	lvcol.iSubItem=4;
-	lvcol.cx=90;
-	lvcol.pszText="VP";
-	this->m_listctrlCalVer.InsertColumn(4,&lvcol);
-	
-	lvcol.iSubItem=5;
-	lvcol.cx=90;
-	lvcol.pszText="VB";
-	this->m_listctrlCalVer.InsertColumn(5,&lvcol);
-	
-	lvcol.iSubItem=6;
-	lvcol.cx=90;
-	lvcol.pszText="VA";
-	this->m_listctrlCalVer.InsertColumn(6,&lvcol);
-	
-	lvcol.iSubItem=7;
-	lvcol.cx=90;
-	lvcol.pszText="Trip No";
-	this->m_listctrlCalVer.InsertColumn(7,&lvcol);
-	
-	lvcol.iSubItem=8;
 	lvcol.cx=120;
 	lvcol.pszText="Data File";
 	this->m_listctrlCalVer.InsertColumn(8,&lvcol);
-	
+/*	
 	this->m_listctrlCalVer.InsertItem(0,"0");
 	this->m_listctrlCalVer.SetItemText(0,1,"1");
 	this->m_listctrlCalVer.SetItemText(0,2,"2");
@@ -295,7 +308,8 @@ BOOL TabCalVer::OnInitDialog()
 	this->m_listctrlCalVer.SetItemText(0,6,"6");
 	this->m_listctrlCalVer.SetItemText(0,7,"7");
 	this->m_listctrlCalVer.SetItemText(0,8,"8");
-
+*/
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
+

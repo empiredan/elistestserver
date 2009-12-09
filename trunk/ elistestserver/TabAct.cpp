@@ -127,7 +127,7 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 	AfxMessageBox(_T(t));*/
 	//AfxMessageBox(_T("Hello!"));
 
-	if (columeNo==6)
+	if (columeNo==5)
 	{
 		//AfxMessageBox(_T("Yes!"));
 		//CELISTestServerDlg* parentDlg=(CELISTestServerDlg*)(this->GetParent());
@@ -284,6 +284,7 @@ void TabAct::OnPaint()
 	
 }
 
+
 BOOL TabAct::OnInitDialog() 
 {
 	CDialog::OnInitDialog();
@@ -297,8 +298,8 @@ BOOL TabAct::OnInitDialog()
 	this->m_listctrlAct.GetWindowRect(&listRect);
 	SCROLLINFO hScrollInfo;
 	hScrollInfo.fMask=SIF_ALL;
-	hScrollInfo.nPage=70;
-	hScrollInfo.nMax=700-tabCtrlRect.Width()+50;
+	hScrollInfo.nPage=56;
+	hScrollInfo.nMax=560-tabCtrlRect.Width()+43;
 	hScrollInfo.nMin=0;
 	hScrollInfo.nPos=0;
 	hScrollInfo.nTrackPos=0;
@@ -341,16 +342,16 @@ BOOL TabAct::OnInitDialog()
 	lvcol.pszText="Time Interval";
 	this->m_listctrlAct.InsertColumn(4,&lvcol);
 	
-	lvcol.iSubItem=5;
+	/*lvcol.iSubItem=5;
 	lvcol.cx=130;
 	lvcol.pszText="Change Mapping Mode";
 	this->m_listctrlAct.InsertColumn(5,&lvcol);
-	
-	lvcol.iSubItem=6;
-	lvcol.cx=130;
+	*/
+	lvcol.iSubItem=5;
+	lvcol.cx=120;
 	lvcol.pszText="Data File";
-	this->m_listctrlAct.InsertColumn(6,&lvcol);
-	
+	this->m_listctrlAct.InsertColumn(5,&lvcol);
+/*	
 	this->m_listctrlAct.InsertItem(0,"0");
 	this->m_listctrlAct.SetItemText(0,1,"1");
 	this->m_listctrlAct.SetItemText(0,2,"2");
@@ -358,7 +359,8 @@ BOOL TabAct::OnInitDialog()
 	this->m_listctrlAct.SetItemText(0,4,"4");
 	this->m_listctrlAct.SetItemText(0,5,"5");
 	this->m_listctrlAct.SetItemText(0,6,"6");
-
+*/
 	return TRUE;  // return TRUE unless you set the focus to a control
 	              // EXCEPTION: OCX Property Pages should return FALSE
 }
+

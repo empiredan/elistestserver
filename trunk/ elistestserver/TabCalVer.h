@@ -13,6 +13,8 @@
 // TabCalVer dialog
 class MyTabCtrl;
 class CELISTestServerDlg;
+class CCalibParameter;
+class CActTable;
 class TabCalVer : public CDialog
 {
 // Construction
@@ -27,7 +29,10 @@ public:
 	MyTabCtrl* m_ptabCtrl;
 	CELISTestServerDlg* m_pELISTestServerDlg;
 	//}}AFX_DATA
+
 	void setTabCtrl(MyTabCtrl* tab);
+	void SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl);
+
 	void setCElisTestServerDlg(CELISTestServerDlg* dlg);
 
 // Overrides

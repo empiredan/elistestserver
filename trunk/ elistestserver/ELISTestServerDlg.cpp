@@ -462,17 +462,21 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	fq.enQueue(dpmp);
 }
 
+//<<<<<<< .mine
 void CELISTestServerDlg::SetCalibParameter(CCalibParameter *clibpara) {
 	if(calibpara != NULL) {
 		delete calibpara;
 		calibpara = NULL;
 	}
 	calibpara = clibpara;
-	
 	//在这理添加代码更新Cal/Ver的ClistTable。
+	this->m_tabMyTabCtrl.m_dlgCalVer->SetCalibParameter(clibpara,acttab);
+	
+	
 }
 
-void CELISTestServerDlg::SetACTTable(CActTable *tb) {
+void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
+
 	if(acttab != NULL) {
 		delete acttab;
 		acttab = NULL;
