@@ -127,39 +127,42 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 	AfxMessageBox(_T(t));*/
 	//AfxMessageBox(_T("Hello!"));
 
-	if (columeNo==5)
+	if (this->m_listctrlAct.GetItemText(rowNo, 0)!="")
 	{
-		//AfxMessageBox(_T("Yes!"));
-		//CELISTestServerDlg* parentDlg=(CELISTestServerDlg*)(this->GetParent());
-		m_pELISTestServerDlg->UpdateData(TRUE);
-		CString actListRootFolder=m_pELISTestServerDlg->m_actListRootFolder;
-		if (actListRootFolder=="")
+		if (columeNo==5)
 		{
-			char t[50];
-			sprintf(t, "%s", "ACT数据文件目录不能为空!");
-			AfxMessageBox(_T(t));
-		}else{
-
-			WIN32_FIND_DATA fd;
-			HANDLE hFind = FindFirstFile(actListRootFolder, &fd);
-			if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
-				//目录存在
-				CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
-				openActDataFileDlg.m_ofn.lpstrInitialDir=actListRootFolder;
-				CString strFilePath;
-				if (openActDataFileDlg.DoModal()==IDOK)
-				{
-					strFilePath=openActDataFileDlg.GetPathName();
-					m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
-				}
-			}else{
+			//AfxMessageBox(_T("Yes!"));
+			//CELISTestServerDlg* parentDlg=(CELISTestServerDlg*)(this->GetParent());
+			m_pELISTestServerDlg->UpdateData(TRUE);
+			CString actListRootFolder=m_pELISTestServerDlg->m_actListRootFolder;
+			if (actListRootFolder=="")
+			{
 				char t[50];
-				sprintf(t, "%s", "此目录已不存在!");
+				sprintf(t, "%s", "ACT数据文件目录不能为空!");
 				AfxMessageBox(_T(t));
-			}
-		}
-		
+			}else{
 
+				WIN32_FIND_DATA fd;
+				HANDLE hFind = FindFirstFile(actListRootFolder, &fd);
+				if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
+					//目录存在
+					CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
+					openActDataFileDlg.m_ofn.lpstrInitialDir=actListRootFolder;
+					CString strFilePath;
+					if (openActDataFileDlg.DoModal()==IDOK)
+					{
+						strFilePath=openActDataFileDlg.GetPathName();
+						m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
+					}
+				}else{
+					char t[50];
+					sprintf(t, "%s", "此目录已不存在!");
+					AfxMessageBox(_T(t));
+				}
+			}
+			
+
+		}
 	}
 	*pResult = 0;
 }
