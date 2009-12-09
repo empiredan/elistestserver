@@ -239,6 +239,11 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	//如果这里的数据需要作为长期使用的参数保存，那么
 	//应该把它们通过对应的数据结构拷贝出去。
 	delete d;
+	
+	char logdata[1024];
+	sprintf(logdata, "CCommandHandler::InitServerTable\n");
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 
 void CCommandHandler::NetCmd_CalibPara(CMasterData *d) {
@@ -255,9 +260,14 @@ void CCommandHandler::NetCmd_CalibPara(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CalibPara"));
+	//AfxMessageBox(_T(""));
 	CCalibParameter *ccp = new CCalibParameter(bodyBuf, bodyLen);
 	dlg->SetCalibParameter(ccp);
+	
+	char logdata[1024];
+	sprintf(logdata, "CCommandHandler::NetCmd_CalibPara\n");
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -273,7 +283,10 @@ void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
-	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CalibStart"));
+	char logdata[1024];
+	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CalibStart\n");
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -289,7 +302,10 @@ void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
-	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CalibStop"));
+	char logdata[1024];
+	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CalibStop\n");
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -308,7 +324,11 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	dlg->wms->fillWorkMode(bodyBuf, bodyLen);
 	CWorkMode *wm = new CWorkMode((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));
 	dlg->getFrontDataQueue()->enQueue(wm);
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlWorkState"));
+
+	char logdata[1024];
+	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlWorkState\n");
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -324,7 +344,10 @@ void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
-	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_SetStandbyTimeInterval"));
+	char logdata[1024];
+	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_SetStandbyTimeInterval\n");
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CtrlRecStop(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -342,7 +365,8 @@ void CCommandHandler::NetCmd_CtrlRecStop(CMasterData *d) {
 
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlRecStop\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CtrlActSwitch(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -360,7 +384,8 @@ void CCommandHandler::NetCmd_CtrlActSwitch(CMasterData *d) {
 
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlActSwitch\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -378,92 +403,110 @@ void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
 
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlActDeactivate\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 
 
 void CCommandHandler::NetCmd_InitConfigParameter(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_InitConfigParameter\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CtrlStandbytimeInterval(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlStandbytimeInterval\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CtrlRecstop(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlRecstop\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CtrlACTSwitch(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlACTSwitch\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_SnglCtl(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_SnglCtl\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthInternal(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthInternal\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthDirection(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthDirection\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthSpeed(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthSpeed\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_TrueDepth(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_TrueDepth\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CorrectedDepth(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CorrectedDepth\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_ManualDepthCorrection(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_ManualDepthCorrection\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_AutoDepthCorrection(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_AutoDepthCorrection\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthLock(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthLock\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthUnlock(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthUnlock\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthTensionFactor(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthTensionFactor\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthTensionAngle(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthTensionAngle\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthCHT(CMasterData *d) {
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthCHT\n");
-	dlg->log.Write(logdata, sizeof(logdata));
+	dlg->log.Write(logdata, strlen(logdata));
+	dlg->log.Flush();
 }
