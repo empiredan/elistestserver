@@ -65,7 +65,8 @@ END_MESSAGE_MAP()
 // CELISTestServerDlg dialog
 
 CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
-	: CDialog(CELISTestServerDlg::IDD, pParent)
+	: CDialog(CELISTestServerDlg::IDD, pParent),
+	log(".\\commandlist.txt", CFile::modeCreate|CFile::modeWrite)
 {
 	//{{AFX_DATA_INIT(CELISTestServerDlg)
 		// NOTE: the ClassWizard will add member initialization here
@@ -113,6 +114,7 @@ CELISTestServerDlg::~CELISTestServerDlg()
 	if(m_rbuf != NULL) {
 		delete [] m_rbuf;
 	}
+	log.Close();
 }
 
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)

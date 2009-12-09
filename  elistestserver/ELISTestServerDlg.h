@@ -63,6 +63,8 @@ public:
 	CWorkModeSetter *wms;
 	unsigned char ta;
 
+	CFile log;
+
 	void OnReceive();
 	void OnAccept();
 	void OnClose();
