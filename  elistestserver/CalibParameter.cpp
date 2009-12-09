@@ -28,7 +28,7 @@ CCalibParameter::~CCalibParameter()
 	
 }
 int CCalibParameter::getToolADDR()
-{	
+{
 	int cmd=cpara.m_nCalibAcqCmd;
 	cmd=cmd>>8;
 	int toolADDR=cmd&255;

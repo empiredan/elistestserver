@@ -21,6 +21,8 @@
 #include "Utils.h"
 #include "ActTable.h"
 #include "CalibParameter.h"
+#include "WorkModeSetter.h"
+
 #include "DPMDisplayParameter.h"
 #include "TimerDef.h"
 //#include "DealThread.h"
@@ -58,6 +60,7 @@ public:
 	CMessageSender msgs;
 	CActTable *acttab;
 	CCalibParameter *calibpara;
+	CWorkModeSetter *wms;
 	unsigned char ta;
 
 	void OnReceive();
