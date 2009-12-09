@@ -308,6 +308,8 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	//CWorkModeSetter *wms = dlg->getWorkModeSetter();
 	CWorkModeSetter *wms = NULL;
 	wms->fillWorkMode(bodyBuf, bodyLen);
+	CWorkMode *wm = new CWorkMode((BUF_TYPE*)&wms->mode, sizeof(UINT32));
+	dlg->getFrontDataQueue()->enQueue(wm);
 	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlWorkState"));
 }
 void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
@@ -377,7 +379,7 @@ void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
 
 
 void CCommandHandler::NetCmd_InitConfigParameter(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_InitConfigParameter"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_InitConfigParameter"));
 }
 void CCommandHandler::NetCmd_CtrlStandbytimeInterval(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlStandbytimeInterval"));
@@ -386,10 +388,10 @@ void CCommandHandler::NetCmd_CtrlRecstop(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlRecstop"));
 }
 void CCommandHandler::NetCmd_CtrlACTSwitch(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlACTSwitch"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CtrlACTSwitch"));
 }
 void CCommandHandler::NetCmd_SnglCtl(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_SnglCtl"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_SnglCtl"));
 }
 void CCommandHandler::NetCmd_DepthInternal(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthInternal"));
@@ -398,32 +400,32 @@ void CCommandHandler::NetCmd_DepthDirection(CMasterData *d) {
 	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthDirection"));
 }
 void CCommandHandler::NetCmd_DepthSpeed(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthSpeed"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthSpeed"));
 }
 void CCommandHandler::NetCmd_TrueDepth(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_TrueDepth"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_TrueDepth"));
 }
 void CCommandHandler::NetCmd_CorrectedDepth(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CorrectedDepth"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_CorrectedDepth"));
 }
 void CCommandHandler::NetCmd_ManualDepthCorrection(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_ManualDepthCorrection"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_ManualDepthCorrection"));
 }
 void CCommandHandler::NetCmd_AutoDepthCorrection(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_AutoDepthCorrection"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_AutoDepthCorrection"));
 }
 void CCommandHandler::NetCmd_DepthLock(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthLock"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthLock"));
 }
 void CCommandHandler::NetCmd_DepthUnlock(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthUnlock"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthUnlock"));
 }
 void CCommandHandler::NetCmd_DepthTensionFactor(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthTensionFactor"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthTensionFactor"));
 }
 void CCommandHandler::NetCmd_DepthTensionAngle(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthTensionAngle"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthTensionAngle"));
 }
 void CCommandHandler::NetCmd_DepthCHT(CMasterData *d) {
-	//AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthCHT"));
+	AfxMessageBox(_T("Implement me!! CCommandHandler::NetCmd_DepthCHT"));
 }
