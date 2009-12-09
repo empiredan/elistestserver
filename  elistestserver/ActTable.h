@@ -20,6 +20,10 @@ public:
 	int	m2Length;
 	int	m5Length;
 	int	m7Length;
+public:
+	void ConvertData() {
+		actNo = ntohl(actNo);
+	}
 };
 
 class CActTable
