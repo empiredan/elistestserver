@@ -36,6 +36,8 @@ public:
 		cpara.m_nM5Length = ntohl(cpara.m_nM5Length);
 		cpara.m_nM7Length = ntohl(cpara.m_nM7Length);
 	}
+	int getToolADDR();
+	int getSubsetNo(); 
 };
 
 #endif // !defined(AFX_CALIBPARAMETER_H__74E69434_4E47_4DB2_B4EB_EAA103C12C95__INCLUDED_)

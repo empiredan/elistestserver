@@ -25,5 +25,18 @@ CCalibParameter::CCalibParameter(BUF_TYPE *buf, ULONG len)
 
 CCalibParameter::~CCalibParameter()
 {
-
+	
+}
+int CCalibParameter::getToolADDR()
+{	
+	int cmd=cpara.m_nCalibAcqCmd;
+	cmd=cmd>>8;
+	int toolADDR=cmd&255;
+	return toolADDR;
+}
+int CCalibParameter::getSubsetNo()
+{
+	int cmd=cpara.m_nCalibAcqCmd;
+	int subsetNo=cmd&15;
+	return subsetNo;
 }
