@@ -25,8 +25,10 @@ MyTabCtrl::MyTabCtrl()
 	
 	//m_nNumberOfPages=2;
 	
-	m_dlgAct=new TabAct();
+	m_dlgAct=new TabAct;
 	m_dlgCalVer=new TabCalVer;
+	m_dlgAct->setTabCtrl(this);
+	m_dlgCalVer->setTabCtrl(this);
 
 }
 
@@ -52,13 +54,12 @@ void MyTabCtrl::Init()
 
 	m_dlgAct->Create(IDD_TAB_ACT, this);
 	m_dlgCalVer->Create(IDD_TAB_CALVER, this);
-	
+/*	
 	//点击一个ITEM就可使CListCtrl一整行被选择
 	this->m_dlgAct->m_listctrlAct.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	//this->m_dlgAct->m_listctrlAct.EnsureVisible(6,FALSE);
 	
-	this->m_dlgCalVer->m_listctrlCalVer.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-	//this->m_dlgCalVer->m_listctrlCalVer.EnsureVisible(8,FALSE);
+	
 	
 	
 
@@ -110,7 +111,12 @@ void MyTabCtrl::Init()
 	this->m_dlgAct->m_listctrlAct.SetItemText(0,6,"6");
 	//this->m_dlgAct->m_listctrlAct.SetItemText(0,1,new CButton);
 	
-	//The Second Tab 
+	//The Second Tab
+	this->m_dlgCalVer->m_listctrlCalVer.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	//this->m_dlgCalVer->m_listctrlCalVer.EnsureVisible(8,FALSE);
+	LVCOLUMN lvcol;
+	lvcol.mask=LVCF_FMT|LVCF_SUBITEM|LVCF_TEXT|LVCF_WIDTH;
+	lvcol.fmt=LVCFMT_CENTER;
 	lvcol.iSubItem=0;
 	lvcol.cx=90;
 	lvcol.pszText="Series ID";
@@ -168,7 +174,7 @@ void MyTabCtrl::Init()
 
 	m_dlgAct->ShowWindow(SW_SHOW);
 	m_dlgCalVer->ShowWindow(SW_HIDE);
-
+*/
 
 
 	SetRectangle();

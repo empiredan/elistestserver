@@ -23,6 +23,17 @@ public:
 public:
 	void ConvertData() {
 		actNo = ntohl(actNo);
+		switchOn = ntohl(switchOn);
+		actDone = ntohl(actDone);
+		depthSampleRate = ntohl(depthSampleRate);
+		timeInterval = ntohl(timeInterval);
+
+		toolAddress = ntohl(toolAddress);
+		subsetNo = ntohl(subsetNo);
+		delay = ntohl(delay);
+		m2Length = ntohl(m2Length);
+		m5Length = ntohl(m5Length);
+		m7Length = ntohl(m7Length);
 	}
 };
 
@@ -40,6 +51,13 @@ public:
 public:
 	static CActTable* AllocateActTable(ULONG actNum, unsigned char *buf, int len);
 	static CActTable* AllocateActTable(unsigned char  *buf, int len);
+public:
+	void ConvertData() {
+		ULONG i;
+		for( i = 0; i < actNum; i++) {
+			pSaList[i].ConvertData();
+		}
+	}
 };
 
 

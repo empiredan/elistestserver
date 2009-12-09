@@ -20,6 +20,7 @@
 
 #include "Utils.h"
 #include "ActTable.h"
+#include "CalibParameter.h"
 #include "DPMDisplayParameter.h"
 #include "TimerDef.h"
 //#include "DealThread.h"
@@ -56,6 +57,7 @@ public:
 	CCommandHandler cmdh;
 	CMessageSender msgs;
 	CActTable *acttab;
+	CCalibParameter *calibpara;
 	unsigned char ta;
 
 	void OnReceive();
@@ -77,7 +79,9 @@ public:
 	
 	void DepthTimerHandler();
 	void LogDataTimerHandler();
+
 	void SetACTTable(CActTable *tb);
+	void SetCalibParameter(CCalibParameter *clibpara);
 
 	//DWORD WINAPI WriteCmdRecvQueFunc(LPVOID lpParameter);
 

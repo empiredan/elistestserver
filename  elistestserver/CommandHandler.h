@@ -6,7 +6,10 @@
 #include "Data.h"
 #include "Queue.h"
 #include "TimerDef.h"
+
 #include "ActTable.h"
+#include "CalibParameter.h"
+#include "WorkModeSetter.h"
 
 #include "DepthPanelReadTensionAngle.h"
 #include "DepthPanelTensionFactor.h"

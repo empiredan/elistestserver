@@ -94,6 +94,10 @@ SOURCE=.\ActTable.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CalibParameter.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CommandHandler.cpp
 # End Source File
 # Begin Source File
@@ -173,6 +177,10 @@ SOURCE=.\UpholeSendDataReady.cpp
 
 SOURCE=.\WorkMode.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=.\WorkModeSetter.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -180,6 +188,10 @@ SOURCE=.\WorkMode.cpp
 # Begin Source File
 
 SOURCE=.\ActTable.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CalibParameter.h
 # End Source File
 # Begin Source File
 
@@ -276,6 +288,10 @@ SOURCE=.\Utils.h
 # Begin Source File
 
 SOURCE=.\WorkMode.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\WorkModeSetter.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"

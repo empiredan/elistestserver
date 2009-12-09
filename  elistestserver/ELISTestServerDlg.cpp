@@ -80,6 +80,9 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	m_rbuflen = DEFAULT_BUF_LEN;
 	rremain = SOCK_RECEIVE_HEADER_LEN;
 	received = 0;
+
+	acttab = NULL;
+	calibpara = NULL;
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -459,13 +462,43 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	fq.enQueue(dpmp);
 }
 
-void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
+void CELISTestServerDlg::SetCalibParameter(CCalibParameter *clibpara) {
+	if(calibpara != NULL) {
+		delete calibpara;
+		calibpara = NULL;
+	}
+	calibpara = clibpara;
+	
+	//在这理添加代码更新Cal/Ver的ClistTable。
+}
+
+void CELISTestServerDlg::SetACTTable(CActTable *tb) {
 	if(acttab != NULL) {
 		delete acttab;
 		acttab = NULL;
 	}
 	acttab = tb;
-	AfxMessageBox(_T("SetACTTable, implement me!!!, update the CList control on ACT tab page"));
+	this->m_tabMyTabCtrl.m_dlgAct->setACTTable(acttab);
+/*
+	char bff[8192];
+
+	sprintf(bff, "actNum:%ld,nDepthInterruptMode:%ld,",acttab->actNum, acttab->nDepthInterruptMode);
+	sprintf(bff, "%spSaList[0].actNo:%d,", bff, acttab->pSaList[0].actNo);
+
+	sprintf(bff, "%spSaList[0].switchOn:%d,", bff, acttab->pSaList[0].switchOn);
+	sprintf(bff, "%spSaList[0].actDone:%d,", bff, acttab->pSaList[0].actDone);
+	sprintf(bff, "%spSaList[0].depthSampleRate:%d,", bff, acttab->pSaList[0].depthSampleRate);
+	sprintf(bff, "%spSaList[0].timeInterval:%d,", bff, acttab->pSaList[0].timeInterval);
+
+	sprintf(bff, "%spSaList[0].toolAddress:%d,", bff, acttab->pSaList[0].toolAddress);
+	sprintf(bff, "%spSaList[0].subsetNo:%d,", bff, acttab->pSaList[0].subsetNo);
+	sprintf(bff, "%spSaList[0].delay:%d,", bff, acttab->pSaList[0].delay);
+	sprintf(bff, "%spSaList[0].m2Length:%d,", bff, acttab->pSaList[0].m2Length);
+	sprintf(bff, "%spSaList[0].m5Length:%d,", bff, acttab->pSaList[0].m5Length);
+	sprintf(bff, "%spSaList[0].m7Length:%d", bff, acttab->pSaList[0].m7Length);
+
+	AfxMessageBox(_T(bff));
+	*/
 }
 
 
