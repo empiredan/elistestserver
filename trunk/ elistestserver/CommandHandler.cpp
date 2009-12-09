@@ -199,11 +199,10 @@ DWORD CCommandHandler::handle(LPVOID param) {
 			break;
 			*/
 			default:
-				char cmdtp[500];
-				ULONG *cmdtpt;
-				cmdtpt = (ULONG*)d->buf;
-				sprintf(cmdtp, "CCommandHandler::handle, type%lx not defined", cmdtpt[1]);
-				//AfxMessageBox(_T(cmdtp));
+				char logdata[1024];
+				sprintf(logdata, "___UNKNOWN_COMMAND____:%lx\n",cmdtype);
+				handler->dlg->log.Write(logdata, strlen(logdata));
+				handler->dlg->log.Flush();
 			break;
 		}
 	}
@@ -212,7 +211,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 }
 
 void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
-	AfxMessageBox(_T("Implement me, NetCmd_InitServiceTable"));
+	//AfxMessageBox(_T("Implement me, NetCmd_InitServiceTable"));
 
 	CActTable *tb;
 	//int rate[2];
