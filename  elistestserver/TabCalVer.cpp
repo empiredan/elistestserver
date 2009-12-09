@@ -264,7 +264,7 @@ BOOL TabCalVer::OnInitDialog()
 	SCROLLINFO hScrollInfo;
 	hScrollInfo.fMask=SIF_ALL;
 	hScrollInfo.nPage=34;
-	hScrollInfo.nMax=340-tabCtrlRect.Width()+31;//-dlgRect.Width()845
+	hScrollInfo.nMax=340-tabCtrlRect.Width()+21;//-dlgRect.Width()845
 	hScrollInfo.nMin=0;
 	hScrollInfo.nPos=0;
 	hScrollInfo.nTrackPos=0;
