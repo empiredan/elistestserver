@@ -7,9 +7,11 @@
 // TabCalVer.h : header file
 //
 #include "Resource.h"
+
 #include "MyListCtrl.h"
 /////////////////////////////////////////////////////////////////////////////
 // TabCalVer dialog
+class MyTabCtrl;
 class CELISTestServerDlg;
 class TabCalVer : public CDialog
 {
@@ -22,9 +24,10 @@ public:
 	enum { IDD = IDD_TAB_CALVER };
 		// NOTE: the ClassWizard will add data members here
 	MyListCtrl m_listctrlCalVer;
+	MyTabCtrl* m_ptabCtrl;
 	CELISTestServerDlg* m_pELISTestServerDlg;
 	//}}AFX_DATA
-
+	void setTabCtrl(MyTabCtrl* tab);
 	void setCElisTestServerDlg(CELISTestServerDlg* dlg);
 
 // Overrides
@@ -42,6 +45,7 @@ protected:
 	afx_msg void OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	virtual BOOL OnInitDialog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

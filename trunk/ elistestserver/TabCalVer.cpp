@@ -5,7 +5,7 @@
 #include "TabCalVer.h"
 #include "ELISTestServer.h"
 #include "ELISTestServerDlg.h"
-
+#include "MyTabCtrl.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -28,6 +28,11 @@ TabCalVer::TabCalVer(CWnd* pParent /*=NULL*/)
 void TabCalVer::setCElisTestServerDlg(CELISTestServerDlg* dlg)
 {
 	m_pELISTestServerDlg=dlg;
+}
+
+void TabCalVer::setTabCtrl(MyTabCtrl* tab)
+{
+	m_ptabCtrl=tab;
 }
 
 void TabCalVer::DoDataExchange(CDataExchange* pDX)
@@ -114,15 +119,15 @@ void TabCalVer::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	case SB_LINELEFT://滚动条向左移动
 		if (oPos!=0)
 		{
-			ScrollWindow(1,0);//dlg窗口向右移动
-			SetScrollPos(SB_HORZ,oPos-1);//滚动条向左移动
+			ScrollWindow(10,0);//dlg窗口向右移动
+			SetScrollPos(SB_HORZ,oPos-10);//滚动条向左移动
 		}
 		break;
 	case SB_LINERIGHT://滚动条向右移动
 		if (oPos+thumbwidth<=max)
 		{
-			ScrollWindow(-1,0);//dlg窗口向左移动
-			SetScrollPos(SB_HORZ,oPos+1);//滚动条向右移动
+			ScrollWindow(-10,0);//dlg窗口向左移动
+			SetScrollPos(SB_HORZ,oPos+10);//滚动条向右移动
 		}
 		break;
 	case SB_PAGELEFT:
@@ -204,4 +209,93 @@ void TabCalVer::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	}
 
 	CDialog::OnVScroll(nSBCode, nPos, pScrollBar);
+}
+
+BOOL TabCalVer::OnInitDialog() 
+{
+	CDialog::OnInitDialog();
+	
+	// TODO: Add extra initialization here
+	//setwindthis->m_pELISTestServerDlg->m_tabMyTabCtrl
+	CRect tabCtrlRect;
+	this->m_ptabCtrl->GetClientRect(&tabCtrlRect);
+	//CRect dlgRect;
+	//GetClientRect(&dlgRect);
+	//CRect listRect;
+	//this->m_listctrlCalVer.GetClientRect(&listRect);
+	SCROLLINFO hScrollInfo;
+	hScrollInfo.fMask=SIF_ALL;
+	hScrollInfo.nPage=84.5;
+	hScrollInfo.nMax=845-tabCtrlRect.Width()+60;//-dlgRect.Width()845
+	hScrollInfo.nMin=0;
+	hScrollInfo.nPos=0;
+	hScrollInfo.nTrackPos=0;
+	hScrollInfo.cbSize=sizeof(hScrollInfo);
+	SetScrollInfo(SB_HORZ,&hScrollInfo);
+
+
+
+	//The Second Tab
+	this->m_listctrlCalVer.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	//this->m_dlgCalVer->m_listctrlCalVer.EnsureVisible(8,FALSE);
+	LVCOLUMN lvcol;
+	lvcol.mask=LVCF_FMT|LVCF_SUBITEM|LVCF_TEXT|LVCF_WIDTH;
+	lvcol.fmt=LVCFMT_CENTER;
+	lvcol.iSubItem=0;
+	lvcol.cx=90;
+	lvcol.pszText="Series ID";
+	this->m_listctrlCalVer.InsertColumn(0,&lvcol);
+	
+	lvcol.iSubItem=1;
+	lvcol.cx=75;
+	lvcol.pszText="CV Name";
+	this->m_listctrlCalVer.InsertColumn(1,&lvcol);
+	
+	lvcol.iSubItem=2;
+	lvcol.cx=110;
+	lvcol.pszText="Tool Asset No";
+	this->m_listctrlCalVer.InsertColumn(2,&lvcol);
+	
+	lvcol.iSubItem=3;
+	lvcol.cx=90;
+	lvcol.pszText="CP";
+	this->m_listctrlCalVer.InsertColumn(3,&lvcol);
+	
+	lvcol.iSubItem=4;
+	lvcol.cx=90;
+	lvcol.pszText="VP";
+	this->m_listctrlCalVer.InsertColumn(4,&lvcol);
+	
+	lvcol.iSubItem=5;
+	lvcol.cx=90;
+	lvcol.pszText="VB";
+	this->m_listctrlCalVer.InsertColumn(5,&lvcol);
+	
+	lvcol.iSubItem=6;
+	lvcol.cx=90;
+	lvcol.pszText="VA";
+	this->m_listctrlCalVer.InsertColumn(6,&lvcol);
+	
+	lvcol.iSubItem=7;
+	lvcol.cx=90;
+	lvcol.pszText="Trip No";
+	this->m_listctrlCalVer.InsertColumn(7,&lvcol);
+	
+	lvcol.iSubItem=8;
+	lvcol.cx=120;
+	lvcol.pszText="Data File";
+	this->m_listctrlCalVer.InsertColumn(8,&lvcol);
+	
+	this->m_listctrlCalVer.InsertItem(0,"0");
+	this->m_listctrlCalVer.SetItemText(0,1,"1");
+	this->m_listctrlCalVer.SetItemText(0,2,"2");
+	this->m_listctrlCalVer.SetItemText(0,3,"3");
+	this->m_listctrlCalVer.SetItemText(0,4,"4");
+	this->m_listctrlCalVer.SetItemText(0,5,"5");
+	this->m_listctrlCalVer.SetItemText(0,6,"6");
+	this->m_listctrlCalVer.SetItemText(0,7,"7");
+	this->m_listctrlCalVer.SetItemText(0,8,"8");
+
+	return TRUE;  // return TRUE unless you set the focus to a control
+	              // EXCEPTION: OCX Property Pages should return FALSE
 }
