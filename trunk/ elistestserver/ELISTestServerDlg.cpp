@@ -73,10 +73,13 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	// Note that LoadIcon does not require a subsequent DestroyIcon in Win32
 	this->m_sPort=0;
 	this->m_psConnectSocket=NULL;
-	m_rStasus=SOCK_RECEIVE_HEADER;
+	m_rStatus=SOCK_RECEIVE_HEADER;
 	m_pmasterDataQueue=new MasterDataQueue<CMasterData>;
 	m_rbuf = new BUF_TYPE[DEFAULT_BUF_LEN];
+	pBuf = m_rbuf;
 	m_rbuflen = DEFAULT_BUF_LEN;
+	rremain = SOCK_RECEIVE_HEADER_LEN;
+	received = 0;
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -280,45 +283,71 @@ void CELISTestServerDlg::OnReceive()
 	//sprintf(t, "%ld", sizeof(this->m_msDataHeader));
 	ULONG *t;
 	ULONG len;
+	ULONG cmdType;
 	//int *t;
 	//int len;
 	
-	if (m_rStasus == SOCK_RECEIVE_HEADER) {
-		len = m_psConnectSocket->Receive(m_rbuf, SOCK_RECEIVE_HEADER_LEN, 0);
-		//解析header，确定body长度
-		if(len != SOCKET_ERROR && len == SOCK_RECEIVE_HEADER_LEN) {
-			t = (ULONG*)m_rbuf;
-			//t = (int*)m_rbuf;	
-			m_msDataLen = ntohl(t[1]);
-			m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
-			
-			if(m_bodyLen <= 0) {
-				AfxMessageBox(_T("OnReceive Strange Err: message body have 0 length"));
-			} else {
-				m_rStasus = SOCK_RECEIVE_BODY;
-			}
-		} else {
-			AfxMessageBox(_T("OnReceive receive header error"));
-		}
-	} else if(m_rStasus == SOCK_RECEIVE_BODY) {
-		if((m_bodyLen + SOCK_RECEIVE_HEADER_LEN) > m_rbuflen) {
-			BUF_TYPE *bft;
-			bft = new BUF_TYPE[m_bodyLen + SOCK_RECEIVE_HEADER_LEN];
 
-			ASSERT(bft != NULL);
+	if (m_rStatus == SOCK_RECEIVE_HEADER) {
+		len = m_psConnectSocket->Receive(pBuf, rremain, 0);
+		//解析header，确定body长度
+		if(len != SOCKET_ERROR && len > 0) {
+			received += len;
+			if(received == SOCK_RECEIVE_HEADER_LEN) {
+				t = (ULONG*)m_rbuf;
+				cmdType = ntohl(t[0]);
+				//t = (int*)m_rbuf;	
+				m_msDataLen = ntohl(t[1]);
+				m_bodyLen = m_msDataLen - SOCK_RECEIVE_HEADER_LEN;
 			
-			memcpy(bft, m_rbuf, SOCK_RECEIVE_HEADER_LEN);
-			delete []m_rbuf;
-			m_rbuf = bft;
-			m_rbuflen = m_bodyLen + SOCK_RECEIVE_HEADER_LEN;
-		}
-		len = m_psConnectSocket->Receive(m_rbuf+SOCK_RECEIVE_HEADER_LEN, m_bodyLen, 0);
+				if(m_bodyLen <= 0) {
+					AfxMessageBox(_T("OnReceive Strange Err: message body have 0 length"));
+				} else {
+					if((m_bodyLen + SOCK_RECEIVE_HEADER_LEN) > m_rbuflen) {
+						BUF_TYPE *bft;
+						bft = new BUF_TYPE[m_bodyLen + SOCK_RECEIVE_HEADER_LEN];
+
+						ASSERT(bft != NULL);
+						
+						memcpy(bft, m_rbuf, SOCK_RECEIVE_HEADER_LEN);
+						delete []m_rbuf;
+						m_rbuf = bft;
+						m_rbuflen = m_bodyLen + SOCK_RECEIVE_HEADER_LEN;
+						received = 0;
+						pBuf = m_rbuf;
+						rremain = m_bodyLen;
+					}
+					m_rStatus = SOCK_RECEIVE_BODY;
+					rremain = m_bodyLen;
+					received = 0;
+					pBuf = m_rbuf + SOCK_RECEIVE_HEADER_LEN;
+				}
+			} else {
+				rremain = SOCK_RECEIVE_HEADER_LEN - len;
+				pBuf = pBuf + len;
+			}
+		} 
+	} else if(m_rStatus == SOCK_RECEIVE_BODY) {
+		len = m_psConnectSocket->Receive(pBuf, rremain, 0);
 		
 		if(len != SOCKET_ERROR && len > 0) {
-			//把接收到的rbuf填入ReceiverQueue中
-			CMasterData* p_msData=new CMasterData();
-			p_msData->setData(m_rbuf, len + SOCK_RECEIVE_HEADER_LEN);
-			m_pmasterDataQueue->enQueue(p_msData);
+			received += len;
+			if(received == m_bodyLen) {
+				//把接收到的rbuf填入ReceiverQueue中
+				CMasterData* p_msData=new CMasterData();
+				p_msData->setData(m_rbuf, m_bodyLen + SOCK_RECEIVE_HEADER_LEN);
+				m_pmasterDataQueue->enQueue(p_msData);
+				
+				m_rStatus = SOCK_RECEIVE_HEADER;
+				pBuf = m_rbuf;
+				rremain = SOCK_RECEIVE_HEADER_LEN;
+				received = 0;
+			} else if(received < m_bodyLen) {
+				rremain = m_bodyLen - received;
+				pBuf += len;
+			} else {
+				AfxMessageBox(_T("Recceive Body should no occur"));
+			}
 		} else {
 			if(len <= 0) {
 				AfxMessageBox(_T("OnReceive body length received <=0"));
@@ -326,10 +355,9 @@ void CELISTestServerDlg::OnReceive()
 				AfxMessageBox(_T("OnReceive Socket error"));
 			}
 		}
-		m_rStasus = SOCK_RECEIVE_HEADER;
 	} else {
 		AfxMessageBox(_T("OnReceive wrong status"));
-		m_rStasus = SOCK_RECEIVE_HEADER;
+		//m_rStatus = SOCK_RECEIVE_HEADER;
 	}
 	
 	//m_psConnectSocket->OnReceive(nErrorCode);

@@ -38,7 +38,7 @@ public:
 	UINT m_sPort;
 	MySocket m_sListenSocket;
 	MySocket* m_psConnectSocket;
-	int m_rStasus;
+	int m_rStatus;
 
 	CString m_actListRootFolder;
 	CString m_calverListRootFolder;
@@ -46,7 +46,9 @@ public:
 	ULONG m_bodyLen;
 	ULONG m_msDataLen;
 	ULONG m_rbuflen;
-	BUF_TYPE *m_rbuf;
+	BUF_TYPE *m_rbuf, *pBuf;
+	ULONG rremain, received;
+
 
 	MasterDataQueue<CMasterData>* m_pmasterDataQueue;
 	//MasterDataQueue<CMasterData> mq;

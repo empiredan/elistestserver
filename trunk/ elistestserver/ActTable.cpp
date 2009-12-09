@@ -46,9 +46,9 @@ CActTable* CActTable::AllocateActTable(ULONG actNum, unsigned char *buf, int len
 	rtn = new CActTable();
 	f = (ULONG*)buf;
 	rtn->actNum = actNum;
-	rtn->nDepthInterruptMode = f[1];
+	rtn->nDepthInterruptMode = ntohl(f[1]);
 	rtn->pSaList = new RTCSubset[actNum];
-	memcpy(rtn->pSaList, buf+SOCK_RECEIVE_HEADER_LEN, len-2*sizeof(ULONG));
+	memcpy(rtn->pSaList, buf, len);
 	return rtn;
 }
 //CActTable* CActTable::AllocateActTable(unsigned char *buf, int len) {
@@ -59,6 +59,6 @@ CActTable* CActTable::AllocateActTable(unsigned char *buf, int len) {
 	ULONG actNum;
 	ULONG *t;
 	t = (ULONG*)buf;
-	actNum = buf[0];
+	actNum = ntohl(t[0]);
 	return AllocateActTable(actNum, buf, len);
 }

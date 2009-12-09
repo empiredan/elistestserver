@@ -31,6 +31,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 	CMasterData *d;
 	CDataQueue<CMasterData> *q;
 	ULONG cmdtype;
+	ULONG *buft;
 	
 	//
 	char t[512];
@@ -45,7 +46,8 @@ DWORD CCommandHandler::handle(LPVOID param) {
 		}
 		//在这里处理各种命令，调用相应的
 		//命令解析函数来做。
-		cmdtype = ntohl(d->buf[0]);
+		buft = (ULONG*)d->buf;
+		cmdtype = ntohl(buft[0]);
 		
 		switch(cmdtype) {
 			case NET_CMDTYPE_INIT_SERVICE_TABLE:
@@ -201,7 +203,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 				ULONG *cmdtpt;
 				cmdtpt = (ULONG*)d->buf;
 				sprintf(cmdtp, "CCommandHandler::handle, type%lx not defined", cmdtpt[1]);
-				AfxMessageBox(_T(cmdtp));
+				//AfxMessageBox(_T(cmdtp));
 			break;
 		}
 	}
@@ -218,7 +220,7 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 
 	logTimerInterval = 5000;
 
-	tb = CActTable::AllocateActTable((d->buf)+headSize, d->buflen-headSize);
+	tb = CActTable::AllocateActTable((d->buf)+headSize, d->contentlen-headSize);
 	dlg->SetACTTable(tb);
 	tb->MaximumCommonSampleRate(rate);
 
