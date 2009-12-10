@@ -286,10 +286,14 @@ void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
+	CCalibSubset *ccss = dlg->getCalibSubset();
+	
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CalibStart\n");
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
+
+	dlg->getFrontDataQueue()->enQueue(ccss);
 }
 void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
