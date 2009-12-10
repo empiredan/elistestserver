@@ -158,8 +158,37 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 						if (openActDataFileDlg.DoModal()==IDOK)
 						{
 							strFilePath=openActDataFileDlg.GetPathName();
-							m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
-							this->m_pELISTestServerDlg->m_dataFileEnabled=TRUE;
+							UINT32* dataFileHeader;
+							CFile dataFile(strFilePath, CFile::modeRead);
+							BUF_TYPE* dataFileHeaderBuf=NULL;
+							dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
+							dataFileHeader=(UINT32*)dataFileHeaderBuf;
+							UINT32 toolADDR=dataFileHeader[0];
+							UINT32 subsetNo=dataFileHeader[1];
+							UINT32 dataType=dataFileHeader[2];
+							if (toolADDR==m_listctrlAct.GetItemText(rowNo, 1)
+								&& subsetNo==m_listctrlAct.GetItemText(rowNo, 2)
+								&& dataType==0)//文件格式匹配
+							{
+								if (m_listctrlAct.GetItemText(rowNo, 5)!=strFilePath)
+								{
+									this->m_pELISTestServerDlg->m_actDataFileEnabled=TRUE;
+									m_listctrlAct.SetItemText(rowNo, 5, strFilePath);
+								} 
+								else
+								{
+									this->m_pELISTestServerDlg->m_actDataFileEnabled=FALSE;
+								}
+							} 
+							else
+							{
+								char t[50];
+								sprintf(t, "%s", "文件选择错误,请重新选择!");
+								AfxMessageBox(_T(t));
+							}
+							
+							
+							
 						}
 					}else{
 						char t[50];

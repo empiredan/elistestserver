@@ -29,8 +29,8 @@ void CActTable::MaximumCommonSampleRate(int dpthandtime[]) {
 		dpthrate[i] = pSaList[i].depthSampleRate;
 		timerate[i] = pSaList[i].timeInterval;
 	}
-	dpthandtime[0] = CUtils::lcm(dpthrate, actNum);
-	dpthandtime[1] = CUtils::lcm(timerate, actNum);
+	//dpthandtime[0] = CUtils::lcm(dpthrate, actNum);
+	//dpthandtime[1] = CUtils::lcm(timerate, actNum);
 }
 
 
