@@ -49,7 +49,7 @@ void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
 
 	for (int i=0;i<acttbl->actNum;i++)
 	{
-		char str[50];
+		
 		
 		if (acttbl->pSaList[i].toolAddress==toolADDR && acttbl->pSaList[i].subsetNo==subsetNo)
 		{
@@ -128,7 +128,7 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 					if (openActDataFileDlg.DoModal()==IDOK)
 					{
 						strFilePath=openActDataFileDlg.GetPathName();
-						m_listctrlCalVer.SetItemText(rowNo, 8, strFilePath);
+						m_listctrlCalVer.SetItemText(rowNo, 3, strFilePath);
 					}
 				}else{
 					char t[50];
