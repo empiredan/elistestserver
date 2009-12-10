@@ -110,6 +110,10 @@ SOURCE=.\Data.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\DataFileBuf.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\DepthPanelReadTensionAngle.cpp
 # End Source File
 # Begin Source File
@@ -216,6 +220,10 @@ SOURCE=.\commands.h
 # Begin Source File
 
 SOURCE=.\Data.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\DataFileBuf.h
 # End Source File
 # Begin Source File
 

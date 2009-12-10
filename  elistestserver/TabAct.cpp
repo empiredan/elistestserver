@@ -162,6 +162,7 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 							CFile dataFile(strFilePath, CFile::modeRead);
 							BUF_TYPE* dataFileHeaderBuf=NULL;
 							dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
+							dataFile.Close();
 							dataFileHeader=(UINT32*)dataFileHeaderBuf;
 							UINT32 toolADDR=dataFileHeader[0];
 							UINT32 subsetNo=dataFileHeader[1];

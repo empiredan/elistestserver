@@ -79,6 +79,7 @@ public:
 	float m_trueDepth;
 	CString m_trueDepthStr;
 
+	CSubsetDataAssister* m_subsetAssister;
 
 
 	CFile log;

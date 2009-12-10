@@ -21,7 +21,7 @@ Class4=TabAct
 <<<<<<< .mine
 Resource4=IDD_ELISTESTSERVER_DIALOG
 =======
-Resource4=IDD_ABOUTBOX
+Resource4=IDD_ELISTESTSERVER_DIALOG
 >>>>>>> .r53
 =======
 Resource4=IDD_ELISTESTSERVER_DIALOG
