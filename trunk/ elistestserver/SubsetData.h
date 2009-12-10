@@ -1,5 +1,12 @@
+#ifndef SUBSETDATA_H
+#define SUBSETDATA_H
 #pragma once
-#include "data.h"
+
+#include "Data.h"
+#include "ActTable.h"
+
+
+#include "SubsetDataAssister.h"
 
 class CSubsetData :	public CFrontData
 {
@@ -9,4 +16,11 @@ public:
 	virtual ~CSubsetData(void);
 public:
 	void setData(BUF_TYPE *bf, ULONG len);
+	void setCommandHeader(CSubsetDataAssister *assist);
+	void setSubsetData(CSubsetDataAssister *assist, CActTable *acttab);
+
+private:
+	void setBodyLength(CSubsetDataAssister *assist);
 };
+
+#endif

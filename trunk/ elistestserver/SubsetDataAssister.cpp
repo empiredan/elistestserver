@@ -22,6 +22,8 @@ CSubsetDataAssister::CSubsetDataAssister()
 	assist.subsetNumPerReturn = NULL;
 	assist.totalSizeOfSubsetsPerReturn = NULL;
 
+	heads = NULL;
+
 	created = FALSE;
 }
 
@@ -35,6 +37,9 @@ void CSubsetDataAssister::clear()
 	if(assist.shareOfCommonBuffer != NULL) delete []assist.shareOfCommonBuffer;
 	if(assist.subsetNumPerReturn !=  NULL) delete []assist.subsetNumPerReturn;
 	if(assist.totalSizeOfSubsetsPerReturn != NULL) delete []assist.totalSizeOfSubsetsPerReturn;
+	
+	if(heads != NULL) delete []heads;
+
 	created = FALSE;
 }
 
@@ -46,6 +51,8 @@ void CSubsetDataAssister::create(UINT actNum)
 	assist.shareOfCommonBuffer = new float[actNum];
 	assist.subsetNumPerReturn = new UINT[actNum];
 	assist.totalSizeOfSubsetsPerReturn = new UINT[actNum];
-	
+	heads = new RtcBLOCK_DATA_HEADER[actNum];
+
+	this->actNum = actNum;
 	created = TRUE;
 }
