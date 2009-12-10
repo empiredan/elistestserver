@@ -127,10 +127,10 @@ CELISTestServerDlg::~CELISTestServerDlg()
 	log.Close();
 }
 
-void CELISTestServerDlg::SetCurrentWorkState(UINT32 cws)
+void CELISTestServerDlg::SetCurrentWorkState()
 {
 	
-	switch (cws)
+	switch (wms->mode)
 	{
 	case RtcSYS_DEACTIVE_CMD:
 		m_currentWorkStateStr="RtcSYS_DEACTIVE_CMD";
@@ -149,20 +149,26 @@ void CELISTestServerDlg::SetCurrentWorkState(UINT32 cws)
 		break;
 	default:
 		CString ex; 
-		ex.Format("Current Work State %lx not identified!\n",cws);
+		ex.Format("Current Work State %lx not identified!\n",wms->mode);
 
 		log.Write(ex.GetBuffer(ex.GetLength()),ex.GetLength());
 		break;
 	}
 	
 	
-	m_currentWorkState=cws;
 	UpdateData(FALSE);
 	
 }
-void CELISTestServerDlg::SetDirection(UINT32 d)
+void CELISTestServerDlg::SetDirection()
 {
-	m_direction=d;
+	switch(wms->direction) {
+	case 0:
+		break;
+	case 1:
+		break;
+	default:
+		break;
+	}
 	UpdateData(FALSE);
 }
 

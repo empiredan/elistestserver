@@ -25,6 +25,8 @@
 #include "CalibSubset.h"
 #include "DPMDisplayParameter.h"
 #include "TimerDef.h"
+
+#include "SubsetDataAssister.h"
 //#include "DealThread.h"
 //#include <deque>
 //using namespace std;
@@ -70,9 +72,7 @@ public:
 	BOOL m_actDataFileEnabled;
 	BOOL m_calverDataFileEnabled;
 
-	UINT32 m_currentWorkState;
     CString m_currentWorkStateStr;
-	UINT32 m_direction;
 	CString m_directionStr;
 
 
@@ -102,8 +102,8 @@ public:
 	void SetACTTable(CActTable *tb);
 	void SetCalibParameter(CCalibParameter *clibpara);
 
-	void SetCurrentWorkState(UINT32 cws);
-	void SetDirection(UINT32 d);
+	void SetCurrentWorkState();
+	void SetDirection();
 
 	CCalibSubset* getCalibSubset();
 

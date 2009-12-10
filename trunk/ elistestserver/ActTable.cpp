@@ -63,3 +63,51 @@ CActTable* CActTable::AllocateActTable(unsigned char *buf, int len) {
 	actNum = ntohl(t[0]);
 	return AllocateActTable(actNum, buf, len);
 }
+
+void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState) {
+	assist->create(actNum);
+
+	ULONG i;
+	ULONG lcm, gcd;
+
+	UINT *depth, *time;
+	UINT totalSubsets;
+
+	depth = new UINT[actNum];
+	time = new UINT[actNum];
+
+	for(i = 0; i < actNum; i++) {
+		depth[i] = pSaList[i].depthSampleRate;
+		time[i] = pSaList[i].timeInterval;
+	}
+	lcm = CUtils::GetCommonMultipler(time, actNum);
+	gcd = CUtils::GetCommonDivider(depth, actNum);
+
+	ASSERT(lcm > 0);
+	ASSERT(gcd > 0);
+	if(workState == RtcSYS_STANDBY_CMD) {//timeģʽ
+		assist->assist.logTimerElapse = lcm;
+		totalSubsets = 0;
+		for(i = 0; i < actNum; i++) {
+			assist->assist.subsetNumPerReturn[i] = lcm/pSaList[i].timeInterval;
+			assist->assist.totalSizeOfSubsetsPerReturn[i] = assist->assist.subsetNumPerReturn[i]*subsetSize(i);
+			totalSubsets += assist->assist.totalSizeOfSubsetsPerReturn[i];
+		}
+		for(i = 0; i < actNum; i++) {
+			assist->assist.shareOfCommonBuffer[i] = ((float)assist->assist.totalSizeOfSubsetsPerReturn[i])/((float)totalSubsets);
+		}
+	} else if(workState == RtcSYS_RECSTART_CMD) {//depthģʽ
+		assist->assist.logTimerElapse = (UINT)(1000/(speed*gcd));
+		totalSubsets = 0;
+		for(i = 0; i < actNum; i++) {
+			assist->assist.subsetNumPerReturn[i] = pSaList[i].depthSampleRate/gcd;
+			assist->assist.totalSizeOfSubsetsPerReturn[i] = assist->assist.subsetNumPerReturn[i]*subsetSize(i);
+			totalSubsets += assist->assist.totalSizeOfSubsetsPerReturn[i];
+		}
+		for(i = 0; i < actNum; i++) {
+			assist->assist.shareOfCommonBuffer[i] = ((float)assist->assist.totalSizeOfSubsetsPerReturn[i])/((float)totalSubsets);
+		}
+	} else {
+		//AfxMessageBox(_T("buildSubsetDataAssister, wrong "));
+	}
+}
