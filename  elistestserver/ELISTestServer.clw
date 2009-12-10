@@ -17,7 +17,11 @@ Resource1=IDD_ELISTESTSERVER_DIALOG
 Resource2=IDR_MAINFRAME
 Resource3=IDD_TAB_ACT
 Class4=TabAct
+<<<<<<< .mine
+Resource4=IDD_TAB_ACT
+=======
 Resource4=IDD_ABOUTBOX
+>>>>>>> .r50
 Class5=TabCalVer
 Class6=MyTabCtrl
 Class7=MySocket

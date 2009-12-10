@@ -58,6 +58,11 @@ public:
 			pSaList[i].ConvertData();
 		}
 	}
+public:
+	int getCommonMultiple();
+	int getCommonDivisor();
+	int FindSubsetNum();
+	ULONG FindSubset();
 };
 
 
