@@ -109,7 +109,7 @@ public:
 	void SetCurrentWorkState();
 	void SetDirection();
 
-	void EnableStartLog();
+	void EnableStartLog(BOOL enableButton);
 
 	CCalibSubset* getCalibSubset();
 
