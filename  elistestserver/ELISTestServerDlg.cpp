@@ -86,6 +86,8 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	calibpara = NULL;
 	wms = new CWorkModeSetter();
 
+	calibsubset=NULL;
+
 	m_dataFileBufSize=0;
 	m_dataFileEnabled=FALSE;
 	
@@ -405,7 +407,10 @@ void CELISTestServerDlg::OnButtonCancel()
 	DestroyWindow();
 }
 
-
+CCalibSubset* CELISTestServerDlg::getCalibSubset()
+{
+	return calibsubset;
+}
 
 void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
 	SetTimer(nIDEvent, uElapse, NULL);
@@ -425,6 +430,8 @@ void CELISTestServerDlg::StopLogTimer() {
 void CELISTestServerDlg::StopDepthTimer() {
 	StopTimer(DEPTH_TIMER);
 }
+
+
 
 void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
 	switch(nIDEvent) {
