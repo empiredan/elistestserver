@@ -9,6 +9,7 @@
 #pragma once
 #endif // _MSC_VER > 1000
 
+#include "DataFileBuf.h"
 class CSubsetDataAssister  
 {
 public:
@@ -34,12 +35,18 @@ public:
 	} RtcBLOCK_DATA_HEADER;
 	RtcBLOCK_DATA_HEADER *heads;
 
+	CDataFileBuf* dataFileBuf;
+
 	UINT actNum;
 
 	BOOL created;
 public:
 	void clear();
 	void create(UINT actNum);
+
+	void setDataFileBuf(CDataFileBuf* cdfb){
+		dataFileBuf=cdfb;
+	}
 
 	UINT getRTCBlockDataHeaderSize() {
 		return sizeof(RtcBLOCK_DATA_HEADER);

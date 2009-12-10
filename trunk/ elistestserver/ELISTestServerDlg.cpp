@@ -88,12 +88,15 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	calibsubset=NULL;
 
-	m_dataFileBuf=NULL;
 	m_dataFileBufSize=5;
 	m_actDataFileEnabled=TRUE;
 	m_calverDataFileEnabled=TRUE;
 
 	m_subsetAssister=new CSubsetDataAssister;
+	m_dataFileBuf=new CDataFileBuf(this);
+	m_subsetAssister->setDataFileBuf(m_dataFileBuf);
+
+	
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -119,6 +122,11 @@ CELISTestServerDlg::~CELISTestServerDlg()
 		//char* t="m_pmasterDataQueue deconstructed!";
 		//AfxMessageBox(_T(t), MB_YESNO, 0);
 	}
+	if (m_subsetAssister)
+	{
+		delete m_subsetAssister;
+	}
+	
 	if (m_dataFileBuf)
 	{
 		delete m_dataFileBuf;
@@ -734,11 +742,7 @@ void CELISTestServerDlg::OnButtonDataBufferSize()
 	
 	m_dataFileBufSize=ul*1024*1024;//兆字节转变为字节
 	
-	if (m_dataFileBuf)
-	{
-		delete m_dataFileBuf;
-	} 
-	m_dataFileBuf=new BUF_TYPE[m_dataFileBufSize];
+	
 	
 	
 }

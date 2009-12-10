@@ -27,6 +27,7 @@
 #include "TimerDef.h"
 
 #include "SubsetDataAssister.h"
+#include "DataFileBuf.h"
 //#include "DealThread.h"
 //#include <deque>
 //using namespace std;
@@ -68,7 +69,6 @@ public:
 	CCalibSubset* calibsubset;
 
 	ULONG m_dataFileBufSize;
-	BUF_TYPE* m_dataFileBuf;
 	BOOL m_actDataFileEnabled;
 	BOOL m_calverDataFileEnabled;
 
@@ -80,7 +80,7 @@ public:
 	CString m_trueDepthStr;
 
 	CSubsetDataAssister* m_subsetAssister;
-
+	CDataFileBuf* m_dataFileBuf;
 
 	CFile log;
 
