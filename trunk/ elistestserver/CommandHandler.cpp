@@ -316,8 +316,10 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 
 	ULONG *head;
 	ULONG cmdType, totalLen;
+
 	UINT32 *conts;
 	ULONG *rtnh;
+
 
 	head = (ULONG*)d->buf;
 	cmdType = ntohl(head[0]);
@@ -327,17 +329,20 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	bodyBuf = d->buf + headSize;
 
 	dlg->wms->fillWorkMode(bodyBuf, bodyLen);
-	
 
 	CWorkMode *wm = new CWorkMode();
 	wm->setData((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));
 	char logdata[1024];
+
 	rtnh = (ULONG*)wm->buf;
 	conts = (UINT32*)(wm->buf+2*sizeof(ULONG));
 	sprintf(logdata, "NetCmd_CtrlWorkState,cmd:%lx,size:%d,conts:%lx\n",rtnh[0], rtnh[1], conts[0]);
+
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
+
 	dlg->getFrontDataQueue()->enQueue(wm);
+
 }
 void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	BUF_TYPE *bodyBuf;

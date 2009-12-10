@@ -13,9 +13,9 @@ Class2=CELISTestServerDlg
 Class3=CAboutDlg
 
 ResourceCount=5
-Resource1=IDD_ABOUTBOX
+Resource1=IDD_TAB_ACT
 Resource2=IDR_MAINFRAME
-Resource3=IDD_TAB_ACT
+Resource3=IDD_ABOUTBOX
 Class4=TabAct
 Resource4=IDD_ELISTESTSERVER_DIALOG
 Class5=TabCalVer

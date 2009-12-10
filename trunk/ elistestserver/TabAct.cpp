@@ -141,24 +141,34 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 				sprintf(t, "%s", "ACT数据文件目录不能为空!");
 				AfxMessageBox(_T(t));
 			}else{
-
-				WIN32_FIND_DATA fd;
-				HANDLE hFind = FindFirstFile(actListRootFolder, &fd);
-				if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
-					//目录存在
-					CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
-					openActDataFileDlg.m_ofn.lpstrInitialDir=actListRootFolder;
-					CString strFilePath;
-					if (openActDataFileDlg.DoModal()==IDOK)
-					{
-						strFilePath=openActDataFileDlg.GetPathName();
-						m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
-					}
-				}else{
+				if (this->m_pELISTestServerDlg->m_dataFileBufSize<=0)
+				{
 					char t[50];
-					sprintf(t, "%s", "此目录已不存在!");
+					sprintf(t, "%s", "数据缓冲区大小必须大于0!");
 					AfxMessageBox(_T(t));
+				}else{
+
+					WIN32_FIND_DATA fd;
+					HANDLE hFind = FindFirstFile(actListRootFolder, &fd);
+					if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
+						//目录存在
+						CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
+						openActDataFileDlg.m_ofn.lpstrInitialDir=actListRootFolder;
+						CString strFilePath;
+						if (openActDataFileDlg.DoModal()==IDOK)
+						{
+							strFilePath=openActDataFileDlg.GetPathName();
+							m_listctrlAct.SetItemText(rowNo, 6, strFilePath);
+							this->m_pELISTestServerDlg->m_dataFileEnabled=TRUE;
+						}
+					}else{
+						char t[50];
+						sprintf(t, "%s", "此目录已不存在!");
+						AfxMessageBox(_T(t));
+					}
 				}
+
+				
 			}
 			
 
