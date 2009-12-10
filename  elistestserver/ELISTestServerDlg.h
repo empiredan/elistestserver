@@ -63,6 +63,11 @@ public:
 	CWorkModeSetter *wms;
 	unsigned char ta;
 
+	long m_dataFileBufSize;
+	BUF_TYPE* m_dataFileBuf;
+	BOOL m_dataFileEnabled;
+
+
 	CFile log;
 
 	void OnReceive();
@@ -123,6 +128,7 @@ protected:
 	afx_msg void OnTimer(UINT nIDEvent);
 	afx_msg void OnButtonServerPort();
 	afx_msg void OnButtonCalverFolder();
+	afx_msg void OnButtonDataBufferSize();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

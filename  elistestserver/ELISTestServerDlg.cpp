@@ -85,6 +85,9 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	acttab = NULL;
 	calibpara = NULL;
 	wms = new CWorkModeSetter();
+
+	m_dataFileBufSize=0;
+	m_dataFileEnabled=FALSE;
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -138,9 +141,10 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_Cancel, OnButtonCancel)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_ELISTESTSERVER_TAB, OnSelchangeElistestserverTab)
 	ON_BN_CLICKED(IDC_BUTTON_ACT_FOLDER, OnButtonActFolder)
+	ON_WM_TIMER()
 	ON_BN_CLICKED(IDC_BUTTON_SERVER_PORT, OnButtonServerPort)
 	ON_BN_CLICKED(IDC_BUTTON_CALVER_FOLDER, OnButtonCalverFolder)
-	ON_WM_TIMER()
+	ON_BN_CLICKED(IDC_BUTTON_DATA_BUFFER_SIZE, OnButtonDataBufferSize)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -633,5 +637,14 @@ void CELISTestServerDlg::OnButtonCalverFolder()
     } else {
         //AfxMessageBox(_T("无效的目录，请重新选择!"));
     }
+	
+}
+
+void CELISTestServerDlg::OnButtonDataBufferSize() 
+{
+	// TODO: Add your control notification handler code here
+	CString strBufSize;
+	GetDlgItem(IDC_EDIT_DATA_BUFFER_SIZE)->GetWindowText(strBufSize);
+	m_dataFileBufSize=atol(strBufSize);
 	
 }
