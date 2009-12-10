@@ -7,4 +7,6 @@ public:
 	CWorkMode(void);
 	CWorkMode(BUF_TYPE* bf, ULONG len);
 	virtual ~CWorkMode(void);
+public:
+	void setData(BUF_TYPE *bf, ULONG len);
 };

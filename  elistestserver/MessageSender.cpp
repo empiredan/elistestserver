@@ -54,10 +54,9 @@ DWORD CMessageSender::handle(LPVOID param) {
 		ULONG *t;
 		char oo[1024];
 		t = (ULONG*)d->buf;
-		sprintf(oo, "Send CMD::::%lx\n", t[0]);
+		sprintf(oo, "Really Send cmdType:%lx\n",t[0]);
 		handler->dlg->log.Write(oo, strlen(oo));
 		handler->dlg->log.Flush();
-
 		//这里也不能忘记删除CFrontData类型的对象
 		//这个CFrontData类型对象可能是由定时器，或者
 		//CommandHendler等线程扔到队列中的，在那些
