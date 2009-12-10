@@ -9,7 +9,7 @@ class CUtils
 public:
 	CUtils(void) {}
 	~CUtils(void) {}
-
+/*
 	static int maximum(int *arr, int len) {
 		int max = arr[0];
 		for(int i = 0; i < len; ++i){
@@ -19,7 +19,7 @@ public:
 		}
 		return max;
 	 }
-	 
+	
 	static BOOL isPrime(int x){
 		if(x == 2)  return TRUE;
 		if(x % 2 == 0) return FALSE;
@@ -47,6 +47,52 @@ public:
 		}
 		return lcm;
 	}
+*/
+	/* 数组的最小公倍数;*/  
+	static int GetCommonMultiple(int *nSampleRate, int nSampleNum)   //lhx 08-1-18
+	{
+		int i = 0;
+		int nFirst = nSampleRate[0];
+		for (i = 0 ; i < nSampleNum ; i++ )
+		{
+			
+			nFirst = CommonMultiple(nSampleRate[i],nFirst );
+		}
+		return nFirst; 
+	}
+
+	/* 数组的最大公约数 */
+	static int GetCommonDivisor(int *nSampleRate, int nSampleNum) //lhx 08-1-18
+	{
+		int i = 0;
+		int nFirst = nSampleRate[0];
+		for ( i = 0 ; i < nSampleNum ; i++ )
+		{
+			
+			nFirst = CommonDivisor(nSampleRate[i],nFirst );
+		}
+		return nFirst; 
+
+	}
+
+	/* 最小公倍数;*/  
+	static int CommonMultiple(int m, int n) //lhx 08-1-18
+	{
+		int   temp=m*n/CommonDivisor(m,n);  
+		return   temp;  
+
+	}
+
+	/* 最大公约 */
+	static int CommonDivisor(int m, int n)//lhx 08-1-18
+	{
+		if(n==0)  
+			return  m;  
+		else  
+			CommonDivisor(n,m%n);  
+
+	}
+
 };
 
 #endif

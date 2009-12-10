@@ -65,9 +65,16 @@ public:
 
 	CCalibSubset* calibsubset;
 
-	long m_dataFileBufSize;
+	ULONG m_dataFileBufSize;
 	BUF_TYPE* m_dataFileBuf;
-	BOOL m_dataFileEnabled;
+	BOOL m_actDataFileEnabled;
+	BOOL m_calverDataFileEnabled;
+
+	UINT32 m_currentWorkState;
+    CString m_currentWorkStateStr;
+	UINT32 m_direction;
+	CString m_directionStr;
+
 
 
 	CFile log;
@@ -94,6 +101,9 @@ public:
 
 	void SetACTTable(CActTable *tb);
 	void SetCalibParameter(CCalibParameter *clibpara);
+
+	void SetCurrentWorkState(UINT32 cws);
+	void SetDirection(UINT32 d);
 
 	CCalibSubset* getCalibSubset();
 

@@ -19,7 +19,9 @@ CSubsetData::CSubsetData(BUF_TYPE* bf, ULONG len):CFrontData(bf, len)
 	cmdLen = bodyLen + SOCK_RECEIVE_HEADER_LEN;
 	cmdType = NET_RETURN_SUBSETDATA;
 }
+void CSubsetData::setData(BUF_TYPE *bf, ULONG len) {
 
+}
 CSubsetData::~CSubsetData(void)
 {
 }

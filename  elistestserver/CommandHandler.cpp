@@ -333,6 +333,10 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	bodyBuf = d->buf + headSize;
 
 	dlg->wms->fillWorkMode(bodyBuf, bodyLen);
+	//在fillWorkmode之后，应该执行一个更新界面上
+	//工作状态，方向等元素的命令
+	//要在CELISTestServerDlg中添加相应的变量
+	//和接口函数
 
 	CWorkMode *wm = new CWorkMode();
 	wm->setData((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));
@@ -340,13 +344,17 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 
 	rtnh = (ULONG*)wm->buf;
 	conts = (UINT32*)(wm->buf+2*sizeof(ULONG));
+	dlg->SetCurrentWorkState(conts[0]);
+	dlg->SetDirection(conts[1]);
 	sprintf(logdata, "NetCmd_CtrlWorkState,cmd:%lx,size:%d,conts:%lx\n",rtnh[0], rtnh[1], conts[0]);
 
 	dlg->log.Write(logdata, strlen(logdata));
+	//sprintf(logdata, "NetCmd_CtrlWorkState,在fillWorkmode之后，应该执行一个更新界面上");
+	//sprintf(logdata, "工作状态，方向等元素的命令,要在CELISTestServerDlg中添加相应的变量");
+	//sprintf(logdata, "和接口函数\n");
 	dlg->log.Flush();
 
 	dlg->getFrontDataQueue()->enQueue(wm);
-
 }
 void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	BUF_TYPE *bodyBuf;

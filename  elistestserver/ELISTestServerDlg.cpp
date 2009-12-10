@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "ELISTestServer.h"
 #include "ELISTestServerDlg.h"
-
+#include "errno.h"
 
 //#include "stdio.h"
 #ifdef _DEBUG
@@ -88,8 +88,10 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	calibsubset=NULL;
 
+	m_dataFileBuf=NULL;
 	m_dataFileBufSize=0;
-	m_dataFileEnabled=FALSE;
+	m_actDataFileEnabled=TRUE;
+	m_calverDataFileEnabled=TRUE;
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -115,11 +117,53 @@ CELISTestServerDlg::~CELISTestServerDlg()
 		//char* t="m_pmasterDataQueue deconstructed!";
 		//AfxMessageBox(_T(t), MB_YESNO, 0);
 	}
-	
+	if (m_dataFileBuf)
+	{
+		delete m_dataFileBuf;
+	} 
 	if(m_rbuf != NULL) {
 		delete [] m_rbuf;
 	}
 	log.Close();
+}
+
+void CELISTestServerDlg::SetCurrentWorkState(UINT32 cws)
+{
+	
+	switch (cws)
+	{
+	case RtcSYS_DEACTIVE_CMD:
+		m_currentWorkStateStr="RtcSYS_DEACTIVE_CMD";
+		break;
+	case RtcSYS_IDLE_CMD:
+		m_currentWorkStateStr="RtcSYS_IDLE_CMD";
+		break;
+	case RtcSYS_STANDBY_CMD:
+		m_currentWorkStateStr="RtcSYS_STANDBY_CMD";
+		break;
+	case RtcSYS_RECSTART_CMD:
+		m_currentWorkStateStr="RtcSYS_RECSTART_CMD";
+		break;
+	case RtcSYS_RECSTOP_CMD:
+		m_currentWorkStateStr="RtcSYS_RECSTOP_CMD";
+		break;
+	default:
+		CString ex; 
+		ex.Format("Current Work State %lx not identified!\n",cws);
+
+		log.Write(ex.GetBuffer(ex.GetLength()),ex.GetLength());
+		break;
+	}
+	
+	
+	m_currentWorkState=cws;
+	UpdateData(FALSE);
+	
+}
+void CELISTestServerDlg::SetDirection(UINT32 d)
+{
+	m_direction=d;
+	UpdateData(FALSE);
 }
 
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
@@ -131,6 +175,8 @@ void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_SERVER_PORT, m_sPort);
 	DDX_Text(pDX, IDC_EDIT_ACT_FOLDER, m_actListRootFolder);
 	DDX_Text(pDX, IDC_EDIT_CALVER_FOLDER, m_calverListRootFolder);
+	DDX_Text(pDX, IDC_STATIC_MODE_VALUE, m_currentWorkStateStr);
+	DDX_Text(pDX, IDC_STATIC_DIRECTION_VALUE, m_directionStr);
 	//}}AFX_DATA_MAP
 }
 
@@ -193,6 +239,8 @@ BOOL CELISTestServerDlg::OnInitDialog()
 
 	m_tabMyTabCtrl.m_dlgAct->setCElisTestServerDlg(this);
 	m_tabMyTabCtrl.m_dlgCalVer->setCElisTestServerDlg(this);
+
+	OnButtonDataBufferSize();
 	
 	cmdh.start();
 	msgs.start();
@@ -453,6 +501,7 @@ void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
 }
 void CELISTestServerDlg::LogDataTimerHandler() {
 	//AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
+	
 }
 void CELISTestServerDlg::DepthTimerHandler() {
 	//AfxMessageBox(_T("DepthTimer triggered, implement me!!!"));
@@ -652,6 +701,20 @@ void CELISTestServerDlg::OnButtonDataBufferSize()
 	// TODO: Add your control notification handler code here
 	CString strBufSize;
 	GetDlgItem(IDC_EDIT_DATA_BUFFER_SIZE)->GetWindowText(strBufSize);
-	m_dataFileBufSize=atol(strBufSize);
+	ULONG ul=atol(strBufSize);
+	if (errno==ERANGE||errno==EINVAL)
+	{
+		ul=5;
+		
+	} 
+	
+	m_dataFileBufSize=ul*1024*1024;//兆字节转变为字节
+	
+	if (m_dataFileBuf)
+	{
+		delete m_dataFileBuf;
+	} 
+	m_dataFileBuf=new BUF_TYPE[m_dataFileBufSize];
+	
 	
 }
