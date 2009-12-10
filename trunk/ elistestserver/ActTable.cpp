@@ -111,4 +111,14 @@ void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed
 	} else {
 		//AfxMessageBox(_T("buildSubsetDataAssister, wrong "));
 	}
+	//initialize header
+	for(i = 0; i < actNum; i++) {
+		assist->heads[i].toolAddr = pSaList[i].toolAddress;
+		assist->heads[i].subset = pSaList[i].subsetNo;
+		assist->heads[i].subsetCnt = assist->assist.subsetNumPerReturn[i];
+		assist->heads[i].currentDepth = 0;
+		assist->heads[i].dataSize = subsetSize(i);
+		assist->heads[i].actSwitch = 111;
+		assist->heads[i].currentTime = 0;
+	}
 }
