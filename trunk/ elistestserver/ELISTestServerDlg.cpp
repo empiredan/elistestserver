@@ -92,6 +92,8 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	m_dataFileBufSize=5;
 	m_actDataFileEnabled=TRUE;
 	m_calverDataFileEnabled=TRUE;
+
+	m_subsetAssister=new CSubsetDataAssister;
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 
@@ -163,10 +165,13 @@ void CELISTestServerDlg::SetDirection()
 {
 	switch(wms->direction) {
 	case 0:
+		m_directionStr="UP";
 		break;
 	case 1:
+		m_directionStr="DOWN";
 		break;
 	default:
+		AfxMessageBox("方向数据错误!");
 		break;
 	}
 	UpdateData(FALSE);
