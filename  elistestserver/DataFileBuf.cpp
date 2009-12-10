@@ -53,6 +53,8 @@ void CDataFileBuf::create(ULONG bufsize, UINT actnum)
 	m_dataFileBuf=new BUF_TYPE[m_dataFileBufSize];
 	m_dataFilePointer=new BUF_TYPE*[m_actNum];
 	m_blockSize=new ULONG[m_actNum];
+	m_nextDataFilePointer=m_dataFileBuf;
+	m_nextBlockNo=0;
 }
 void CDataFileBuf::allocateDataFilePointer(float *socb)
 {
@@ -66,6 +68,22 @@ void CDataFileBuf::allocateDataFilePointer(float *socb)
 		p+=m_blockSize[i];
 	}
 
+}
+BUF_TYPE* CDataFileBuf::getNextDataPointer()
+{
+	BUF_TYPE* returnPointer=m_nextDataFilePointer;
+	m_nextBlockNo++;
+	if (m_nextBlockNo<m_actNum)
+	{
+		m_nextDataFilePointer=m_dataFilePointer[m_nextBlockNo];
+	}
+	else
+	{
+		m_nextDataFilePointer=m_dataFileBuf;
+		m_nextBlockNo=0;
+	}
+	
+	return returnPointer;
 }
 void CDataFileBuf::fillWithDataFile()
 {
