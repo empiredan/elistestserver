@@ -28,6 +28,11 @@ CDataFileBuf::CDataFileBuf(CELISTestServerDlg* dlg)
 
 CDataFileBuf::~CDataFileBuf()
 {
+	
+	clear();
+}
+void CDataFileBuf::clear()
+{
 	if (m_dataFileBuf)
 	{
 		delete[] m_dataFileBuf;
@@ -40,9 +45,7 @@ CDataFileBuf::~CDataFileBuf()
 	{
 		delete[] m_blockSize;
 	}
-
 }
-
 void CDataFileBuf::create(ULONG bufsize, UINT actnum)
 {
 	m_dataFileBufSize=bufsize;

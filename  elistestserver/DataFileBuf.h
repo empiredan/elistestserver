@@ -27,6 +27,7 @@ public:
 	//float *shareOfCommonBuffer; //是一个数组，元素个数为actNum，计算得出的每一项应分配的公共文件缓冲区大小比例。根据这个数组里的值计算每个项应分得的缓冲区空间大小。
 public:
 	void create(ULONG bufsize, UINT actnum);
+	void clear();
 	void allocateDataFilePointer(float *socb);
 	void fillWithDataFile();
 };
