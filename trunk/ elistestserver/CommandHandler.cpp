@@ -39,6 +39,10 @@ DWORD CCommandHandler::handle(LPVOID param) {
 	
 	while(!handler->finish) {
 		d = q->deQueue();
+		//d是CMasterData类型的数据，在入队列之前，已经把
+		//CMasterData的buf的内容设置为接收到的全部内容。
+		//因此这里根据第一个long字的命令类型判断后，
+		//dispatch即可
 		//sprintf_s(t, "Command Handler handle:::buf[0]=%d,buf[1]=%d", ntohl(d->buf[0]), ntohl(d->buf[1]));
 		//AfxMessageBox(_T(t));
 		if( d == NULL) {
@@ -253,8 +257,8 @@ void CCommandHandler::NetCmd_CalibPara(CMasterData *d) {
 	ULONG cmdType, totalLen;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
@@ -276,8 +280,8 @@ void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 	ULONG cmdType, totalLen;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
@@ -295,8 +299,8 @@ void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	ULONG cmdType, totalLen;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
@@ -312,22 +316,28 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 
 	ULONG *head;
 	ULONG cmdType, totalLen;
+	UINT32 *conts;
+	ULONG *rtnh;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
 	dlg->wms->fillWorkMode(bodyBuf, bodyLen);
-	CWorkMode *wm = new CWorkMode((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));
-	dlg->getFrontDataQueue()->enQueue(wm);
+	
 
+	CWorkMode *wm = new CWorkMode();
+	wm->setData((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));
 	char logdata[1024];
-	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlWorkState\n");
+	rtnh = (ULONG*)wm->buf;
+	conts = (UINT32*)(wm->buf+2*sizeof(ULONG));
+	sprintf(logdata, "NetCmd_CtrlWorkState,cmd:%lx,size:%d,conts:%lx\n",rtnh[0], rtnh[1], conts[0]);
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
+	dlg->getFrontDataQueue()->enQueue(wm);
 }
 void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -337,8 +347,8 @@ void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	ULONG cmdType, totalLen;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
@@ -356,8 +366,8 @@ void CCommandHandler::NetCmd_CtrlRecStop(CMasterData *d) {
 	ULONG cmdType, totalLen;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
@@ -375,8 +385,8 @@ void CCommandHandler::NetCmd_CtrlActSwitch(CMasterData *d) {
 	ULONG cmdType, totalLen;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
@@ -394,8 +404,8 @@ void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
 	ULONG cmdType, totalLen;
 
 	head = (ULONG*)d->buf;
-	cmdType = ntohl(d->buf[0]);
-	totalLen = ntohl(d->buf[1]);
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
@@ -437,11 +447,11 @@ void CCommandHandler::NetCmd_SnglCtl(CMasterData *d) {
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
 
-	ULONG *t;
+	/*ULONG *t;
 	t = (ULONG*)d->buf;
 	ULONG cmd = ntohl(t[0]);
 	CUpholeSendDataReady *dd = new CUpholeSendDataReady((BUF_TYPE*)&cmd, sizeof(ULONG));
-	dlg->getFrontDataQueue()->enQueue(dd);
+	dlg->getFrontDataQueue()->enQueue(dd);*/
 }
 void CCommandHandler::NetCmd_DepthInternal(CMasterData *d) {
 	char logdata[1024];
@@ -510,8 +520,9 @@ void CCommandHandler::NetCmd_DepthTensionAngle(CMasterData *d) {
 	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthCHT(CMasterData *d) {
-	char logdata[1024];
+	/*char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthCHT\n");
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
+	*/
 }

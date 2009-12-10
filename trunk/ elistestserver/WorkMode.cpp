@@ -20,6 +20,12 @@ CWorkMode::CWorkMode(BUF_TYPE* bf, ULONG len):CFrontData(bf, len)
 	cmdType = NET_RETURN_WORKMODE;
 }
 
+void CWorkMode::setData(BUF_TYPE *bf, ULONG len) {
+	setHeader(cmdType, cmdLen);
+	
+	CData::setData(bf, len);
+}
+
 CWorkMode::~CWorkMode(void)
 {
 }

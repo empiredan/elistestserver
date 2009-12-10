@@ -2,7 +2,7 @@
 
 [General Info]
 Version=1
-LastClass=TabCalVer
+LastClass=MySocket
 LastTemplate=CListCtrl
 NewFileInclude1=#include "stdafx.h"
 NewFileInclude2=#include "ELISTestServer.h"
@@ -124,7 +124,7 @@ HeaderFile=TabCalVer.h
 ImplementationFile=TabCalVer.cpp
 BaseClass=CDialog
 Filter=D
-LastObject=TabCalVer
+LastObject=IDC_LIST_CALVER
 VirtualFilter=dWC
 
 [DLG:IDD_TAB_CALVER]

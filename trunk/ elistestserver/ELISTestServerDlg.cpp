@@ -66,7 +66,7 @@ END_MESSAGE_MAP()
 
 CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CELISTestServerDlg::IDD, pParent),
-	log(".\\commandlist.txt", CFile::modeCreate|CFile::modeWrite)
+	log(".\\commandlist.txt", CFile::modeCreate|CFile::modeWrite|CFile::shareDenyNone)
 {
 	//{{AFX_DATA_INIT(CELISTestServerDlg)
 		// NOTE: the ClassWizard will add member initialization here

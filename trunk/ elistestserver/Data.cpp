@@ -55,10 +55,10 @@ void CData::setData(BUF_TYPE* bf, ULONG len) {
 	pBuf += len;
 	contentlen += len;
 
-	ULONG *t, t0, t1;
-	t = (ULONG*)this->buf;
-	t0 = ntohl(t[0]);
-	t1 = ntohl(t[1]);
+	//ULONG *t, t0, t1;
+	//t = (ULONG*)this->buf;
+	//t0 = ntohl(t[0]);
+	//t1 = ntohl(t[1]);
 }
 
 void CData::setHeader(ULONG cmdType, ULONG cmdLen) {
