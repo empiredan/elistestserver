@@ -19,11 +19,11 @@ CCommandHandler::~CCommandHandler(void)
 
 void CCommandHandler::start() {
 	worker = CreateThread(NULL, 
-											0,
-											&CCommandHandler::handle,
-											this,		//传递对象指针作为线程函数LPVOID param参数
-											0,			//start immediately after create
-											&wid);
+							0,
+							&CCommandHandler::handle,
+							this,		//传递对象指针作为线程函数LPVOID param参数
+							0,			//start immediately after create
+							&wid);
 }
 
 DWORD CCommandHandler::handle(LPVOID param) {
@@ -323,6 +323,7 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 
 	UINT32 *conts;
 	ULONG *rtnh;
+	UINT32 oldmode;
 
 
 	head = (ULONG*)d->buf;
@@ -332,11 +333,18 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
+	oldmode = dlg->wms->mode;
 	dlg->wms->fillWorkMode(bodyBuf, bodyLen);
 	//在fillWorkmode之后，应该执行一个更新界面上
 	//工作状态，方向等元素的命令
 	//要在CELISTestServerDlg中添加相应的变量
 	//和接口函数
+	if(oldmode == RtcSYS_STANDBY_CMD || oldmode == RtcSYS_RECSTART_CMD) {
+		dlg->EnableStartLog(FALSE);
+	}
+	if(dlg->wms->mode == RtcSYS_STANDBY_CMD || oldmode == RtcSYS_RECSTART_CMD) {
+		dlg->EnableStartLog(TRUE);
+	}
 
 	CWorkMode *wm = new CWorkMode();
 	wm->setData((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));
