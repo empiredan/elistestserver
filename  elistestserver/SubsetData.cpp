@@ -36,7 +36,7 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 	UINT i;
 	for(i = 0; i < assist->actNum; i++) {
 		setData((BUF_TYPE*)&assist->heads[i], assist->getRTCBlockDataHeaderSize());
-		//setData(assist->dataFileBuf, assist->assist.totalSizeOfSubsetsPerReturn[i]);
+		setData(assist->dataFileBuf->m_dataFilePointer[i], assist->assist.totalSizeOfSubsetsPerReturn[i]);
 	}
 }
 void CSubsetData::setData(BUF_TYPE *bf, ULONG len) {
