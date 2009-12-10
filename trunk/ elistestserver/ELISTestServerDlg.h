@@ -22,7 +22,7 @@
 #include "ActTable.h"
 #include "CalibParameter.h"
 #include "WorkModeSetter.h"
-
+#include "CalibSubset.h"
 #include "DPMDisplayParameter.h"
 #include "TimerDef.h"
 //#include "DealThread.h"
@@ -63,6 +63,8 @@ public:
 	CWorkModeSetter *wms;
 	unsigned char ta;
 
+	CCalibSubset* calibsubset;
+
 	long m_dataFileBufSize;
 	BUF_TYPE* m_dataFileBuf;
 	BOOL m_dataFileEnabled;
@@ -92,6 +94,8 @@ public:
 
 	void SetACTTable(CActTable *tb);
 	void SetCalibParameter(CCalibParameter *clibpara);
+
+	CCalibSubset* getCalibSubset();
 
 	//DWORD WINAPI WriteCmdRecvQueFunc(LPVOID lpParameter);
 
