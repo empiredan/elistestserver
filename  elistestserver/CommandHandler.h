@@ -18,6 +18,7 @@
 #include "DPMDisplayParameter.h"
 #include "SingleACQDataReady.h"
 #include "SubsetData.h"
+#include "CalibSubset.h"
 #include "UpholeSendDataReady.h"
 #include "WorkMode.h"
 

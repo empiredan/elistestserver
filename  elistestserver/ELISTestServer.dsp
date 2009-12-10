@@ -98,6 +98,10 @@ SOURCE=.\CalibParameter.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\CalibSubset.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\CommandHandler.cpp
 # End Source File
 # Begin Source File
@@ -192,6 +196,10 @@ SOURCE=.\ActTable.h
 # Begin Source File
 
 SOURCE=.\CalibParameter.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\CalibSubset.h
 # End Source File
 # Begin Source File
 
