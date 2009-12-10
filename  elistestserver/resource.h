@@ -16,11 +16,8 @@
 #define IDC_Cancel                      1002
 #define IDC_LIST_ACT                    1002
 #define IDC_LIST_CALVER                 1003
-
 #define IDC_STATIC_TRUE_DEPTH           1004
-
 #define IDC_STATIC_CORRECTED_DEPTH      1005
-
 #define IDC_EDIT_TRUE_DEPTH             1006
 #define IDC_EDIT_SPEED                  1007
 #define IDC_STATIC_MODE                 1008
@@ -59,6 +56,7 @@
 #define IDC_STATIC_CORRECTED_SHOW_VALUE 1040
 #define IDC_STATIC_SPEED_SHOW_VALUE     1041
 #define IDC_STATIC_SPEED                1042
+#define IDC_BUTTON_START_LOG            1043
 
 // Next default values for new objects
 // 
@@ -66,7 +64,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1044
 #define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif
