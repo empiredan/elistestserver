@@ -167,6 +167,10 @@ SOURCE=.\SubsetData.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=.\SubsetDataAssister.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=.\TabAct.cpp
 # End Source File
 # Begin Source File
@@ -272,6 +276,10 @@ SOURCE=.\StdAfx.h
 # Begin Source File
 
 SOURCE=.\SubsetData.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\SubsetDataAssister.h
 # End Source File
 # Begin Source File
 
