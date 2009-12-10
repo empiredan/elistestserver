@@ -13,14 +13,18 @@ Class2=CELISTestServerDlg
 Class3=CAboutDlg
 
 ResourceCount=5
-Resource1=IDD_ELISTESTSERVER_DIALOG
+Resource1=IDD_ABOUTBOX
 Resource2=IDR_MAINFRAME
 Resource3=IDD_TAB_ACT
 Class4=TabAct
 <<<<<<< .mine
-Resource4=IDD_ABOUTBOX
+<<<<<<< .mine
+Resource4=IDD_ELISTESTSERVER_DIALOG
 =======
 Resource4=IDD_ABOUTBOX
+>>>>>>> .r53
+=======
+Resource4=IDD_ELISTESTSERVER_DIALOG
 >>>>>>> .r50
 Class5=TabCalVer
 Class6=MyTabCtrl
@@ -63,7 +67,7 @@ Control4=IDOK,button,1342373889
 [DLG:IDD_ELISTESTSERVER_DIALOG]
 Type=1
 Class=CELISTestServerDlg
-ControlCount=42
+ControlCount=43
 Control1=IDC_STATIC_SET_PARAM,button,1342177287
 Control2=IDC_ELISTESTSERVER_TAB,SysTabControl32,1342177280
 Control3=IDC_Ok,button,1342242816
@@ -106,6 +110,7 @@ Control39=IDC_STATIC_SPEED_SHOW,static,1342308352
 Control40=IDC_STATIC_TRUE_DEPTH_SHOW_VALUE,static,1342308352
 Control41=IDC_STATIC_CORRECTED_SHOW_VALUE,static,1342308352
 Control42=IDC_STATIC_SPEED_SHOW_VALUE,static,1342308352
+Control43=IDC_BUTTON_START_LOG,button,1476460544
 
 [DLG:IDD_TAB_ACT]
 Type=1

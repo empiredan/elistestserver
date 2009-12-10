@@ -74,6 +74,10 @@ public:
 
     CString m_currentWorkStateStr;
 	CString m_directionStr;
+	float m_speed;
+	CString m_speedStr;
+	float m_trueDepth;
+	CString m_trueDepthStr;
 
 
 
@@ -104,6 +108,8 @@ public:
 
 	void SetCurrentWorkState();
 	void SetDirection();
+
+	void EnableStartLog();
 
 	CCalibSubset* getCalibSubset();
 
@@ -143,6 +149,9 @@ protected:
 	afx_msg void OnButtonServerPort();
 	afx_msg void OnButtonCalverFolder();
 	afx_msg void OnButtonDataBufferSize();
+	afx_msg void OnButtonSpeed();
+	afx_msg void OnButtonStartLog();
+	afx_msg void OnButtonTrueDepth();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

@@ -89,7 +89,7 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	calibsubset=NULL;
 
 	m_dataFileBuf=NULL;
-	m_dataFileBufSize=0;
+	m_dataFileBufSize=5;
 	m_actDataFileEnabled=TRUE;
 	m_calverDataFileEnabled=TRUE;
 	
@@ -172,6 +172,12 @@ void CELISTestServerDlg::SetDirection()
 	UpdateData(FALSE);
 }
 
+void CELISTestServerDlg::EnableStartLog(BOOL enableButton)
+{
+	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(enableButton);
+
+}
+
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -183,6 +189,8 @@ void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CALVER_FOLDER, m_calverListRootFolder);
 	DDX_Text(pDX, IDC_STATIC_MODE_VALUE, m_currentWorkStateStr);
 	DDX_Text(pDX, IDC_STATIC_DIRECTION_VALUE, m_directionStr);
+	DDX_Text(pDX, IDC_EDIT_SPEED, m_speedStr);
+	DDX_Text(pDX, IDC_EDIT_TRUE_DEPTH, m_trueDepthStr);
 	//}}AFX_DATA_MAP
 }
 
@@ -199,6 +207,9 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_SERVER_PORT, OnButtonServerPort)
 	ON_BN_CLICKED(IDC_BUTTON_CALVER_FOLDER, OnButtonCalverFolder)
 	ON_BN_CLICKED(IDC_BUTTON_DATA_BUFFER_SIZE, OnButtonDataBufferSize)
+	ON_BN_CLICKED(IDC_BUTTON_SPEED, OnButtonSpeed)
+	ON_BN_CLICKED(IDC_BUTTON_START_LOG, OnButtonStartLog)
+	ON_BN_CLICKED(IDC_BUTTON_TRUE_DEPTH, OnButtonTrueDepth)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -546,6 +557,8 @@ void CELISTestServerDlg::SetCalibParameter(CCalibParameter *clibpara) {
 
 void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
 
+	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(TRUE);
+	
 	if(acttab != NULL) {
 		delete acttab;
 		acttab = NULL;
@@ -723,4 +736,28 @@ void CELISTestServerDlg::OnButtonDataBufferSize()
 	m_dataFileBuf=new BUF_TYPE[m_dataFileBufSize];
 	
 	
+}
+
+void CELISTestServerDlg::OnButtonSpeed() 
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+
+	m_speed=atof(m_speedStr);
+
+	
+}
+
+void CELISTestServerDlg::OnButtonStartLog() 
+{
+	// TODO: Add your control notification handler code here
+	
+}
+
+void CELISTestServerDlg::OnButtonTrueDepth() 
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	m_trueDepth=atof(m_trueDepthStr);
+
 }
