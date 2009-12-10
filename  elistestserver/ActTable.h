@@ -1,6 +1,8 @@
 #ifndef ACTTABLE_H
 #define ACTTABLE_H
 
+#include "SubsetDataAssister.h"
+#include "Utils.h"
 
 //#pragma once
 
@@ -58,11 +60,27 @@ public:
 			pSaList[i].ConvertData();
 		}
 	}
+	
+	int modeSize(int word) { 
+		int size; 
+		size = word * 2; 
+
+		if (size % 4) { 
+			size = size / 4 + 1; 
+		} else {
+			size /= 4; 
+		}
+		return size * 4; 
+	} 
+
+	UINT subsetSize(UINT i) {
+		UINT m2Length = pSaList[i].m2Length;
+		UINT m5Length = pSaList[i].m5Length;
+		UINT m7Length = pSaList[i].m7Length;
+		return (2*sizeof(ULONG) + modeSize(m2Length)+ modeSize(m5Length) + modeSize(m7Length));
+	}
 public:
-	int getCommonMultiple();
-	int getCommonDivisor();
-	int FindSubsetNum();
-	ULONG FindSubset();
+	void buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
 };
 
 

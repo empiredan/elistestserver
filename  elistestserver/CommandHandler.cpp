@@ -344,8 +344,8 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 
 	rtnh = (ULONG*)wm->buf;
 	conts = (UINT32*)(wm->buf+2*sizeof(ULONG));
-	dlg->SetCurrentWorkState(conts[0]);
-	dlg->SetDirection(conts[1]);
+	dlg->SetCurrentWorkState();
+	dlg->SetDirection();
 	sprintf(logdata, "NetCmd_CtrlWorkState,cmd:%lx,size:%d,conts:%lx\n",rtnh[0], rtnh[1], conts[0]);
 
 	dlg->log.Write(logdata, strlen(logdata));

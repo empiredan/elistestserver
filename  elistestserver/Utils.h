@@ -10,9 +10,9 @@ public:
 	CUtils(void) {}
 	~CUtils(void) {}
 /*
-	static int maximum(int *arr, int len) {
-		int max = arr[0];
-		for(int i = 0; i < len; ++i){
+	static UINT maximum(UINT *arr, UINT len) {
+		UINT max = arr[0];
+		for(UINT i = 0; i < len; ++i){
 			if(max < arr[i]){
 				max = arr[i]; 
 			}
@@ -20,19 +20,19 @@ public:
 		return max;
 	 }
 	
-	static BOOL isPrime(int x){
+	static BOOL isPrime(UINT x){
 		if(x == 2)  return TRUE;
 		if(x % 2 == 0) return FALSE;
-		for(int i = 3; i <= (int)sqrt((float)x); i += 2){
+		for(UINT i = 3; i <= (int)sqrt((float)x); i += 2){
 			if(x % i == 0) return FALSE; 
 		}
 		return TRUE;
 	 }
 
-	static int lcm(int *a, int len) {
-		int lcm = 1;
-		int max =  maximum(a, len);
-		int i, j, temp;
+	static UINT lcm(UINT *a, UINT len) {
+		UINT lcm = 1;
+		UINT max =  maximum(a, len);
+		UINT i, j, temp;
 		for(i = 2; i <= max; ++i) {
 			if(isPrime(i)) {
 				temp = 1;
@@ -49,10 +49,10 @@ public:
 	}
 */
 	/* 数组的最小公倍数;*/  
-	static int GetCommonMultiple(int *nSampleRate, int nSampleNum)   //lhx 08-1-18
+	static UINT GetCommonMultipler(UINT *nSampleRate, UINT nSampleNum)   //lhx 08-1-18
 	{
-		int i = 0;
-		int nFirst = nSampleRate[0];
+		UINT i = 0;
+		UINT nFirst = nSampleRate[0];
 		for (i = 0 ; i < nSampleNum ; i++ )
 		{
 			
@@ -62,10 +62,10 @@ public:
 	}
 
 	/* 数组的最大公约数 */
-	static int GetCommonDivisor(int *nSampleRate, int nSampleNum) //lhx 08-1-18
+	static UINT GetCommonDivider(UINT *nSampleRate, UINT nSampleNum) //lhx 08-1-18
 	{
-		int i = 0;
-		int nFirst = nSampleRate[0];
+		UINT i = 0;
+		UINT nFirst = nSampleRate[0];
 		for ( i = 0 ; i < nSampleNum ; i++ )
 		{
 			
@@ -76,21 +76,21 @@ public:
 	}
 
 	/* 最小公倍数;*/  
-	static int CommonMultiple(int m, int n) //lhx 08-1-18
+	static UINT CommonMultiple(UINT m, UINT n) //lhx 08-1-18
 	{
-		int   temp=m*n/CommonDivisor(m,n);  
+		UINT   temp=m*n/CommonDivisor(m,n);  
 		return   temp;  
 
 	}
 
 	/* 最大公约 */
-	static int CommonDivisor(int m, int n)//lhx 08-1-18
+	static UINT CommonDivisor(UINT m, UINT n)//lhx 08-1-18
 	{
-		if(n==0)  
+		if(n==0)  {
 			return  m;  
-		else  
-			CommonDivisor(n,m%n);  
-
+		} else {
+			return CommonDivisor(n,m%n);  
+		}
 	}
 
 };
