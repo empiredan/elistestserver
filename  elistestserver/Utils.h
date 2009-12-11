@@ -93,6 +93,18 @@ public:
 		}
 	}
 
+	static int modeSize(int word) { 
+		int size; 
+		size = word * 2; 
+
+		if (size % 4) { 
+			size = size / 4 + 1; 
+		} else {
+			size /= 4; 
+		}
+		return size * 4; 
+	} 
+
 };
 
 #endif

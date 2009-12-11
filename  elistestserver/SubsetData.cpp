@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "SubsetData.h"
 
+#include "ELISTestServerDlg.h"
 CSubsetData::CSubsetData(void)
 {
 	//此处加入计算subsetdata body长度的代码要根据
@@ -35,6 +36,9 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 	//
 	UINT i;
 	for(i = 0; i < assist->actNum; i++) {
+		assist->heads[i].currentDepth = assist->dataFileBuf->m_pdlg->GetCurrentDepth();
+		assist->heads[i].currentTime = assist->dataFileBuf->m_pdlg->GetCurrentTestTime();
+		
 		setData((BUF_TYPE*)&assist->heads[i], assist->getRTCBlockDataHeaderSize());
 		//totalSizeOfSubsetsPerReturn里应已经包含了subset头的两个long的长度
 		setData(assist->dataFileBuf->getNextDataPointer(), assist->assist.totalSizeOfSubsetsPerReturn[i]);

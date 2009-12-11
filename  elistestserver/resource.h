@@ -61,6 +61,8 @@
 #define IDC_STATIC_SPEED_SHOW_VALUE     1041
 #define IDC_STATIC_SPEED                1042
 #define IDC_BUTTON_START_LOG            1043
+#define IDC_RADIO_METRIC                1044
+#define IDC_RADIO_IMPERIAL              1045
 
 // Next default values for new objects
 // 
@@ -68,7 +70,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1044
+#define _APS_NEXT_CONTROL_VALUE         1046
 #define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif

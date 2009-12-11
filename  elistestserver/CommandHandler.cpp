@@ -341,7 +341,7 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	//和接口函数
 	if((oldmode == RtcSYS_STANDBY_CMD || oldmode == RtcSYS_RECSTART_CMD) && 
 		(dlg->wms->mode != RtcSYS_STANDBY_CMD && dlg->wms->mode != RtcSYS_RECSTART_CMD)) {
-		dlg->EnableStartLog(FALSE);
+		//dlg->EnableStartLog(FALSE);//改在StopLogTimer里做了
 		dlg->StopLogTimer();
 	}
 

@@ -38,6 +38,8 @@ class CELISTestServerDlg : public CDialog
 {
 // Construction
 public:
+	UINT getCurrentDepthDU();
+	int getMeasure();
 	CELISTestServerDlg(CWnd* pParent = NULL);	// standard constructor
 	virtual ~CELISTestServerDlg();
 
@@ -80,6 +82,7 @@ public:
 	CString m_trueDepthStr;
 	CString m_currentDepthStr;
 	CString m_currentTimeStr;
+	int m_measure;
 
 	CSubsetDataAssister* m_subsetAssister;
 	CDataFileBuf* m_dataFileBuf;
@@ -159,6 +162,8 @@ protected:
 	afx_msg void OnButtonSpeed();
 	afx_msg void OnButtonStartLog();
 	afx_msg void OnButtonTrueDepth();
+	afx_msg void OnRadioImperial();
+	afx_msg void OnRadioMetric();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

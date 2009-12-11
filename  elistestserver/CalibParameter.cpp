@@ -40,3 +40,28 @@ int CCalibParameter::getSubsetNo()
 	int subsetNo=cmd&15;
 	return subsetNo;
 }
+
+UINT CCalibParameter::calulcateSubsetFrontSize() {
+	UINT m2 = CUtils::modeSize(cpara.m_nM2Length);
+	UINT m5 = CUtils::modeSize(cpara.m_nM2Length);
+	UINT m7 = CUtils::modeSize(cpara.m_nM2Length);
+
+	subsetFrontSize = (m2 + m5 + m7 + 2*sizeof(short));
+
+	return subsetFrontSize;
+	//2*sizeof(short)是CALIB数据返回时，那个subset前面两个short类型变量：
+	//status和time, 跟log的subset不同这两个地方用的不是两个long，而是两个
+	//short即，1个long
+}
+UINT CCalibParameter::calulcateSubsetMasterSize() {
+	UINT m2 = CUtils::modeSize(cpara.m_nM2Length);
+	UINT m5 = CUtils::modeSize(cpara.m_nM2Length);
+	UINT m7 = CUtils::modeSize(cpara.m_nM2Length);
+
+	subsetMasterSize = (m2 + m5 + m7 + 2*sizeof(ULONG));
+
+	return subsetMasterSize;
+	//2*sizeof(ULONG)是主控机记录CALIB数据时，那个subset前面两个long类型变量：
+	//status和time, 跟calib的反馈的subset不同这两个地方用的是两个long，而不是两个
+	//short
+}

@@ -70,21 +70,14 @@ void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed
 	ULONG i;
 	ULONG lcm, gcd;
 
-	UINT *depth, *time;
+	UINT lcmgcd[2];
+
+	calculateLCMGCD(lcmgcd);
+	
+	lcm = lcmgcd[0];
+	gcd = lcmgcd[1];
+
 	UINT totalSubsets;
-
-	depth = new UINT[actNum];
-	time = new UINT[actNum];
-
-	for(i = 0; i < actNum; i++) {
-		depth[i] = pSaList[i].depthSampleRate;
-		time[i] = pSaList[i].timeInterval;
-	}
-	lcm = CUtils::GetCommonMultipler(time, actNum);
-	gcd = CUtils::GetCommonDivider(depth, actNum);
-
-	ASSERT(lcm > 0);
-	ASSERT(gcd > 0);
 
 	if(workState == RtcSYS_STANDBY_CMD) {//timeģʽ
 		assist->assist.logTimerElapse = lcm;
@@ -121,4 +114,38 @@ void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed
 		assist->heads[i].actSwitch = 111;
 		assist->heads[i].currentTime = 0;
 	}
+}
+void CActTable::calculateLCMGCD(UINT lcmgcd[]) {
+	UINT *depth = new UINT[actNum];
+	UINT *time = new UINT[actNum];
+
+	UINT i;
+	for(i = 0; i < actNum; i++) {
+		depth[i] = pSaList[i].depthSampleRate;
+		time[i] = pSaList[i].timeInterval;
+	}
+	lcmgcd[0] = CUtils::GetCommonMultipler(time, actNum);
+	lcmgcd[1] = CUtils::GetCommonDivider(depth, actNum);
+
+	ASSERT(lcmgcd[0] > 0);
+	ASSERT(lcmgcd[1] > 0);
+
+	delete []depth;
+	delete []time;
+} 
+
+UINT CActTable::getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState) {
+	UINT rtn;
+
+	UINT lcmgcd[2];
+
+	calculateLCMGCD(lcmgcd);
+
+	if(workState == RtcSYS_STANDBY_CMD) {//timeģʽ
+		assist->assist.logTimerElapse = lcmgcd[0];
+	} else if(workState == RtcSYS_RECSTART_CMD) {//depthģʽ
+		assist->assist.logTimerElapse = (UINT)(1000/(speed*lcmgcd[1]));
+	}
+	rtn = assist->assist.logTimerElapse;
+	return rtn;
 }
