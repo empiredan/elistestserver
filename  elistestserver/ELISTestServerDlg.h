@@ -71,7 +71,7 @@ public:
 	CCalibSubset* calibsubset;
 
 	ULONG m_dataFileBufSize;
-	BOOL m_actDataFileEnabled;
+	BOOL m_actDataFileEnabled;//检查数据文件路径是否更新
 	BOOL m_calverDataFileEnabled;
 
     CString m_currentWorkStateStr;
@@ -114,7 +114,7 @@ public:
 
 	void SetCurrentWorkState();
 	void SetDirection();
-	void SetCurrentTime(UINT ct);
+	void SetCurrentTestTime(UINT ct);
 	void SetCurrentDepth(float cp);
 	float GetCurrentDepth();
 	UINT GetCurrentTestTime();
