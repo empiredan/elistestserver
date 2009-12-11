@@ -45,7 +45,7 @@ public:
 	void create(UINT actNum);
 
 	void setDataFileBuf(CDataFileBuf* cdfb){
-		dataFileBuf=cdfb;
+		dataFileBuf = cdfb;
 	}
 
 	UINT getRTCBlockDataHeaderSize() {

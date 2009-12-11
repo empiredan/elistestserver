@@ -5,7 +5,7 @@
 #include "ELISTestServer.h"
 #include "ELISTestServerDlg.h"
 #include "errno.h"
-
+#include "commands.h"
 //#include "stdio.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -96,6 +96,7 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	m_dataFileBuf=new CDataFileBuf(this);
 	m_subsetAssister->setDataFileBuf(m_dataFileBuf);
 
+	m_measure=0;
 	
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -260,6 +261,8 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_SPEED, OnButtonSpeed)
 	ON_BN_CLICKED(IDC_BUTTON_START_LOG, OnButtonStartLog)
 	ON_BN_CLICKED(IDC_BUTTON_TRUE_DEPTH, OnButtonTrueDepth)
+	ON_BN_CLICKED(IDC_RADIO_IMPERIAL, OnRadioImperial)
+	ON_BN_CLICKED(IDC_RADIO_METRIC, OnRadioMetric)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -308,6 +311,8 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	m_tabMyTabCtrl.m_dlgCalVer->setCElisTestServerDlg(this);
 
 	OnButtonDataBufferSize();
+
+	((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
 	
 	cmdh.start();
 	msgs.start();
@@ -807,4 +812,37 @@ void CELISTestServerDlg::OnButtonTrueDepth()
 	m_trueDepth=atof(m_trueDepthStr);
 	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr);
 
+}
+
+void CELISTestServerDlg::OnRadioImperial() 
+{
+	// TODO: Add your control notification handler code here
+	m_measure=0;
+	
+}
+
+void CELISTestServerDlg::OnRadioMetric() 
+{
+	// TODO: Add your control notification handler code here
+	m_measure=1;
+	
+}
+
+int CELISTestServerDlg::getMeasure()
+{
+	return m_measure;
+}
+
+UINT CELISTestServerDlg::getCurrentDepthDU()
+{
+	float currentDepth;
+	if (m_measure)
+	{
+		currentDepth=GetCurrentDepth()*METRIC_DU;
+	} 
+	else
+	{
+		currentDepth=GetCurrentDepth()*IMPERIAL_DU;
+	}
+	return (UINT)currentDepth;
 }

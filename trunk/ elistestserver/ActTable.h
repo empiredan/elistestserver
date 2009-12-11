@@ -80,9 +80,10 @@ public:
 		return (2*sizeof(ULONG) + modeSize(m2Length)+ modeSize(m5Length) + modeSize(m7Length));
 	}
 public:
-
 	void buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
-
+	UINT getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState);
+private:
+	void calculateLCMGCD(UINT lcmgcd[]);
 };
 
 

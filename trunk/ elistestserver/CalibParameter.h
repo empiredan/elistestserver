@@ -12,6 +12,9 @@
 #include "commands.h"
 #include "Data.h"
 
+#include "SubsetDataAssister.h"
+#include "Utils.h"
+
 class CCalibParameter  
 {
 public:
@@ -24,6 +27,8 @@ public:
 		int		m_nM7Length;
 	} CALIB_PARA;
 	CALIB_PARA cpara;
+	UINT subsetFrontSize;
+	UINT subsetMasterSize;
 public:
 	CCalibParameter(BUF_TYPE *buf, ULONG len);
 	virtual ~CCalibParameter();
@@ -38,6 +43,8 @@ public:
 	}
 	int getToolADDR();
 	int getSubsetNo(); 
+	UINT calulcateSubsetFrontSize();
+	UINT calulcateSubsetMasterSize();
 };
 
 #endif // !defined(AFX_CALIBPARAMETER_H__74E69434_4E47_4DB2_B4EB_EAA103C12C95__INCLUDED_)
