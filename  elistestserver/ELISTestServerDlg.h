@@ -44,7 +44,7 @@ public:
 	UINT m_sPort;
 	MySocket m_sListenSocket;
 	MySocket* m_psConnectSocket;
-	int m_rStatus;
+	UINT m_rStatus;
 
 	CString m_actListRootFolder;
 	CString m_calverListRootFolder;
@@ -78,6 +78,8 @@ public:
 	CString m_speedStr;
 	float m_trueDepth;
 	CString m_trueDepthStr;
+	CString m_currentDepthStr;
+	CString m_currentTimeStr;
 
 	CSubsetDataAssister* m_subsetAssister;
 	CDataFileBuf* m_dataFileBuf;
@@ -109,6 +111,10 @@ public:
 
 	void SetCurrentWorkState();
 	void SetDirection();
+	void SetCurrentTime(UINT ct);
+	void SetCurrentDepth(float cp);
+	float GetCurrentDepth();
+	UINT GetCurrentTestTime();
 
 	void EnableStartLog(BOOL enableButton);
 

@@ -184,7 +184,42 @@ void CELISTestServerDlg::SetDirection()
 	}
 	UpdateData(FALSE);
 }
-
+UINT CELISTestServerDlg::GetCurrentTestTime()
+{
+	UpdateData(TRUE);
+	UINT currentTime;
+	currentTime=atoi(m_currentTimeStr);
+	if (errno==ERANGE||errno==EINVAL)
+	{
+		currentTime=5;
+		
+	} 
+	
+	return currentTime;
+}
+void CELISTestServerDlg::SetCurrentTime(UINT ct)
+{
+	m_currentTimeStr.Format("%d",ct);
+	UpdateData(FALSE);
+}
+float CELISTestServerDlg::GetCurrentDepth()
+{
+	UpdateData(TRUE);
+	float currentDepth;
+	currentDepth=atof(m_currentDepthStr);
+	if (errno==ERANGE||errno==EINVAL)
+	{
+		currentDepth=5000;
+		
+	} 
+	
+	return currentDepth;
+}
+void CELISTestServerDlg::SetCurrentDepth(float cp)
+{
+	m_currentDepthStr.Format("%f",cp);
+	UpdateData(FALSE);
+}
 void CELISTestServerDlg::EnableStartLog(BOOL enableButton)
 {
 	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(enableButton);
@@ -202,6 +237,8 @@ void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CALVER_FOLDER, m_calverListRootFolder);
 	DDX_Text(pDX, IDC_STATIC_MODE_VALUE, m_currentWorkStateStr);
 	DDX_Text(pDX, IDC_STATIC_DIRECTION_VALUE, m_directionStr);
+	DDX_Text(pDX, IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE, m_currentDepthStr);
+	DDX_Text(pDX, IDC_STATIC_CURRENT_TIME_VALUE, m_currentTimeStr);
 	DDX_Text(pDX, IDC_EDIT_SPEED, m_speedStr);
 	DDX_Text(pDX, IDC_EDIT_TRUE_DEPTH, m_trueDepthStr);
 	//}}AFX_DATA_MAP
@@ -768,5 +805,6 @@ void CELISTestServerDlg::OnButtonTrueDepth()
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
 	m_trueDepth=atof(m_trueDepthStr);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr);
 
 }
