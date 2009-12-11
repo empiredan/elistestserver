@@ -72,12 +72,15 @@ void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed
 
 	UINT lcmgcd[2];
 
+
+
 	calculateLCMGCD(lcmgcd);
 	
 	lcm = lcmgcd[0];
 	gcd = lcmgcd[1];
 
 	UINT totalSubsets;
+
 
 	if(workState == RtcSYS_STANDBY_CMD) {//timeģʽ
 		assist->assist.logTimerElapse = lcm;

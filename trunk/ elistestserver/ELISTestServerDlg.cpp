@@ -188,19 +188,19 @@ void CELISTestServerDlg::SetDirection()
 UINT CELISTestServerDlg::GetCurrentTestTime()
 {
 	UpdateData(TRUE);
-	UINT currentTime;
-	currentTime=atoi(m_currentTimeStr);
+	float currentTime;
+	currentTime=atof(m_currentTimeStr);
 	if (errno==ERANGE||errno==EINVAL)
 	{
-		currentTime=5;
+		currentTime=5.0;
 		
 	} 
 	
-	return currentTime;
+	return (UINT)currentTime*1000;
 }
-void CELISTestServerDlg::SetCurrentTime(UINT ct)
+void CELISTestServerDlg::SetCurrentTestTime(UINT ct)
 {
-	m_currentTimeStr.Format("%d",ct);
+	m_currentTimeStr.Format("%10.2f",ct/1000.0);
 	UpdateData(FALSE);
 }
 float CELISTestServerDlg::GetCurrentDepth()
@@ -537,12 +537,14 @@ void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
 }
 void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
 	CreateTimer(LOGDATA_TIMER, uElapse);
+	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(FALSE);
 }
 void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
 	CreateTimer(DEPTH_TIMER, uElapse);
 }
 void CELISTestServerDlg::StopTimer(UINT_PTR nIDEvent) {
 	KillTimer(nIDEvent);
+	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(TRUE);
 }
 void CELISTestServerDlg::StopLogTimer() {
 	StopTimer(LOGDATA_TIMER);
@@ -573,6 +575,25 @@ void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
 }
 void CELISTestServerDlg::LogDataTimerHandler() {
 	//AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
+	if (m_actDataFileEnabled)
+	{
+		m_dataFileBuf->clear();
+		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
+		m_dataFileBuf->fillWithDataFile();
+	} 
+	UpdateData(TRUE);
+	int direction=wms->direction;
+	SetCurrentTestTime(GetCurrentTestTime()+(UINT)m_subsetAssister->assist.logTimerElapse);
+	if (wms->direction)
+	{
+		SetCurrentDepth(GetCurrentDepth()+m_speed*m_subsetAssister->assist.logTimerElapse);
+	} 
+	else
+	{
+		SetCurrentDepth(GetCurrentDepth()-m_speed*m_subsetAssister->assist.logTimerElapse);
+	}
+
+	
 	
 }
 void CELISTestServerDlg::DepthTimerHandler() {
@@ -612,14 +633,15 @@ void CELISTestServerDlg::SetCalibParameter(CCalibParameter *clibpara) {
 
 void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
 
-	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(TRUE);
-	
 	if(acttab != NULL) {
 		delete acttab;
 		acttab = NULL;
 	}
 	acttab = tb;
 	this->m_tabMyTabCtrl.m_dlgAct->setACTTable(acttab);
+	m_actDataFileEnabled=TRUE;
+	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(TRUE);
+
 /*
 	char bff[8192];
 
@@ -793,8 +815,22 @@ void CELISTestServerDlg::OnButtonSpeed()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
-
+	if (m_measure)
+	{
+		GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr+" m/s");
+	} 
+	else
+	{
+		GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr+" feet/s");
+	}
+	
 	m_speed=atof(m_speedStr);
+	if (errno==ERANGE||errno==EINVAL){
+		m_speed=0.5f;
+	}
+
+	KillTimer(LOGDATA_TIMER);
+	CreateLogTimer(acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode));
 
 	
 }
@@ -802,7 +838,9 @@ void CELISTestServerDlg::OnButtonSpeed()
 void CELISTestServerDlg::OnButtonStartLog() 
 {
 	// TODO: Add your control notification handler code here
-	
+	acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+	CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+	SetCurrentTestTime(0);
 }
 
 void CELISTestServerDlg::OnButtonTrueDepth() 
