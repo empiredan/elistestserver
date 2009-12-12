@@ -28,7 +28,11 @@ CWorkModeSetter::~CWorkModeSetter()
 void CWorkModeSetter::fillWorkMode(BUF_TYPE *buf, ULONG len) {
 	UINT32 *t;
 	t = (UINT32*)buf;
+	
+	oldMode = mode;
 	mode = ntohl(t[0]);
+
+	oldDirection = direction;
 	direction = ntohl(t[1]);
 }
 
