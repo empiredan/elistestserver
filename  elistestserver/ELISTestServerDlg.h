@@ -123,6 +123,7 @@ public:
 
 	CCalibSubset* getCalibSubset();
 
+	void HandleWorkStateChange();
 	//DWORD WINAPI WriteCmdRecvQueFunc(LPVOID lpParameter);
 
 // Dialog Data

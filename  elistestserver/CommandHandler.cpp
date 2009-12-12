@@ -34,7 +34,7 @@ DWORD CCommandHandler::handle(LPVOID param) {
 	ULONG *buft;
 	
 	//
-	char t[512];
+	//char t[512];
 	q = handler->dlg->getMasterDataQueue();
 	
 	while(!handler->finish) {
@@ -335,15 +335,12 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 
 	oldmode = dlg->wms->mode;
 	dlg->wms->fillWorkMode(bodyBuf, bodyLen);
+
 	//在fillWorkmode之后，应该执行一个更新界面上
 	//工作状态，方向等元素的命令
 	//要在CELISTestServerDlg中添加相应的变量
 	//和接口函数
-	if((oldmode == RtcSYS_STANDBY_CMD || oldmode == RtcSYS_RECSTART_CMD) && 
-		(dlg->wms->mode != RtcSYS_STANDBY_CMD && dlg->wms->mode != RtcSYS_RECSTART_CMD)) {
-		//dlg->EnableStartLog(FALSE);//改在StopLogTimer里做了
-		dlg->StopLogTimer();
-	}
+	dlg->HandleWorkStateChange();
 
 	CWorkMode *wm = new CWorkMode();
 	wm->setData((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));

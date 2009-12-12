@@ -527,6 +527,28 @@ void CELISTestServerDlg::OnButtonCancel()
 	DestroyWindow();
 }
 
+void CELISTestServerDlg::HandleWorkStateChange() {
+	//
+	switch(wms->mode) {
+	case RtcSYS_IDLE_CMD:
+		if((wms->oldMode == RtcSYS_STANDBY_CMD || wms->oldMode == RtcSYS_RECSTART_CMD)) {
+		//dlg->EnableStartLog(FALSE);//改在StopLogTimer里做了
+			StopLogTimer();
+		}
+		break;
+	case RtcSYS_STANDBY_CMD:
+		break;
+	case RtcSYS_RECSTART_CMD:
+		break;
+	case RtcSYS_CALIBSTART_CMD:
+		break;
+	case RtcSYS_TRAINSTART_CMD:
+		break;
+	default:
+		break;
+	}
+}
+
 CCalibSubset* CELISTestServerDlg::getCalibSubset()
 {
 	return calibsubset;
