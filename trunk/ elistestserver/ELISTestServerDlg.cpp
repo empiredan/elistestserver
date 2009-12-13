@@ -540,6 +540,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 	case RtcSYS_STANDBY_CMD:
 		/*DataFileBuf有bug调试先注释掉,091013
 		if(acttab != NULL) {
+			StopLogTimer();
 			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 			SetCurrentTestTime(0);
@@ -552,6 +553,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 	case RtcSYS_RECSTART_CMD:
 		/*DataFileBuf有bug调试先注释掉,091013
 		if(acttab != NULL) {
+			StopLogTimer();
 			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 			
