@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "ELISTestServer.h"
+//#include "ELISTestServerDlg.h"
 #include "SubsetDataAssister.h"
 
 #ifdef _DEBUG
@@ -11,6 +12,8 @@
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
+
+class CELISTestServerDlg;
 
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
@@ -55,4 +58,35 @@ void CSubsetDataAssister::create(UINT actNum)
 
 	this->actNum = actNum;
 	created = TRUE;
+}
+
+
+void CSubsetDataAssister::Save(CFile &log) {
+	char bout[4096];
+	ULONG i;
+
+	sprintf(bout, "logTimerElapse:%d\n", assist.logTimerElapse);
+	log.Write(bout, strlen(bout));
+
+	sprintf(bout, "subsetNumPerReturn[%d~%d]:", 0, actNum-1);
+	for(i = 0; i < actNum-1; i++) {
+		sprintf(bout, "%s%d,", bout, assist.subsetNumPerReturn[i]);
+	}
+	sprintf(bout, "%s%d\n", bout, assist.subsetNumPerReturn[i]);
+	log.Write(bout, strlen(bout));
+	
+	sprintf(bout, "totalSizeOfSubsetsPerReturn[%d~%d]:", 0, actNum-1);
+	for(i = 0; i < actNum-1; i++) {
+		sprintf(bout, "%s%d,", bout, assist.totalSizeOfSubsetsPerReturn[i]);
+	}
+	sprintf(bout, "%s%d\n", bout, assist.totalSizeOfSubsetsPerReturn[i]);
+	log.Write(bout, strlen(bout));
+
+	sprintf(bout, "shareOfCommonBuffer[%d~%d]:", 0, actNum-1);
+	for(i = 0; i < actNum-1; i++) {
+		sprintf(bout, "%s%f,", bout, assist.shareOfCommonBuffer[i]);
+	}
+	sprintf(bout, "%s%f\n", bout, assist.shareOfCommonBuffer[i]);
+	log.Write(bout, strlen(bout));
+	log.Flush();
 }

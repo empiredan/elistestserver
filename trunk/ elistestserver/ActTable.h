@@ -61,8 +61,8 @@ public:
 		}
 	}
 	
-	int modeSize(int word) { 
-		int size; 
+	UINT32 modeSize(UINT32 word) { 
+		UINT32 size, rtn; 
 		size = word * 2; 
 
 		if (size % 4) { 
@@ -70,20 +70,30 @@ public:
 		} else {
 			size /= 4; 
 		}
-		return size * 4; 
+
+		rtn = size *4;
+		return rtn; 
 	} 
 
-	UINT subsetSize(UINT i) {
-		UINT m2Length = pSaList[i].m2Length;
-		UINT m5Length = pSaList[i].m5Length;
-		UINT m7Length = pSaList[i].m7Length;
-		return (2*sizeof(ULONG) + modeSize(m2Length)+ modeSize(m5Length) + modeSize(m7Length));
+	UINT32 subsetSize(UINT i) {
+		UINT32 m2Length = pSaList[i].m2Length;
+		UINT32 m5Length = pSaList[i].m5Length;
+		UINT32 m7Length = pSaList[i].m7Length;
+		UINT32 m2,m5,m7,ul,rtn;
+		m2 = modeSize(m2Length);
+		m5 = modeSize(m5Length);
+		m7 = modeSize(m7Length);
+		ul = 2*sizeof(ULONG);
+		rtn = ul + m2 + m5 + m7;
+		return rtn;
 	}
 public:
 	void buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
 	UINT getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState);
 private:
 	void calculateLCMGCD(UINT lcmgcd[]);
+public:
+	void Save(CFile &log);
 };
 
 

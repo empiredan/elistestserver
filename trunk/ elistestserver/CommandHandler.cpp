@@ -226,12 +226,14 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	tb = CActTable::AllocateActTable((d->buf)+headSize, d->contentlen-headSize);
 	tb->ConvertData();
 	dlg->SetACTTable(tb);
-	//tb->MaximumCommonSampleRate(rate);
 
-	//最后所有的解析和设置都好了之后
-	//用新计算得到的logTimerInterval值重新启动log timer
-	//dlg->StopLogTimer();
-	//dlg->CreateLogTimer(logTimerInterval);
+	//下面的代码是用来调试的，正常运行时应关闭
+	CSubsetDataAssister *sda = new CSubsetDataAssister();
+	tb->buildSubsetDataAssister(sda, 0.5, (UINT32)0x03000000);
+	tb->Save(dlg->log);
+	sda->Save(dlg->log);
+	//调试代码结束
+
 	
 	//别忘了在这里要delete CMasterData类型的指针d。
 	//因为原则上，这里把这个收到的前端机发送过来的数据
