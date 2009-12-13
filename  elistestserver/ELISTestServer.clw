@@ -13,18 +13,18 @@ Class2=CELISTestServerDlg
 Class3=CAboutDlg
 
 ResourceCount=5
-Resource1=IDD_TAB_ACT
+Resource1=IDD_ELISTESTSERVER_DIALOG
 Resource2=IDR_MAINFRAME
-Resource3=IDD_ABOUTBOX
+Resource3=IDD_TAB_ACT
 Class4=TabAct
 <<<<<<< .mine
 <<<<<<< .mine
-Resource4=IDD_ELISTESTSERVER_DIALOG
+Resource4=IDD_ABOUTBOX
 =======
-Resource4=IDD_ELISTESTSERVER_DIALOG
+Resource4=IDD_ABOUTBOX
 >>>>>>> .r53
 =======
-Resource4=IDD_ELISTESTSERVER_DIALOG
+Resource4=IDD_ABOUTBOX
 >>>>>>> .r50
 Class5=TabCalVer
 Class6=MyTabCtrl
