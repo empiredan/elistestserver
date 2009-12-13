@@ -54,10 +54,10 @@ DWORD CMessageSender::handle(LPVOID param) {
 				;
 			}
 			delete d;
-			t = (ULONG*)d->buf;
-			sprintf(oo, "Send discard cmdType:%lx\n",t[0]);
-			handler->dlg->log.Write(oo, strlen(oo));
-			handler->dlg->log.Flush();
+			//t = (ULONG*)d->buf;
+			//sprintf(oo, "Send discard cmdType:%lx\n",t[0]);
+			//handler->dlg->log.Write(oo, strlen(oo));
+			//handler->dlg->log.Flush();
 			continue;
 		} else {
 			t = (ULONG*)d->buf;

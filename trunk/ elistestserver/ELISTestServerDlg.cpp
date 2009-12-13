@@ -527,19 +527,36 @@ void CELISTestServerDlg::OnButtonCancel()
 	DestroyWindow();
 }
 
+
 void CELISTestServerDlg::HandleWorkStateChange() {
 	//
 	switch(wms->mode) {
 	case RtcSYS_IDLE_CMD:
 		if((wms->oldMode == RtcSYS_STANDBY_CMD || wms->oldMode == RtcSYS_RECSTART_CMD)) {
-		//dlg->EnableStartLog(FALSE);//改在StopLogTimer里做了
 			StopLogTimer();
 		}
+		EnableStartLog(FALSE);
 		break;
 	case RtcSYS_STANDBY_CMD:
+		if(acttab != NULL) {
+			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+			SetCurrentTestTime(0);
+			EnableStartLog(TRUE);
+		} else {
+			AfxMessageBox(_T("RtcSYS_STANDBY_CMD，但ActTable未初始化"));
+		}
 		break;
 	case RtcSYS_RECSTART_CMD:
-		break;
+		if(acttab != NULL) {
+			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+			
+			SetCurrentTestTime(0);
+			EnableStartLog(TRUE);
+		} else {
+			AfxMessageBox(_T("RtcSYS_RECSTART_CMD，但ActTable未初始化"));
+		}break;
 	case RtcSYS_CALIBSTART_CMD:
 		break;
 	case RtcSYS_TRAINSTART_CMD:
@@ -850,19 +867,37 @@ void CELISTestServerDlg::OnButtonSpeed()
 	if (errno==ERANGE||errno==EINVAL){
 		m_speed=0.5f;
 	}
-
-	KillTimer(LOGDATA_TIMER);
-	CreateLogTimer(acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode));
-
-	
 }
 
+/*
+这个按钮的响应改成：
+修改速度后，启用新的速度进行log数据的传输。
+首先在速度框里输入新速度值，点击其后面的Set
+按钮后，新速度值显示在当前速度指示的label上。
+此时再点击“以新速度进行log”按钮，则logtimer
+会在新修改的速度上执行数据返回。
+用户点击速度文本框后的Set按钮时，应保证把新的速度
+存到成员变量m_speed中。
+这个button只有当工作状态处在log数据返回状态：
+RtcSYS_STANDBY_CMD、RtcSYS_RECSTART_CMD，且
+已经初始化了服务表后才起作用
+*/
 void CELISTestServerDlg::OnButtonStartLog() 
 {
 	// TODO: Add your control notification handler code here
-	acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
-	CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-	SetCurrentTestTime(0);
+	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
+		//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		//
+		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode);
+		StopLogTimer();
+		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+		//SetCurrentTestTime(0);
+	} else {
+		if(acttab != NULL) {
+			acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode);
+		}
+		AfxMessageBox(_T("新速度已生效，系统当前状态不是StandBy Time或Record Time"));
+	}
 }
 
 void CELISTestServerDlg::OnButtonTrueDepth() 
