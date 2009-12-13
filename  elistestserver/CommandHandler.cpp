@@ -230,8 +230,8 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 
 	//最后所有的解析和设置都好了之后
 	//用新计算得到的logTimerInterval值重新启动log timer
-	dlg->StopLogTimer();
-	dlg->CreateLogTimer(logTimerInterval);
+	//dlg->StopLogTimer();
+	//dlg->CreateLogTimer(logTimerInterval);
 	
 	//别忘了在这里要delete CMasterData类型的指针d。
 	//因为原则上，这里把这个收到的前端机发送过来的数据
@@ -244,7 +244,7 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	delete d;
 	
 	char logdata[1024];
-	sprintf(logdata, "CCommandHandler::InitServerTable\n");
+	sprintf(logdata, "CCommandHandler::InitServiceTable\n");
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
 }
@@ -336,21 +336,17 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	oldmode = dlg->wms->mode;
 	dlg->wms->fillWorkMode(bodyBuf, bodyLen);
 
-	//在fillWorkmode之后，应该执行一个更新界面上
-	//工作状态，方向等元素的命令
-	//要在CELISTestServerDlg中添加相应的变量
-	//和接口函数
-	dlg->HandleWorkStateChange();
 
 	CWorkMode *wm = new CWorkMode();
 	wm->setData((BUF_TYPE*)&dlg->wms->mode, sizeof(UINT32));
 	char logdata[1024];
-
+	sprintf(logdata, "NetCmd_CtrlWorkState,received cmd:%lx, state:%lx, direction:%d\n",
+		cmdType, dlg->wms->mode, dlg->wms->direction);
+	dlg->log.Write(logdata, strlen(logdata));
 	rtnh = (ULONG*)wm->buf;
 	conts = (UINT32*)(wm->buf+2*sizeof(ULONG));
-	dlg->SetCurrentWorkState();
-	dlg->SetDirection();
-	sprintf(logdata, "NetCmd_CtrlWorkState,cmd:%lx,size:%d,conts:%lx\n",rtnh[0], rtnh[1], conts[0]);
+	sprintf(logdata, "NetCmd_CtrlWorkState,return cmd:%lx,size:%d,conts:%lx\n",rtnh[0], rtnh[1], conts[0]);
+
 
 	dlg->log.Write(logdata, strlen(logdata));
 	//sprintf(logdata, "NetCmd_CtrlWorkState,在fillWorkmode之后，应该执行一个更新界面上");
@@ -359,6 +355,16 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	dlg->log.Flush();
 
 	dlg->getFrontDataQueue()->enQueue(wm);
+
+	//在反馈了应答之后，应该执行一个更新界面上
+	//工作状态，方向等元素的命令
+	//要在CELISTestServerDlg中添加相应的变量
+	//和接口函数
+	//dlg->SetCurrentWorkState();//这里有bug，要检查091213
+	//dlg->SetDirection();
+
+	//最后执行工作状态改变后在新状态下应该做的事
+	dlg->HandleWorkStateChange();
 }
 void CCommandHandler::NetCmd_SetStandbyTimeInterval(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
