@@ -16,16 +16,7 @@ ResourceCount=5
 Resource1=IDD_TAB_ACT
 Resource2=IDR_MAINFRAME
 Resource3=IDD_ELISTESTSERVER_DIALOG
-Class4=TabAct
-<<<<<<< .mine
-<<<<<<< .mine
-Resource4=IDD_ABOUTBOX
-=======
-Resource4=IDD_ABOUTBOX
->>>>>>> .r53
-=======
-Resource4=IDD_ABOUTBOX
->>>>>>> .r50
+Resource4=IDD_TAB_ACT
 Class5=TabCalVer
 Class6=MyTabCtrl
 Class7=MySocket
