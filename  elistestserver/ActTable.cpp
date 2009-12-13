@@ -73,7 +73,6 @@ void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed
 	UINT lcmgcd[2];
 
 
-
 	calculateLCMGCD(lcmgcd);
 	
 	lcm = lcmgcd[0];
@@ -151,4 +150,30 @@ UINT CActTable::getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT
 	}
 	rtn = assist->assist.logTimerElapse;
 	return rtn;
+}
+
+void CActTable::Save(CFile &log) {
+	char bout[4096];
+	ULONG i;
+
+	sprintf(bout, "ActTable.actNum:%d,nDepthInterruptMode:%d\n", actNum,nDepthInterruptMode);
+	log.Write(bout, strlen(bout));
+
+	sprintf(bout, "");
+	for(i = 0; i < actNum; i++) {
+		sprintf(bout, "%spSaList[%d]\t", bout, i);
+		sprintf(bout, "%sactNo:%d,", bout, pSaList[i].actNo);
+		sprintf(bout, "%sswitchOn:%d,", bout, pSaList[i].switchOn);
+		sprintf(bout, "%sactDone:%d,", bout, pSaList[i].actDone);
+		sprintf(bout, "%sdepthSampleRate:%d,", bout, pSaList[i].depthSampleRate);
+		sprintf(bout, "%stimeInterval:%d,", bout, pSaList[i].timeInterval);
+		sprintf(bout, "%stoolAddress:%d,", bout, pSaList[i].toolAddress);
+		sprintf(bout, "%ssubsetNo:%d,", bout, pSaList[i].subsetNo);
+		sprintf(bout, "%sdelay:%d,", bout, pSaList[i].delay);
+		sprintf(bout, "%sm2Length:%d,", bout, pSaList[i].m2Length);
+		sprintf(bout, "%sm5Length:%d,", bout, pSaList[i].m5Length);
+		sprintf(bout, "%sm7Length:%d\n", bout, pSaList[i].m7Length);
+	}
+	log.Write(bout, strlen(bout));
+	log.Flush();
 }

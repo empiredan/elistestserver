@@ -10,6 +10,8 @@
 #endif // _MSC_VER > 1000
 
 #include "DataFileBuf.h"
+
+
 class CSubsetDataAssister  
 {
 public:
@@ -62,6 +64,8 @@ public:
 		size += sizeof(ULONG);//×Ü×´Ì¬,longÀàÐÍ
 		return size;
 	}
+public:
+	void Save(CFile &log);
 };
 
 #endif // !defined(AFX_SUBSETDATAASSISTER_H__628DED63_614B_44BF_8069_0C2A62485016__INCLUDED_)

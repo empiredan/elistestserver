@@ -538,6 +538,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		EnableStartLog(FALSE);
 		break;
 	case RtcSYS_STANDBY_CMD:
+		/*DataFileBuf有bug调试先注释掉,091013
 		if(acttab != NULL) {
 			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
@@ -546,8 +547,10 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		} else {
 			AfxMessageBox(_T("RtcSYS_STANDBY_CMD，但ActTable未初始化"));
 		}
+		*/
 		break;
 	case RtcSYS_RECSTART_CMD:
+		/*DataFileBuf有bug调试先注释掉,091013
 		if(acttab != NULL) {
 			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
@@ -556,7 +559,9 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 			EnableStartLog(TRUE);
 		} else {
 			AfxMessageBox(_T("RtcSYS_RECSTART_CMD，但ActTable未初始化"));
-		}break;
+		}
+		*/
+		break;
 	case RtcSYS_CALIBSTART_CMD:
 		break;
 	case RtcSYS_TRAINSTART_CMD:
@@ -576,14 +581,12 @@ void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
 }
 void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
 	CreateTimer(LOGDATA_TIMER, uElapse);
-	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(FALSE);
 }
 void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
 	CreateTimer(DEPTH_TIMER, uElapse);
 }
 void CELISTestServerDlg::StopTimer(UINT_PTR nIDEvent) {
 	KillTimer(nIDEvent);
-	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(TRUE);
 }
 void CELISTestServerDlg::StopLogTimer() {
 	StopTimer(LOGDATA_TIMER);
