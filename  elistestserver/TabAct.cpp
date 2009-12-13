@@ -158,17 +158,18 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 						if (openActDataFileDlg.DoModal()==IDOK)
 						{
 							strFilePath=openActDataFileDlg.GetPathName();
-							UINT32* dataFileHeader;
+							UINT32 dataFileHeader[3];
 							CFile dataFile(strFilePath, CFile::modeRead);
-							BUF_TYPE* dataFileHeaderBuf=NULL;
+							BUF_TYPE dataFileHeaderBuf[sizeof(UINT32)*3];
 							dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
 							dataFile.Close();
-							dataFileHeader=(UINT32*)dataFileHeaderBuf;
+							//dataFileHeader=(UINT32*)dataFileHeaderBuf;
+							memcpy(dataFileHeader, dataFileHeaderBuf, sizeof(UINT32)*3);
 							UINT32 toolADDR=dataFileHeader[0];
 							UINT32 subsetNo=dataFileHeader[1];
 							UINT32 dataType=dataFileHeader[2];
-							if (toolADDR==m_listctrlAct.GetItemText(rowNo, 1)
-								&& subsetNo==m_listctrlAct.GetItemText(rowNo, 2)
+							if (toolADDR==atoi(m_listctrlAct.GetItemText(rowNo, 1))
+								&& subsetNo==atoi(m_listctrlAct.GetItemText(rowNo, 2))
 								&& dataType==0)//文件格式匹配
 							{
 								if (m_listctrlAct.GetItemText(rowNo, 5)!=strFilePath)
