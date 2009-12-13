@@ -117,23 +117,60 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 				sprintf(t, "%s", "Cal/Ver数据文件目录不能为空!");
 				AfxMessageBox(_T(t));
 			}else{
-
-				WIN32_FIND_DATA fd;
-				HANDLE hFind = FindFirstFile(calverListRootFolder, &fd);
-				if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
-					//目录存在
-					CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
-					openActDataFileDlg.m_ofn.lpstrInitialDir=calverListRootFolder;
-					CString strFilePath;
-					if (openActDataFileDlg.DoModal()==IDOK)
-					{
-						strFilePath=openActDataFileDlg.GetPathName();
-						m_listctrlCalVer.SetItemText(rowNo, 3, strFilePath);
-					}
-				}else{
+				if (this->m_pELISTestServerDlg->m_dataFileBufSize<=0)
+				{
 					char t[50];
-					sprintf(t, "%s", "此目录已不存在!");
+					sprintf(t, "%s", "数据缓冲区大小必须大于0!");
 					AfxMessageBox(_T(t));
+				}else{
+
+					WIN32_FIND_DATA fd;
+					HANDLE hFind = FindFirstFile(calverListRootFolder, &fd);
+					if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
+						//目录存在
+						CFileDialog openActDataFileDlg(TRUE, NULL, NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT|OFN_FILEMUSTEXIST, "All Files(*.*)|*.*||", this);
+						openActDataFileDlg.m_ofn.lpstrInitialDir=calverListRootFolder;
+						CString strFilePath;
+						if (openActDataFileDlg.DoModal()==IDOK)
+						{
+							strFilePath=openActDataFileDlg.GetPathName();
+							UINT32 dataFileHeader[3];
+							CFile dataFile(strFilePath, CFile::modeRead);
+							BUF_TYPE dataFileHeaderBuf[sizeof(UINT32)*3];
+							dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
+							dataFile.Close();
+							//dataFileHeader=(UINT32*)dataFileHeaderBuf;
+							memcpy(dataFileHeader, dataFileHeaderBuf, sizeof(UINT32)*3);
+							UINT32 toolADDR=dataFileHeader[0];
+							UINT32 subsetNo=dataFileHeader[1];
+							UINT32 dataType=dataFileHeader[2];
+							if (toolADDR==atoi(m_listctrlCalVer.GetItemText(rowNo, 1))
+								&& subsetNo==atoi(m_listctrlCalVer.GetItemText(rowNo, 2))
+								&& dataType==1)//文件格式匹配
+							{
+								if (m_listctrlCalVer.GetItemText(rowNo, 3)!=strFilePath)
+								{
+									this->m_pELISTestServerDlg->m_calverDataFileEnabled=TRUE;
+									m_listctrlCalVer.SetItemText(rowNo, 3, strFilePath);
+								} 
+								else
+								{
+									this->m_pELISTestServerDlg->m_calverDataFileEnabled=FALSE;
+								}
+							} 
+							else
+							{
+								char t[50];
+								sprintf(t, "%s", "文件选择错误,请重新选择!");
+								AfxMessageBox(_T(t));
+								}
+							
+						}
+					}else{
+						char t[50];
+						sprintf(t, "%s", "此目录已不存在!");
+						AfxMessageBox(_T(t));
+					}
 				}
 			}
 			
