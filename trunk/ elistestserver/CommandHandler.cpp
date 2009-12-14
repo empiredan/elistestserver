@@ -228,7 +228,7 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	dlg->SetACTTable(tb);
 
 	//下面的代码是用来调试的，正常运行时应关闭
-	CSubsetDataAssister *sda = new CSubsetDataAssister();
+	/*CSubsetDataAssister *sda = new CSubsetDataAssister();
 	tb->buildSubsetDataAssister(sda, 0.5, (UINT32)0x03000000);
 	tb->Save(dlg->log);
 	sda->Save(dlg->log);
@@ -237,6 +237,7 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	csd->setCommandHeader(sda);
 	csd->setSubsetData(sda, tb);
 	csd->Save(sda, dlg->log);
+	*/
 	//调试代码结束
 
 	

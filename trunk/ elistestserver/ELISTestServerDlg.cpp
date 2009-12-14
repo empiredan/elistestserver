@@ -97,6 +97,8 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	m_subsetAssister->setDataFileBuf(m_dataFileBuf);
 
 	m_measure=0;
+	m_speed=0.5f;
+	m_trueDepth=500;
 	
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -166,8 +168,8 @@ void CELISTestServerDlg::SetCurrentWorkState()
 		break;
 	}
 	
-	
-	UpdateData(FALSE);
+	GetDlgItem(IDC_STATIC_MODE_VALUE)->SetWindowText(m_currentWorkStateStr);
+	//UpdateData(FALSE);
 	
 }
 void CELISTestServerDlg::SetDirection()
@@ -183,11 +185,13 @@ void CELISTestServerDlg::SetDirection()
 		AfxMessageBox("方向数据错误!");
 		break;
 	}
-	UpdateData(FALSE);
+	GetDlgItem(IDC_STATIC_DIRECTION_VALUE)->SetWindowText(m_directionStr);
+	//UpdateData(FALSE);
 }
 UINT CELISTestServerDlg::GetCurrentTestTime()
 {
-	UpdateData(TRUE);
+	//UpdateData(TRUE);
+	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->GetWindowText(m_currentTimeStr);
 	float currentTime;
 	currentTime=atof(m_currentTimeStr);
 	if (errno==ERANGE||errno==EINVAL)
@@ -201,11 +205,14 @@ UINT CELISTestServerDlg::GetCurrentTestTime()
 void CELISTestServerDlg::SetCurrentTestTime(UINT ct)
 {
 	m_currentTimeStr.Format("%10.2f",ct/1000.0);
-	UpdateData(FALSE);
+	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->SetWindowText(m_currentTimeStr);
+	//UpdateData(FALSE);
+
 }
 float CELISTestServerDlg::GetCurrentDepth()
 {
-	UpdateData(TRUE);
+	//UpdateData(TRUE);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->GetWindowText(m_currentDepthStr);
 	float currentDepth;
 	currentDepth=atof(m_currentDepthStr);
 	if (errno==ERANGE||errno==EINVAL)
@@ -219,7 +226,8 @@ float CELISTestServerDlg::GetCurrentDepth()
 void CELISTestServerDlg::SetCurrentDepth(float cp)
 {
 	m_currentDepthStr.Format("%f",cp);
-	UpdateData(FALSE);
+	//UpdateData(FALSE);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr);
 }
 void CELISTestServerDlg::EnableStartLog(BOOL enableButton)
 {
@@ -538,7 +546,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		EnableStartLog(FALSE);
 		break;
 	case RtcSYS_STANDBY_CMD:
-		/*DataFileBuf有bug调试先注释掉,091013
+		//DataFileBuf有bug调试先注释掉,091013
 		if(acttab != NULL) {
 			StopLogTimer();
 			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
@@ -548,7 +556,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		} else {
 			AfxMessageBox(_T("RtcSYS_STANDBY_CMD，但ActTable未初始化"));
 		}
-		*/
+		
 		break;
 	case RtcSYS_RECSTART_CMD:
 		/*DataFileBuf有bug调试先注释掉,091013
@@ -623,18 +631,19 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 	{
 		m_dataFileBuf->clear();
 		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
+		m_dataFileBuf->allocateDataFilePointer(m_subsetAssister->assist.shareOfCommonBuffer);
 		m_dataFileBuf->fillWithDataFile();
 	} 
-	UpdateData(TRUE);
+	//UpdateData(TRUE);
 	int direction=wms->direction;
 	SetCurrentTestTime(GetCurrentTestTime()+(UINT)m_subsetAssister->assist.logTimerElapse);
 	if (wms->direction)
 	{
-		SetCurrentDepth(GetCurrentDepth()+m_speed*m_subsetAssister->assist.logTimerElapse);
+		SetCurrentDepth(GetCurrentDepth()+m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
 	} 
 	else
 	{
-		SetCurrentDepth(GetCurrentDepth()-m_speed*m_subsetAssister->assist.logTimerElapse);
+		SetCurrentDepth(GetCurrentDepth()-m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
 	}
 
 	
