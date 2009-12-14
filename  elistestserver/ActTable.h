@@ -87,6 +87,18 @@ public:
 		rtn = ul + m2 + m5 + m7;
 		return rtn;
 	}
+	UINT32 subsetSizeNoHeader(UINT i) {
+		UINT32 m2Length = pSaList[i].m2Length;
+		UINT32 m5Length = pSaList[i].m5Length;
+		UINT32 m7Length = pSaList[i].m7Length;
+		UINT32 m2,m5,m7,ul,rtn;
+		m2 = modeSize(m2Length);
+		m5 = modeSize(m5Length);
+		m7 = modeSize(m7Length);
+		ul = 2*sizeof(ULONG);
+		rtn = m2 + m5 + m7;
+		return rtn;
+	}
 public:
 	void buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
 	UINT getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState);

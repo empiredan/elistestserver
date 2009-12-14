@@ -21,6 +21,8 @@ public:
 
 private:
 	void setBodyLength(CSubsetDataAssister *assist);
+public:
+	void Save(CSubsetDataAssister*assist, CFile &log);
 };
 
 #endif

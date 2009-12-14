@@ -232,6 +232,11 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	tb->buildSubsetDataAssister(sda, 0.5, (UINT32)0x03000000);
 	tb->Save(dlg->log);
 	sda->Save(dlg->log);
+
+	CSubsetData *csd = new CSubsetData();
+	csd->setCommandHeader(sda);
+	csd->setSubsetData(sda, tb);
+	csd->Save(sda, dlg->log);
 	//ต๗สิด๚ย๋ฝแส๘
 
 	
