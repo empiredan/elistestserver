@@ -994,5 +994,8 @@ void CELISTestServerDlg::OnButtonCreateLog()
 void CELISTestServerDlg::OnButtonStartRelog() 
 {
 	// TODO: Add your control notification handler code here
-	
+	CSubsetData* subsetData=new CSubsetData;
+	subsetData->setCommandHeader(m_subsetAssister);
+	subsetData->setSubsetData(m_subsetAssister, acttab);
+	getFrontDataQueue()->enQueue(subsetData);
 }
