@@ -120,6 +120,8 @@ public:
 	UINT GetCurrentTestTime();
 
 	void EnableStartLog(BOOL enableButton);
+	void EnableCreateLog(BOOL enableButton);
+	void EnableStartRelog(BOOL enableButton);
 
 	CCalibSubset* getCalibSubset();
 
@@ -165,6 +167,8 @@ protected:
 	afx_msg void OnButtonTrueDepth();
 	afx_msg void OnRadioImperial();
 	afx_msg void OnRadioMetric();
+	afx_msg void OnButtonCreateLog();
+	afx_msg void OnButtonStartRelog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

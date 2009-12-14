@@ -13,7 +13,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Chinese (P.R.C.) resources
+// Chinese (中国) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
 #ifdef _WIN32
@@ -101,8 +101,8 @@ BEGIN
     EDITTEXT        IDC_EDIT_SPEED,79,50,73,21,ES_AUTOHSCROLL
     LTEXT           "当前模式:",IDC_STATIC_MODE,209,27,42,18
     LTEXT           "",IDC_STATIC_MODE_VALUE,257,26,76,16
-    LTEXT           "方向:",IDC_STATIC_DIRECTION,343,29,24,15
-    LTEXT           "",IDC_STATIC_DIRECTION_VALUE,375,30,32,14
+    LTEXT           "方向:",IDC_STATIC_DIRECTION,343,29,24,12
+    LTEXT           "",IDC_STATIC_DIRECTION_VALUE,375,28,41,13
     LTEXT           "服务器端口设置:",IDC_STATIC_SERVER_PORT,25,134,66,13
     EDITTEXT        IDC_EDIT_SERVER_PORT,101,130,68,19,ES_AUTOHSCROLL
     PUSHBUTTON      "Set",IDC_BUTTON_SERVER_PORT,175,130,30,16
@@ -133,14 +133,17 @@ BEGIN
     LTEXT           "当前时间:",IDC_STATIC_CURRENT_TIME,209,81,39,14
     LTEXT           "速度:",IDC_STATIC_SPEED_SHOW,343,52,27,12
     LTEXT           "",IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE,261,54,68,16
-    LTEXT           "",IDC_STATIC_CURRENT_TIME_VALUE,260,80,68,14
-    LTEXT           "",IDC_STATIC_SPEED_SHOW_VALUE,373,53,59,15
-    PUSHBUTTON      "以新速度进行log",IDC_BUTTON_START_LOG,343,77,86,17,
+    LTEXT           "",IDC_STATIC_CURRENT_TIME_VALUE,259,81,68,13
+    LTEXT           "",IDC_STATIC_SPEED_SHOW_VALUE,379,51,57,14
+    PUSHBUTTON      "以新速度进行log",IDC_BUTTON_START_LOG,104,81,86,19,
                     WS_DISABLED
     CONTROL         "公制",IDC_RADIO_METRIC,"Button",BS_AUTORADIOBUTTON,65,
                     87,32,10
     CONTROL         "英制",IDC_RADIO_IMPERIAL,"Button",BS_AUTORADIOBUTTON,26,
                     87,32,10
+    PUSHBUTTON      "开始log",IDC_BUTTON_CREATE_LOG,341,77,42,19,WS_DISABLED
+    PUSHBUTTON      "开始回放log",IDC_BUTTON_START_RELOG,389,77,52,19,
+                    WS_DISABLED
 END
 
 IDD_TAB_ACT DIALOG DISCARDABLE  0, 0, 575, 343
@@ -241,7 +244,7 @@ BEGIN
     IDP_SOCKETS_INIT_FAILED "Windows 通信端口初始化失败。"
 END
 
-#endif    // Chinese (P.R.C.) resources
+#endif    // Chinese (中国) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
