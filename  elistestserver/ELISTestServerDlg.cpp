@@ -235,6 +235,18 @@ void CELISTestServerDlg::EnableStartLog(BOOL enableButton)
 
 }
 
+void CELISTestServerDlg::EnableCreateLog(BOOL enableButton)
+{
+	GetDlgItem(IDC_BUTTON_CREATE_LOG)->EnableWindow(enableButton);
+	
+}
+
+void CELISTestServerDlg::EnableStartRelog(BOOL enableButton)
+{
+	GetDlgItem(IDC_BUTTON_START_RELOG)->EnableWindow(enableButton);
+	
+}
+
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -271,6 +283,8 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_TRUE_DEPTH, OnButtonTrueDepth)
 	ON_BN_CLICKED(IDC_RADIO_IMPERIAL, OnRadioImperial)
 	ON_BN_CLICKED(IDC_RADIO_METRIC, OnRadioMetric)
+	ON_BN_CLICKED(IDC_BUTTON_CREATE_LOG, OnButtonCreateLog)
+	ON_BN_CLICKED(IDC_BUTTON_START_RELOG, OnButtonStartRelog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -544,33 +558,38 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 			StopLogTimer();
 		}
 		EnableStartLog(FALSE);
+		EnableCreateLog(FALSE);
+		EnableStartRelog(FALSE);
 		break;
 	case RtcSYS_STANDBY_CMD:
 		//DataFileBuf有bug调试先注释掉,091013
 		if(acttab != NULL) {
-			StopLogTimer();
+			/*StopLogTimer();
 			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-			SetCurrentTestTime(0);
+			SetCurrentTestTime(0);*/
 			EnableStartLog(TRUE);
+			EnableCreateLog(TRUE);
+			EnableStartRelog(TRUE);
 		} else {
 			AfxMessageBox(_T("RtcSYS_STANDBY_CMD，但ActTable未初始化"));
 		}
 		
 		break;
 	case RtcSYS_RECSTART_CMD:
-		/*DataFileBuf有bug调试先注释掉,091013
+		//DataFileBuf有bug调试先注释掉,091013
 		if(acttab != NULL) {
-			StopLogTimer();
+			/*StopLogTimer();
 			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-			
-			SetCurrentTestTime(0);
+			SetCurrentTestTime(0);*/
 			EnableStartLog(TRUE);
+			EnableCreateLog(TRUE);
+			EnableStartRelog(TRUE);
 		} else {
 			AfxMessageBox(_T("RtcSYS_RECSTART_CMD，但ActTable未初始化"));
 		}
-		*/
+		
 		break;
 	case RtcSYS_CALIBSTART_CMD:
 		break;
@@ -954,4 +973,26 @@ UINT CELISTestServerDlg::getCurrentDepthDU()
 		currentDepth=GetCurrentDepth()*IMPERIAL_DU;
 	}
 	return (UINT)currentDepth;
+}
+
+void CELISTestServerDlg::OnButtonCreateLog() 
+{
+	// TODO: Add your control notification handler code here
+	
+	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
+		StopLogTimer();
+		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+		SetCurrentTestTime(0);
+	} else {
+		
+		AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time"));
+	}
+	
+}
+
+void CELISTestServerDlg::OnButtonStartRelog() 
+{
+	// TODO: Add your control notification handler code here
+	
 }

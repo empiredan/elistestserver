@@ -368,8 +368,8 @@ void CCommandHandler::NetCmd_CtrlWorkState(CMasterData *d) {
 	//工作状态，方向等元素的命令
 	//要在CELISTestServerDlg中添加相应的变量
 	//和接口函数
-	//dlg->SetCurrentWorkState();//这里有bug，要检查091213
-	//dlg->SetDirection();
+	dlg->SetCurrentWorkState();//这里有bug，要检查091213
+	dlg->SetDirection();
 
 	//最后执行工作状态改变后在新状态下应该做的事
 	dlg->HandleWorkStateChange();
