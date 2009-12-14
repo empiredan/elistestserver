@@ -93,8 +93,8 @@ public:
 		}
 	}
 
-	static int modeSize(int word) { 
-		int size; 
+	static UINT32 modeSize(UINT32 word) { 
+		UINT32 size; 
 		size = word * 2; 
 
 		if (size % 4) { 
