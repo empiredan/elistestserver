@@ -36,14 +36,17 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 	//
 	UINT i;
 	for(i = 0; i < assist->actNum; i++) {
-		assist->heads[i].currentDepth = assist->dataFileBuf->m_pdlg->GetCurrentDepth();
-		assist->heads[i].currentTime = assist->dataFileBuf->m_pdlg->GetCurrentTestTime();
+		//assist->heads[i].currentDepth = assist->dataFileBuf->m_pdlg->GetCurrentDepth();//调试注释掉
+		//assist->heads[i].currentTime = assist->dataFileBuf->m_pdlg->GetCurrentTestTime();//调试注释掉
+		assist->heads[i].currentDepth = 9999;//assist->dataFileBuf->m_pdlg->GetCurrentDepth();//调试注释掉
+		assist->heads[i].currentTime = 8888;//assist->dataFileBuf->m_pdlg->GetCurrentTestTime();//调试注释掉
 		
 		setData((BUF_TYPE*)&assist->heads[i], assist->getRTCBlockDataHeaderSize());
 		//totalSizeOfSubsetsPerReturn里应已经包含了subset头的两个long的长度
-		setData(assist->dataFileBuf->getNextDataPointer(), assist->assist.totalSizeOfSubsetsPerReturn[i]);
+		//setData(assist->dataFileBuf->getNextDataPointer(), assist->assist.totalSizeOfSubsetsPerReturn[i]);//调试注释掉
 	}
 }
+
 void CSubsetData::setData(BUF_TYPE *bf, ULONG len) {
 	CData::setData(bf, len);
 }
@@ -56,4 +59,27 @@ CSubsetData::~CSubsetData(void)
 void CSubsetData::setBodyLength(CSubsetDataAssister *assist) {
 	bodyLen = assist->getTotalActDataSize();
 	cmdLen = bodyLen + SOCK_RECEIVE_HEADER_LEN;
+}
+
+void CSubsetData::Save(CSubsetDataAssister*assist, CFile &log) {
+	char b[4096];
+	ULONG *tul;
+	UINT32 *tui;
+	UINT i,headsize;
+	
+	tul = (ULONG*)buf;
+	sprintf(b, "CMDTYPE:%lx,CMDLEN:%d, GENStaus:%lx\n", tul[0], tul[1], tul[2]);
+	log.Write(b, strlen(b));
+	log.Flush();
+	tul = (ULONG*)(buf + 3*sizeof(ULONG));
+	headsize = 3*sizeof(ULONG)+4*sizeof(UINT32);
+	for(i = 0; i < assist->actNum; i++) {
+		tul = (ULONG*)(buf + 3*sizeof(ULONG) +  i*headsize);
+		sprintf(b, "ToolAddr:%ld,SubsetNo:%ld,SubsetCnt:%ld",tul[0],tul[1],tul[2]);
+		tui = (UINT32*)(tul+3);
+		sprintf(b, "CurDepth:%d,DataSize:%d,ActSwitch:%d,CurTime:%d\n", 
+			tui[0],tui[1],tui[2],tui[3]);
+		log.Write(b, strlen(b));
+	}
+	log.Flush();
 }
