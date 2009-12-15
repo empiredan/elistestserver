@@ -32,6 +32,11 @@ public:
 	BOOL changeDepth;
 	BOOL changeTime;
 	BOOL returnSubsetData;
+	//0:time模式，time(对应direction=-1); 
+	//-1:depth模式，up(对应direction=0),深度减少;
+	//1:depth模式，down(对应direction=1)，深度增加;
+	//用这个值乘以速度，就是深度变化的量方向和位移都有了
+	int depthSign;
 public:
 	void fillWorkMode(BUF_TYPE *buf, ULONG len);
 	void fillStandByTimeInterval(BUF_TYPE *buf, ULONG len);
