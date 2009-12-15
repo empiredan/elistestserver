@@ -174,20 +174,22 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 							{
 								if (m_listctrlAct.GetItemText(rowNo, 5)!=strFilePath)
 								{
-									this->m_pELISTestServerDlg->m_actDataFileEnabled=TRUE;
+									this->m_pELISTestServerDlg->m_actDataFilePathChanged=TRUE;
 									m_listctrlAct.SetItemText(rowNo, 5, strFilePath);
 								} 
 								else
 								{
+									this->m_pELISTestServerDlg->m_actDataFilePathChanged=FALSE;
+									/*
 									if (m_listctrlAct.GetItemText(rowNo, 5)=="")
 									{
-										this->m_pELISTestServerDlg->m_actDataFileEnabled=TRUE;
+										this->m_pELISTestServerDlg->m_actDataFilePathChanged=TRUE;
 									}
 									else
 									{
-										this->m_pELISTestServerDlg->m_actDataFileEnabled=FALSE;
+										this->m_pELISTestServerDlg->m_actDataFilePathChanged=FALSE;
 									}
-									
+									*/
 								}
 							} 
 							else

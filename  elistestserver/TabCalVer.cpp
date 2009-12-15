@@ -150,12 +150,12 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 							{
 								if (m_listctrlCalVer.GetItemText(rowNo, 3)!=strFilePath)
 								{
-									this->m_pELISTestServerDlg->m_calverDataFileEnabled=TRUE;
+									this->m_pELISTestServerDlg->m_calverDataFilePathChanged=TRUE;
 									m_listctrlCalVer.SetItemText(rowNo, 3, strFilePath);
 								} 
 								else
 								{
-									this->m_pELISTestServerDlg->m_calverDataFileEnabled=FALSE;
+									this->m_pELISTestServerDlg->m_calverDataFilePathChanged=FALSE;
 								}
 							} 
 							else
