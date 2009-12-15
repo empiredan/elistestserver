@@ -179,7 +179,15 @@ void TabAct::OnDblclkListAct(NMHDR* pNMHDR, LRESULT* pResult)
 								} 
 								else
 								{
-									this->m_pELISTestServerDlg->m_actDataFileEnabled=FALSE;
+									if (m_listctrlAct.GetItemText(rowNo, 5)=="")
+									{
+										this->m_pELISTestServerDlg->m_actDataFileEnabled=TRUE;
+									}
+									else
+									{
+										this->m_pELISTestServerDlg->m_actDataFileEnabled=FALSE;
+									}
+									
 								}
 							} 
 							else

@@ -88,7 +88,7 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	calibsubset=NULL;
 
-	m_dataFileBufSize=5;
+	m_dataFileBufSize=5*1024*1024;
 	m_actDataFileEnabled=TRUE;
 	m_calverDataFileEnabled=TRUE;
 
@@ -334,7 +334,7 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	m_tabMyTabCtrl.m_dlgAct->setCElisTestServerDlg(this);
 	m_tabMyTabCtrl.m_dlgCalVer->setCElisTestServerDlg(this);
 
-	OnButtonDataBufferSize();
+	//OnButtonDataBufferSize();
 
 	((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
 	
