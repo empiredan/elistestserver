@@ -113,3 +113,9 @@ void CDataFileBuf::fillWithDataFile()
 	}
 
 }
+
+BUF_TYPE* CDataFileBuf::getNextDataPointer(int i)
+{
+	
+	return m_dataFilePointer[i];
+}
