@@ -65,7 +65,7 @@ void CSubsetData::Save(CSubsetDataAssister*assist, CFile &log) {
 	char b[4096];
 	ULONG *tul;
 	UINT32 *tui;
-	UINT i,headsize;
+	UINT i,headsize, totalDataSize;
 	
 	tul = (ULONG*)buf;
 	sprintf(b, "===cmd start==\nCMDTYPE:%lx,CMDLEN:%d, GENStaus:%lx\n", tul[0], tul[1], tul[2]);
@@ -73,13 +73,16 @@ void CSubsetData::Save(CSubsetDataAssister*assist, CFile &log) {
 	log.Flush();
 	tul = (ULONG*)(buf + 3*sizeof(ULONG));
 	headsize = 3*sizeof(ULONG)+4*sizeof(UINT32);
+	totalDataSize = 0;
 	for(i = 0; i < assist->actNum; i++) {
-		tul = (ULONG*)(buf + 3*sizeof(ULONG) +  i*headsize+assist->assist.totalSizeOfSubsetsPerReturn[i]);
+		tul = (ULONG*)(buf + 3*sizeof(ULONG) +  i*headsize+totalDataSize);
 		sprintf(b, "ToolAddr:%ld,SubsetNo:%ld,SubsetCnt:%ld",tul[0],tul[1],tul[2]);
 		tui = (UINT32*)(tul+3);
-		sprintf(b, "CurDepth:%d,DataSize:%d,ActSwitch:%d,CurTime:%d\n", 
+		sprintf(b, "%sCurDepth:%d,DataSize:%d,ActSwitch:%d,CurTime:%d\n", b, 
 			tui[0],tui[1],tui[2],tui[3]);
+		sprintf(b, "%sbufAddr:0x%lx=%ld\n", b, (ULONG)tul, (ULONG)tul);
 		log.Write(b, strlen(b));
+		totalDataSize += assist->assist.totalSizeOfSubsetsPerReturn[i];
 	}
 	sprintf(b, "===cmd end==\n");
 	log.Write(b, strlen(b));
