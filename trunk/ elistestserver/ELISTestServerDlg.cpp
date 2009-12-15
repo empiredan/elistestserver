@@ -227,7 +227,15 @@ void CELISTestServerDlg::SetCurrentDepth(float cp)
 {
 	m_currentDepthStr.Format("%f",cp);
 	//UpdateData(FALSE);
-	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr);
+	if (m_measure)
+	{
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr+" m");
+	} 
+	else
+	{
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr+" feet");
+	}
+	
 }
 void CELISTestServerDlg::EnableStartLog(BOOL enableButton)
 {
@@ -936,8 +944,20 @@ void CELISTestServerDlg::OnButtonTrueDepth()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
+	if (m_measure)
+	{
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr+" m");
+	} 
+	else
+	{
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr+" feet");
+	}
+	
 	m_trueDepth=atof(m_trueDepthStr);
-	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr);
+	if (errno==ERANGE||errno==EINVAL){
+		m_speed=0.5f;
+	}
+	
 
 }
 
