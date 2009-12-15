@@ -241,11 +241,6 @@ void CELISTestServerDlg::EnableCreateLog(BOOL enableButton)
 	
 }
 
-void CELISTestServerDlg::EnableStartRelog(BOOL enableButton)
-{
-	GetDlgItem(IDC_BUTTON_START_RELOG)->EnableWindow(enableButton);
-	
-}
 
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -558,7 +553,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		}
 		EnableStartLog(FALSE);
 		EnableCreateLog(FALSE);
-		EnableStartRelog(FALSE);
+		
 		break;
 	case RtcSYS_STANDBY_CMD:
 		//DataFileBuf有bug调试先注释掉,091013
@@ -569,7 +564,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 			SetCurrentTestTime(0);*/
 			EnableStartLog(TRUE);
 			EnableCreateLog(TRUE);
-			EnableStartRelog(TRUE);
+			
 		} else {
 			AfxMessageBox(_T("RtcSYS_STANDBY_CMD，但ActTable未初始化"));
 		}
@@ -584,7 +579,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 			SetCurrentTestTime(0);*/
 			EnableStartLog(TRUE);
 			EnableCreateLog(TRUE);
-			EnableStartRelog(TRUE);
+			
 		} else {
 			AfxMessageBox(_T("RtcSYS_RECSTART_CMD，但ActTable未初始化"));
 		}
