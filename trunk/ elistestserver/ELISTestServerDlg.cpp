@@ -981,6 +981,7 @@ void CELISTestServerDlg::OnButtonCreateLog()
 	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
 		StopLogTimer();
 		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		m_subsetAssister->Save(log);
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 		SetCurrentTestTime(0);
 	} else {

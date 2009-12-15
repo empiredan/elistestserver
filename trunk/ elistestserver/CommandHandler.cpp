@@ -226,6 +226,7 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	tb = CActTable::AllocateActTable((d->buf)+headSize, d->contentlen-headSize);
 	tb->ConvertData();
 	dlg->SetACTTable(tb);
+	tb->Save(dlg->log);
 
 	//下面的代码是用来调试的，正常运行时应关闭
 	/*CSubsetDataAssister *sda = new CSubsetDataAssister();
