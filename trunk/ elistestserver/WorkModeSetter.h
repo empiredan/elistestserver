@@ -28,6 +28,10 @@ public:
 	UINT32 deactivated;
 
 	UINT32 recstop;
+
+	BOOL changeDepth;
+	BOOL changeTime;
+	BOOL returnSubsetData;
 public:
 	void fillWorkMode(BUF_TYPE *buf, ULONG len);
 	void fillStandByTimeInterval(BUF_TYPE *buf, ULONG len);
