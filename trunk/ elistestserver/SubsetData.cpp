@@ -41,7 +41,7 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 		//assist->heads[i].currentDepth = 9999;//assist->dataFileBuf->m_pdlg->GetCurrentDepth();//调试注释掉
 		//assist->heads[i].currentTime = 8888;//assist->dataFileBuf->m_pdlg->GetCurrentTestTime();//调试注释掉
 		
-		//setData((BUF_TYPE*)&assist->heads[i], assist->getRTCBlockDataHeaderSize());
+		setData((BUF_TYPE*)&assist->heads[i], assist->getRTCBlockDataHeaderSize());
 		//totalSizeOfSubsetsPerReturn里应已经包含了subset头的两个long的长度
 		setData(assist->dataFileBuf->getNextDataPointer(), assist->assist.totalSizeOfSubsetsPerReturn[i]);//调试注释掉
 	}
