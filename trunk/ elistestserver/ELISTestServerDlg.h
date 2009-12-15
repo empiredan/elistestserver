@@ -71,8 +71,10 @@ public:
 	CCalibSubset* calibsubset;
 
 	ULONG m_dataFileBufSize;
-	BOOL m_actDataFileEnabled;//检查数据文件路径是否更新
-	BOOL m_calverDataFileEnabled;
+	BOOL m_actDataFilePathChanged;//检查数据文件路径是否更新
+	BOOL m_actTableChanged;//检查Act Table是否更新
+
+	BOOL m_calverDataFilePathChanged;
 
     CString m_currentWorkStateStr;
 	CString m_directionStr;

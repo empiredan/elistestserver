@@ -89,8 +89,11 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 	calibsubset=NULL;
 
 	m_dataFileBufSize=5*1024*1024;
-	m_actDataFileEnabled=TRUE;
-	m_calverDataFileEnabled=TRUE;
+
+	m_actDataFilePathChanged=TRUE;
+	m_actTableChanged=TRUE;
+
+	m_calverDataFilePathChanged=TRUE;
 
 	m_subsetAssister=new CSubsetDataAssister;
 	m_dataFileBuf=new CDataFileBuf(this);
@@ -648,13 +651,23 @@ void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
 }
 void CELISTestServerDlg::LogDataTimerHandler() {
 	//AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
-	if (m_actDataFileEnabled)
+	if (m_actTableChanged)
 	{
 		m_dataFileBuf->clear();
 		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
 		m_dataFileBuf->allocateDataFilePointer(m_subsetAssister->assist.shareOfCommonBuffer);
 		m_dataFileBuf->fillWithDataFile();
-	} 
+		m_actTableChanged=FALSE;
+	}
+	else
+	{
+		if (m_actDataFilePathChanged)
+		{
+			m_dataFileBuf->fillWithDataFile();
+			m_actDataFilePathChanged=FALSE;
+		} 
+	}
+	
 	//UpdateData(TRUE);
 	int direction=wms->direction;
 	SetCurrentTestTime(GetCurrentTestTime()+(UINT)m_subsetAssister->assist.logTimerElapse);
@@ -718,7 +731,7 @@ void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
 	}
 	acttab = tb;
 	this->m_tabMyTabCtrl.m_dlgAct->setACTTable(acttab);
-	m_actDataFileEnabled=TRUE;
+	m_actTableChanged=TRUE;
 	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(TRUE);
 
 /*
