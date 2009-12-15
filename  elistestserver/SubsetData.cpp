@@ -68,7 +68,7 @@ void CSubsetData::Save(CSubsetDataAssister*assist, CFile &log) {
 	UINT i,headsize;
 	
 	tul = (ULONG*)buf;
-	sprintf(b, "CMDTYPE:%lx,CMDLEN:%d, GENStaus:%lx\n", tul[0], tul[1], tul[2]);
+	sprintf(b, "===cmd start==\nCMDTYPE:%lx,CMDLEN:%d, GENStaus:%lx\n", tul[0], tul[1], tul[2]);
 	log.Write(b, strlen(b));
 	log.Flush();
 	tul = (ULONG*)(buf + 3*sizeof(ULONG));
@@ -81,5 +81,7 @@ void CSubsetData::Save(CSubsetDataAssister*assist, CFile &log) {
 			tui[0],tui[1],tui[2],tui[3]);
 		log.Write(b, strlen(b));
 	}
+	sprintf(b, "===cmd end==\n");
+	log.Write(b, strlen(b));
 	log.Flush();
 }
