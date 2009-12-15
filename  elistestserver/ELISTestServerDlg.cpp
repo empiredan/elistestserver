@@ -997,5 +997,6 @@ void CELISTestServerDlg::OnButtonStartRelog()
 	CSubsetData* subsetData=new CSubsetData;
 	subsetData->setCommandHeader(m_subsetAssister);
 	subsetData->setSubsetData(m_subsetAssister, acttab);
+	subsetData->Save(m_subsetAssister, log);
 	getFrontDataQueue()->enQueue(subsetData);
 }
