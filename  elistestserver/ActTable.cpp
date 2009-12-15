@@ -93,7 +93,7 @@ void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed
 			assist->assist.shareOfCommonBuffer[i] = ((float)assist->assist.totalSizeOfSubsetsPerReturn[i])/((float)totalSubsets);
 		}
 	} else if(workState == RtcSYS_RECSTART_CMD) {//depthģʽ
-		assist->assist.logTimerElapse = (UINT)(1000/(speed*gcd));
+		assist->assist.logTimerElapse = (UINT)(1000.0/(speed*((float)gcd)));
 		totalSubsets = 0;
 		for(i = 0; i < actNum; i++) {
 			assist->assist.subsetNumPerReturn[i] = pSaList[i].depthSampleRate/gcd;
@@ -146,7 +146,7 @@ UINT CActTable::getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT
 	if(workState == RtcSYS_STANDBY_CMD) {//timeģʽ
 		assist->assist.logTimerElapse = lcmgcd[0];
 	} else if(workState == RtcSYS_RECSTART_CMD) {//depthģʽ
-		assist->assist.logTimerElapse = (UINT)(1000/(speed*lcmgcd[1]));
+		assist->assist.logTimerElapse = (UINT)(1000.0/(speed*((float)lcmgcd[1])));
 	}
 	rtn = assist->assist.logTimerElapse;
 	return rtn;
