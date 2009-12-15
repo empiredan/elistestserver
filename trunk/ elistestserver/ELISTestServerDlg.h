@@ -168,7 +168,6 @@ protected:
 	afx_msg void OnRadioImperial();
 	afx_msg void OnRadioMetric();
 	afx_msg void OnButtonCreateLog();
-	afx_msg void OnButtonStartRelog();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

@@ -284,7 +284,6 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_IMPERIAL, OnRadioImperial)
 	ON_BN_CLICKED(IDC_RADIO_METRIC, OnRadioMetric)
 	ON_BN_CLICKED(IDC_BUTTON_CREATE_LOG, OnButtonCreateLog)
-	ON_BN_CLICKED(IDC_BUTTON_START_RELOG, OnButtonStartRelog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -664,6 +663,11 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 	{
 		SetCurrentDepth(GetCurrentDepth()-m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
 	}
+	CSubsetData* subsetData=new CSubsetData;
+	subsetData->setCommandHeader(m_subsetAssister);
+	subsetData->setSubsetData(m_subsetAssister, acttab);
+	subsetData->Save(m_subsetAssister, log);
+	getFrontDataQueue()->enQueue(subsetData);
 
 	
 	
@@ -991,12 +995,3 @@ void CELISTestServerDlg::OnButtonCreateLog()
 	
 }
 
-void CELISTestServerDlg::OnButtonStartRelog() 
-{
-	// TODO: Add your control notification handler code here
-	CSubsetData* subsetData=new CSubsetData;
-	subsetData->setCommandHeader(m_subsetAssister);
-	subsetData->setSubsetData(m_subsetAssister, acttab);
-	subsetData->Save(m_subsetAssister, log);
-	getFrontDataQueue()->enQueue(subsetData);
-}
