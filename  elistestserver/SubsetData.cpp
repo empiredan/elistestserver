@@ -74,7 +74,7 @@ void CSubsetData::Save(CSubsetDataAssister*assist, CFile &log) {
 	tul = (ULONG*)(buf + 3*sizeof(ULONG));
 	headsize = 3*sizeof(ULONG)+4*sizeof(UINT32);
 	for(i = 0; i < assist->actNum; i++) {
-		tul = (ULONG*)(buf + 3*sizeof(ULONG) +  i*headsize);
+		tul = (ULONG*)(buf + 3*sizeof(ULONG) +  i*headsize+assist->assist.totalSizeOfSubsetsPerReturn[i]);
 		sprintf(b, "ToolAddr:%ld,SubsetNo:%ld,SubsetCnt:%ld",tul[0],tul[1],tul[2]);
 		tui = (UINT32*)(tul+3);
 		sprintf(b, "CurDepth:%d,DataSize:%d,ActSwitch:%d,CurTime:%d\n", 
