@@ -339,6 +339,13 @@ BOOL CELISTestServerDlg::OnInitDialog()
 
 	//OnButtonDataBufferSize();
 
+	//GetDlgItem(IDC_EDIT_TRUE_DEPTH)->SetWindowText("50000");
+	//GetDlgItem(IDC_EDIT_SPEED)->SetWindowText("0.05");
+	//GetDlgItem(IDC_EDIT_SERVER_PORT)->SetWindowText("6050");
+	m_sPort=6050;
+	m_speedStr="0.05";
+	m_trueDepthStr="50000";
+	GetDlgItem(IDC_EDIT_DATA_BUFFER_SIZE)->SetWindowText("5");
 	((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
 	
 	cmdh.start();
