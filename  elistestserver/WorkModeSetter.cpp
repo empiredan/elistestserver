@@ -18,7 +18,9 @@ static char THIS_FILE[]=__FILE__;
 
 CWorkModeSetter::CWorkModeSetter()
 {
-
+	changeDepth = FALSE;
+	changeTime = FALSE;
+	returnSubsetData = FALSE;
 }
 
 CWorkModeSetter::~CWorkModeSetter()
