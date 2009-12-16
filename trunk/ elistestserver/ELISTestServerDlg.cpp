@@ -671,6 +671,24 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 	default:
 		break;
 	}
+
+	if(wms->old2Mode == NET_CMD_NA && wms->oldMode == NET_CMD_NA && wms->mode == RtcSYS_STANDBY_CMD) {
+		//刚刚激活服务表。
+		//重新生成缓冲区后重新构造DataFileBuf缓冲区并加载文件
+		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+	} else if((wms->old2Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
+		(wms->old2Mode == RtcSYS_STANDBY_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_RECSTART_CMD) ) {
+		//经过了深度到时间或时间到深度模式的切换
+		//重新构造DataFileBuf缓冲区并重新加载文件
+		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+	} else if(wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_CALIBSTART_CMD) {
+		//从Idle或Standby time模式进入CalVer模式
+		//要在DataFileBuf中构造CalVer文件的缓冲区
+	} else if(wms->old2Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) {
+		//从CalVer状态退出时，自动转换到Idle再到Standby time
+		//重新构造DataFileBuf缓冲区并重新加载文件
+		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+	}
 }
 
 CCalibSubset* CELISTestServerDlg::getCalibSubset()
@@ -1009,8 +1027,6 @@ void CELISTestServerDlg::OnButtonStartLog()
 {
 	// TODO: Add your control notification handler code here
 	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
-		//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
-		//
 		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode);
 		StopLogTimer();
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
@@ -1083,12 +1099,12 @@ void CELISTestServerDlg::OnButtonCreateLog()
 	
 	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
 		StopLogTimer();
-		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		//这个调用要在handleWorkstatechange中执行。
+		//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 		m_subsetAssister->Save(log);
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 		SetCurrentTestTime(0);
 	} else {
-		
 		AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time"));
 	}
 	
