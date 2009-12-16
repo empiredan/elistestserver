@@ -11,6 +11,7 @@ typedef BYTE BUF_TYPE;
 
 
 /*!  command type*/
+#define NET_CMD_NA									((ULONG)0x0)
 /*! type mask */
 #define NET_CMD_MASK								( (ULONG)0xff00 )
 /*! всюЮпмязбК  */
