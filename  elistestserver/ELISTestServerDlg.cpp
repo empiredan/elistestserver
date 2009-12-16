@@ -84,8 +84,13 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	acttab = NULL;
 	calibpara = NULL;
-	wms = new CWorkModeSetter();
 
+	wms = new CWorkModeSetter();
+	wms->changeDepth = FALSE;
+	wms->changeTime = FALSE;
+	wms->returnSubsetData = FALSE;
+	wms->depthSign = 0;
+	
 	calibsubset=NULL;
 
 	m_dataFileBufSize=5*1024*1024;
@@ -568,44 +573,98 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 	//
 	switch(wms->mode) {
 	case RtcSYS_IDLE_CMD:
+		/*
 		if((wms->oldMode == RtcSYS_STANDBY_CMD || wms->oldMode == RtcSYS_RECSTART_CMD)) {
 			StopLogTimer();
 		}
 		EnableStartLog(FALSE);
 		EnableCreateLog(FALSE);
-		
+		*/
+		if(wms->oldMode == RtcSYS_RECSTART_CMD) {
+			wms->changeDepth = TRUE;
+			switch(wms->oldDirection) {
+			case 0:
+				wms->depthSign = -1;
+				break;
+			case 1:
+				wms->depthSign = 1;
+				break;
+			default:
+				AfxMessageBox(_T("RtcSYS_RECSTART_CMD:should not occur"));
+				break;
+			}
+		} else if(wms->oldMode == RtcSYS_STANDBY_CMD) {
+			//深度变化规律会继续，
+			//时间归0，不动
+			//不反馈Subset数据了
+		} else if(wms->oldMode == RtcSYS_CALIBSTART_CMD) {
+			//
+		}
+		//
+		wms->changeTime = FALSE;
+		wms->returnSubsetData = FALSE;
+
+		EnableStartLog(FALSE);
+		EnableCreateLog(FALSE);
 		break;
 	case RtcSYS_STANDBY_CMD:
-		//DataFileBuf有bug调试先注释掉,091013
-		if(acttab != NULL) {
-			/*StopLogTimer();
-			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
-			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-			SetCurrentTestTime(0);*/
-			EnableStartLog(TRUE);
-			EnableCreateLog(TRUE);
-			
-		} else {
-			AfxMessageBox(_T("RtcSYS_STANDBY_CMD，但ActTable未初始化"));
-		}
+		ASSERT(acttab != NULL);
 		
+		if(wms->oldMode == RtcSYS_RECSTART_CMD) {
+			//wms->changeDepth = TRUE;
+			AfxMessageBox(_T("RtcSYS_STANDBY_CMD:should come from idle or NA not RtcSYS_RECSTART_CMD"));
+		} else if(wms->oldMode == RtcSYS_CALIBSTART_CMD) {
+			//
+			AfxMessageBox(_T("RtcSYS_STANDBY_CMD:should come from idle or NA not RtcSYS_CALIBSTART_CMD"));
+		} else if(wms->oldMode == RtcSYS_IDLE_CMD) {
+			//深度变化规律会继续，
+			//时间归0
+			wms->changeTime = TRUE;
+			//反馈Subset数据
+			wms->returnSubsetData = TRUE;
+		} else {//来自NA
+			//深度不应该变化，因为方向是-1
+			//时间归0
+			wms->changeTime = TRUE;
+			//反馈Subset数据，实际测井时，仪器串不动，即使返回固定1位置数据包，
+			//数据包的内容也会有变化
+			wms->returnSubsetData = TRUE;
+			wms->depthSign = 0;
+		}
+
+		EnableStartLog(TRUE);
+		EnableCreateLog(TRUE);
 		break;
 	case RtcSYS_RECSTART_CMD:
-		//DataFileBuf有bug调试先注释掉,091013
-		if(acttab != NULL) {
-			/*StopLogTimer();
-			acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
-			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-			SetCurrentTestTime(0);*/
-			EnableStartLog(TRUE);
-			EnableCreateLog(TRUE);
-			
-		} else {
-			AfxMessageBox(_T("RtcSYS_RECSTART_CMD，但ActTable未初始化"));
-		}
+		ASSERT(acttab != NULL);
 		
+		if(wms->oldMode == RtcSYS_STANDBY_CMD) {
+			//wms->changeDepth = TRUE;
+			AfxMessageBox(_T("RtcSYS_RECSTART_CMD:should come from idle"));
+		} else if(wms->oldMode == RtcSYS_IDLE_CMD) {
+			switch(wms->direction) {
+			case 0:
+				wms->depthSign = -1;
+				break;
+			case 1:
+				wms->depthSign = 1;
+				break;
+			}
+			//深度
+			wms->changeDepth = TRUE;
+			//时间
+			wms->changeTime = TRUE;
+			//反馈Subset数据
+			wms->returnSubsetData = TRUE;
+		}
+		EnableStartLog(TRUE);
+		EnableCreateLog(TRUE);
 		break;
 	case RtcSYS_CALIBSTART_CMD:
+		//重新设置DataFileBuf的缓冲区，将对应的文件
+		//读入到相应的位置上，后来的刻度命令会从这个
+		//位置读取刻度的SubsetData
+		//离开这个状态进入
 		break;
 	case RtcSYS_TRAINSTART_CMD:
 		break;

@@ -101,6 +101,7 @@ public:
 	}
 public:
 	void buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
+	void reBuildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
 	UINT getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState);
 private:
 	void calculateLCMGCD(UINT lcmgcd[]);
