@@ -40,6 +40,7 @@ public:
 	//用这个值乘以速度，就是深度变化的量方向和位移都有了
 	int depthSign;
 public:
+	void init();
 	void fillWorkMode(BUF_TYPE *buf, ULONG len);
 	void fillStandByTimeInterval(BUF_TYPE *buf, ULONG len);
 	void fillDeactivated(BUF_TYPE *buf, ULONG len);

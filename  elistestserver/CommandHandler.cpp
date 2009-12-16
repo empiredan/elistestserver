@@ -446,6 +446,8 @@ void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
+	dlg->wms->init();
+
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlActDeactivate\n");
 	dlg->log.Write(logdata, strlen(logdata));

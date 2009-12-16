@@ -16,8 +16,7 @@ static char THIS_FILE[]=__FILE__;
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CWorkModeSetter::CWorkModeSetter()
-{
+void CWorkModeSetter::init() {
 	changeDepth = FALSE;
 	changeTime = FALSE;
 	returnSubsetData = FALSE;
@@ -30,6 +29,10 @@ CWorkModeSetter::CWorkModeSetter()
 	old2Direction = -2;
 	oldDirection = -2;
 	direction = -2;
+}
+CWorkModeSetter::CWorkModeSetter()
+{
+	init();
 }
 
 CWorkModeSetter::~CWorkModeSetter()
