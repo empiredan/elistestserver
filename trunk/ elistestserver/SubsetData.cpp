@@ -35,6 +35,11 @@ void CSubsetData::setCommandHeader(CSubsetDataAssister *assist) {
 void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) {
 	//
 	UINT i;
+	//for debug begin
+	char bt[4096];
+	BUF_TYPE *b;
+	UINT sz;
+	//for debug end
 	for(i = 0; i < assist->actNum; i++) {
 		assist->heads[i].currentDepth = assist->dataFileBuf->m_pdlg->GetCurrentDepth();//调试注释掉
 		assist->heads[i].currentTime = assist->dataFileBuf->m_pdlg->GetCurrentTestTime();//调试注释掉
@@ -43,7 +48,16 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 		
 		setData((BUF_TYPE*)&assist->heads[i], assist->getRTCBlockDataHeaderSize());
 		//totalSizeOfSubsetsPerReturn里应已经包含了subset头的两个long的长度
-		setData(assist->dataFileBuf->getNextDataPointer(i, assist->assist.totalSizeOfSubsetsPerReturn[i]), assist->assist.totalSizeOfSubsetsPerReturn[i]);//调试注释掉
+		
+		sz = assist->assist.totalSizeOfSubsetsPerReturn[i];
+		b = assist->dataFileBuf->getNextDataPointer(i, sz);
+		setData(b, sz);
+		
+		//for debug begin
+		sprintf(bt, "Fill SubsetData of <%d>:%lx=%ld,sz=%d\n", i, (ULONG)b, (ULONG)b, sz);
+		assist->dataFileBuf->m_pdlg->log.Write(bt, strlen(bt));
+		assist->dataFileBuf->m_pdlg->log.Flush();
+		//for debug end
 	}
 }
 

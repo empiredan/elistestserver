@@ -18,10 +18,12 @@ public:
 	CWorkModeSetter();
 	virtual ~CWorkModeSetter();
 public:
+	UINT32 old2Mode;
 	UINT32 oldMode;
 	UINT32 mode;
-	UINT32 direction;
-	UINT32 oldDirection;
+	int old2Direction;
+	int oldDirection;
+	int direction;
 
 	UINT32 standByTimeInterval;
 

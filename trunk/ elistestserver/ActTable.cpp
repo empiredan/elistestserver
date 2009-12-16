@@ -66,7 +66,9 @@ CActTable* CActTable::AllocateActTable(unsigned char *buf, int len) {
 
 void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState) {
 	assist->create(actNum);
-
+	reBuildSubsetDataAssister(assist, speed, workState);
+}
+void CActTable::reBuildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState) {
 	ULONG i;
 	ULONG lcm, gcd;
 
@@ -113,10 +115,11 @@ void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed
 		assist->heads[i].subsetCnt = assist->assist.subsetNumPerReturn[i];
 		assist->heads[i].currentDepth = 0;
 		assist->heads[i].dataSize = subsetSize(i);
-		assist->heads[i].actSwitch = 1;
+		assist->heads[i].actSwitch = 111;
 		assist->heads[i].currentTime = 0;
 	}
 }
+
 void CActTable::calculateLCMGCD(UINT lcmgcd[]) {
 	UINT *depth = new UINT[actNum];
 	UINT *time = new UINT[actNum];

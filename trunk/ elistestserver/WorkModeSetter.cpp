@@ -21,6 +21,14 @@ CWorkModeSetter::CWorkModeSetter()
 	changeDepth = FALSE;
 	changeTime = FALSE;
 	returnSubsetData = FALSE;
+	depthSign = 0;
+
+	old2Mode = 0;
+	oldMode = 0;
+	mode = 0;
+	old2Direction = -2;
+	oldDirection = -2;
+	direction = -2;
 }
 
 CWorkModeSetter::~CWorkModeSetter()
