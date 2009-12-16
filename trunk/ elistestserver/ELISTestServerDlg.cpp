@@ -185,7 +185,9 @@ void CELISTestServerDlg::SetDirection()
 		m_directionStr="DOWN";
 		break;
 	default:
+		/*
 		AfxMessageBox("方向数据错误!");
+		*/
 		break;
 	}
 	GetDlgItem(IDC_STATIC_DIRECTION_VALUE)->SetWindowText(m_directionStr);
@@ -809,6 +811,7 @@ void CELISTestServerDlg::OnButtonActFolder()
         str.Format("%s",  szPath);
         //AfxMessageBox(_T(str));
 		GetDlgItem(IDC_EDIT_ACT_FOLDER)->SetWindowText(str);
+		UpdateData(TRUE);
 		//m_actListRootFolder=str;
     } else {
         //AfxMessageBox(_T("无效的目录，请重新选择!"));
@@ -884,6 +887,7 @@ void CELISTestServerDlg::OnButtonCalverFolder()
         str.Format("%s",  szPath);
         //AfxMessageBox(_T(str));
 		GetDlgItem(IDC_EDIT_CALVER_FOLDER)->SetWindowText(str);
+		UpdateData(TRUE);
 		//m_actListRootFolder=str;
     } else {
         //AfxMessageBox(_T("无效的目录，请重新选择!"));

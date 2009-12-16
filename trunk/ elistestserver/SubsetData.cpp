@@ -43,7 +43,7 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 		
 		setData((BUF_TYPE*)&assist->heads[i], assist->getRTCBlockDataHeaderSize());
 		//totalSizeOfSubsetsPerReturn里应已经包含了subset头的两个long的长度
-		setData(assist->dataFileBuf->getNextDataPointer(i), assist->assist.totalSizeOfSubsetsPerReturn[i]);//调试注释掉
+		setData(assist->dataFileBuf->getNextDataPointer(i, assist->assist.totalSizeOfSubsetsPerReturn[i]), assist->assist.totalSizeOfSubsetsPerReturn[i]);//调试注释掉
 	}
 }
 

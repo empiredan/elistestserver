@@ -23,6 +23,8 @@ CDataFileBuf::CDataFileBuf(CELISTestServerDlg* dlg)
 	m_pdlg=dlg;
 	m_dataFileBuf=NULL;
 	m_dataFilePointer=NULL;
+	m_nextDataFilePointer=NULL;
+	m_currentDataFilePointer=NULL;
 	m_blockSize=NULL;
 }
 
@@ -50,11 +52,16 @@ void CDataFileBuf::create(ULONG bufsize, UINT actnum)
 {
 	m_dataFileBufSize=bufsize;
 	m_actNum=actnum;
+	m_currentDataFilePointerIndex=0;
 	m_dataFileBuf=new BUF_TYPE[m_dataFileBufSize];
 	m_dataFilePointer=new BUF_TYPE*[m_actNum];
+	m_currentDataFilePointer=new BUF_TYPE*[m_actNum];
+	m_nextDataFilePointer=new BUF_TYPE*[m_actNum];
 	m_blockSize=new ULONG[m_actNum];
-	m_nextDataFilePointer=m_dataFileBuf;
-	m_nextBlockNo=0;
+	
+	//m_nextDataFilePointer=m_dataFileBuf;
+	//m_lastDataFilePointerIndex=0;
+	//m_nextBlockNo=0;
 }
 void CDataFileBuf::allocateDataFilePointer(float *socb)
 {
@@ -64,11 +71,13 @@ void CDataFileBuf::allocateDataFilePointer(float *socb)
 	for (UINT i=0; i<m_actNum; i++)
 	{
 		m_dataFilePointer[i]=p;
+		m_nextDataFilePointer[i]=m_dataFilePointer[i];
 		m_blockSize[i]=(ULONG)(m_dataFileBufSize*socb[i]);
 		p+=m_blockSize[i];
 	}
 
 }
+/*
 BUF_TYPE* CDataFileBuf::getNextDataPointer()
 {
 	BUF_TYPE* returnPointer=m_nextDataFilePointer;
@@ -85,6 +94,7 @@ BUF_TYPE* CDataFileBuf::getNextDataPointer()
 	
 	return returnPointer;
 }
+*/
 void CDataFileBuf::fillWithDataFile()
 {
 	MyListCtrl* p_actList=&(m_pdlg->m_tabMyTabCtrl.m_dlgAct->m_listctrlAct);
@@ -113,9 +123,59 @@ void CDataFileBuf::fillWithDataFile()
 	}
 
 }
-
-BUF_TYPE* CDataFileBuf::getNextDataPointer(int i)
+/*
+BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i)
 {
 	
 	return m_dataFilePointer[i];
+	
+}
+*/
+/*
+BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i, UINT32 subsetSize, UINT32 totalSize)
+{
+	m_currentDataFilePointer[i]=m_nextDataFilePointer[i];
+	if (m_currentDataFilePointer[i]+subsetSize<m_dataFilePointer[i]+totalSize)
+	{
+		m_nextDataFilePointer[i]=m_currentDataFilePointer[i]+subsetSize;
+	} 
+	else
+	{
+		m_nextDataFilePointer[i]=m_dataFilePointer[i];
+	}
+		
+	
+	return m_currentDataFilePointer[i];
+}
+*/
+BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i, UINT32 subsetSize)
+{
+	m_currentDataFilePointer[i]=m_nextDataFilePointer[i];
+
+	if (i<m_actNum-1)
+	{
+		if (m_currentDataFilePointer[i]+subsetSize<m_dataFilePointer[i+1])
+		{
+			m_nextDataFilePointer[i]=m_currentDataFilePointer[i]+subsetSize;
+		} 
+		else
+		{
+			m_nextDataFilePointer[i]=m_dataFilePointer[i];
+		}
+	} 
+	else
+	{
+		if (m_currentDataFilePointer[i]+subsetSize<m_dataFileBuf+m_dataFileBufSize)
+		{
+			m_nextDataFilePointer[i]=m_currentDataFilePointer[i]+subsetSize;
+		} 
+		else
+		{
+			m_nextDataFilePointer[i]=m_dataFilePointer[i];
+		}
+	}
+	
+	
+	
+	return m_currentDataFilePointer[i];
 }
