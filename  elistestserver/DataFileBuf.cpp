@@ -58,6 +58,7 @@ void CDataFileBuf::create(ULONG bufsize, UINT actnum)
 	m_currentDataFilePointer=new BUF_TYPE*[m_actNum];
 	m_nextDataFilePointer=new BUF_TYPE*[m_actNum];
 	m_blockSize=new ULONG[m_actNum];
+	m_realUsedBlockSize=new ULONG[m_actNum];
 	
 	//m_nextDataFilePointer=m_dataFileBuf;
 	//m_lastDataFilePointerIndex=0;
@@ -106,7 +107,8 @@ void CDataFileBuf::fillWithDataFile()
 		{
 			CFile dataFile(filePath, CFile::modeRead);
 			dataFile.Seek(sizeof(UINT32)*3, CFile::begin);
-			dataFile.Read(m_dataFilePointer[i],m_blockSize[i]);
+			m_realUsedBlockSize[i] = dataFile.Read(m_dataFilePointer[i],m_blockSize[i]);
+			
 			dataFile.Close();
 		} 
 		else//随机指定填入缓冲区的数据
@@ -123,19 +125,12 @@ void CDataFileBuf::fillWithDataFile()
 	}
 
 }
-/*
-BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i)
-{
-	
-	return m_dataFilePointer[i];
-	
-}
-*/
-/*
-BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i, UINT32 subsetSize, UINT32 totalSize)
+
+BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i, UINT32 subsetSize)
 {
 	m_currentDataFilePointer[i]=m_nextDataFilePointer[i];
-	if (m_currentDataFilePointer[i]+subsetSize<m_dataFilePointer[i]+totalSize)
+
+	if (m_currentDataFilePointer[i]+subsetSize<m_dataFilePointer[i]+m_realUsedBlockSize[i])
 	{
 		m_nextDataFilePointer[i]=m_currentDataFilePointer[i]+subsetSize;
 	} 
@@ -143,39 +138,6 @@ BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i, UINT32 subsetSize, UINT32 tot
 	{
 		m_nextDataFilePointer[i]=m_dataFilePointer[i];
 	}
-		
-	
-	return m_currentDataFilePointer[i];
-}
-*/
-BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i, UINT32 subsetSize)
-{
-	m_currentDataFilePointer[i]=m_nextDataFilePointer[i];
-
-	if (i<m_actNum-1)
-	{
-		if (m_currentDataFilePointer[i]+subsetSize<m_dataFilePointer[i+1])
-		{
-			m_nextDataFilePointer[i]=m_currentDataFilePointer[i]+subsetSize;
-		} 
-		else
-		{
-			m_nextDataFilePointer[i]=m_dataFilePointer[i];
-		}
-	} 
-	else
-	{
-		if (m_currentDataFilePointer[i]+subsetSize<m_dataFileBuf+m_dataFileBufSize)
-		{
-			m_nextDataFilePointer[i]=m_currentDataFilePointer[i]+subsetSize;
-		} 
-		else
-		{
-			m_nextDataFilePointer[i]=m_dataFilePointer[i];
-		}
-	}
-	
-	
 	
 	return m_currentDataFilePointer[i];
 }
