@@ -95,8 +95,8 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	m_dataFileBufSize=5*1024*1024;
 
-	m_actDataFilePathChanged=TRUE;
-	m_actTableChanged=TRUE;
+	m_actDataFilePathChanged=FALSE;
+	m_actTableChanged=FALSE;
 
 	m_calverDataFilePathChanged=TRUE;
 
@@ -739,20 +739,14 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 	//AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
 	if (m_actTableChanged)
 	{
-		m_dataFileBuf->clear();
+		//m_dataFileBuf->clear();
 		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
-		m_dataFileBuf->allocateDataFilePointer(m_subsetAssister->assist.shareOfCommonBuffer);
+		m_dataFileBuf->layout();
+		//m_dataFileBuf->allocateDataFilePointer(m_subsetAssister->assist.shareOfCommonBuffer);
 		m_dataFileBuf->fillWithDataFile();
 		m_actTableChanged=FALSE;
 	}
-	else
-	{
-		if (m_actDataFilePathChanged)
-		{
-			m_dataFileBuf->fillWithDataFile();
-			m_actDataFilePathChanged=FALSE;
-		} 
-	}
+	
 	
 	//UpdateData(TRUE);
 	int direction=wms->direction;

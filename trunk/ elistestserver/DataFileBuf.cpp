@@ -21,81 +21,76 @@ static char THIS_FILE[]=__FILE__;
 CDataFileBuf::CDataFileBuf(CELISTestServerDlg* dlg)
 {
 	m_pdlg=dlg;
-	m_dataFileBuf=NULL;
-	m_dataFilePointer=NULL;
-	m_nextDataFilePointer=NULL;
-	m_currentDataFilePointer=NULL;
-	m_blockSize=NULL;
+	store = NULL;
+	bf = NULL;
 }
 
 CDataFileBuf::~CDataFileBuf()
 {
-	
 	clear();
 }
 void CDataFileBuf::clear()
 {
-	if (m_dataFileBuf)
+	if (bf != NULL)
 	{
-		delete[] m_dataFileBuf;
+		delete[] bf;
 	}
-	if (m_dataFilePointer)
-	{
-		delete[] m_dataFilePointer;
-	}
-	if (m_blockSize)
-	{
-		delete[] m_blockSize;
+	if(store != NULL) {
+		delete []store;
 	}
 }
+void CDataFileBuf::clearStore() {
+	if(store != NULL) delete []store;
+}
+void CDataFileBuf::clearLayout() {
+	if(bf != NULL) delete []bf;
+}
+void CDataFileBuf::layout() {
+	float *share = m_pdlg->m_subsetAssister->assist.shareOfCommonBuffer;
+	UINT *numPerRtn = m_pdlg->m_subsetAssister->assist.subsetNumPerReturn;
+	UINT *tSizePerRtn = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn;
+	ULONG bufszi;
+
+	BUF_TYPE *c;
+	c = store;
+	for (UINT i = 0; i < m_actNum; i++)
+	{
+		bufszi = ((ULONG)((m_dataFileBufSize*share[i])/tSizePerRtn[i]))*tSizePerRtn[i];
+		bf[i].dbhead = c;
+		bf[i].dbcur = c;
+		c += bufszi;
+		bf[i].dbufsz = bufszi;
+		bf[i].fileExists = FALSE;
+	}
+}
+void CDataFileBuf::createStore(ULONG bufsize) {
+	//
+	clearStore();
+	
+	m_dataFileBufSize = bufsize;
+	ASSERT(m_dataFileBufSize > 0);
+	store = new BUF_TYPE[m_dataFileBufSize];
+	ASSERT(store != NULL);
+}
+void CDataFileBuf::createLayout(UINT actnum) {
+	//
+	clearLayout();
+	
+	m_actNum = actnum;
+	ASSERT(m_actNum > 0);
+	bf = new Buffer[actnum];
+	ASSERT(bf != NULL);
+}
+
 void CDataFileBuf::create(ULONG bufsize, UINT actnum)
 {
-	m_dataFileBufSize=bufsize;
-	m_actNum=actnum;
-	m_currentDataFilePointerIndex=0;
-	m_dataFileBuf=new BUF_TYPE[m_dataFileBufSize];
-	m_dataFilePointer=new BUF_TYPE*[m_actNum];
-	m_currentDataFilePointer=new BUF_TYPE*[m_actNum];
-	m_nextDataFilePointer=new BUF_TYPE*[m_actNum];
-	m_blockSize=new ULONG[m_actNum];
-	m_realUsedBlockSize=new ULONG[m_actNum];
-	
-	//m_nextDataFilePointer=m_dataFileBuf;
-	//m_lastDataFilePointerIndex=0;
-	//m_nextBlockNo=0;
+	createStore(bufsize);
+	createLayout(actnum);
 }
-void CDataFileBuf::allocateDataFilePointer(float *socb)
-{
-	BUF_TYPE* p=m_dataFileBuf;
-
-
-	for (UINT i=0; i<m_actNum; i++)
-	{
-		m_dataFilePointer[i]=p;
-		m_nextDataFilePointer[i]=m_dataFilePointer[i];
-		m_blockSize[i]=(ULONG)(m_dataFileBufSize*socb[i]);
-		p+=m_blockSize[i];
-	}
-
-}
-/*
-BUF_TYPE* CDataFileBuf::getNextDataPointer()
-{
-	BUF_TYPE* returnPointer=m_nextDataFilePointer;
-	m_nextBlockNo++;
-	if (m_nextBlockNo<m_actNum)
-	{
-		m_nextDataFilePointer=m_dataFilePointer[m_nextBlockNo];
-	}
-	else
-	{
-		m_nextDataFilePointer=m_dataFileBuf;
-		m_nextBlockNo=0;
-	}
-	
-	return returnPointer;
-}
-*/
+//状态在深度和时间模式之间切换时，
+//从CalVer状态返回时
+//重新buildSubsetDataAssister之后(从CalVer状态返回时不需要这步)
+//要调用这个函数重新加载数据文件填充缓冲区
 void CDataFileBuf::fillWithDataFile()
 {
 	MyListCtrl* p_actList=&(m_pdlg->m_tabMyTabCtrl.m_dlgAct->m_listctrlAct);
@@ -103,41 +98,57 @@ void CDataFileBuf::fillWithDataFile()
 	for (UINT i=0; i<m_actNum; i++)
 	{
 		CString filePath=p_actList->GetItemText(i, 5);
-		if (filePath!="")
-		{
-			CFile dataFile(filePath, CFile::modeRead);
-			dataFile.Seek(sizeof(UINT32)*3, CFile::begin);
-			m_realUsedBlockSize[i] = dataFile.Read(m_dataFilePointer[i],m_blockSize[i]);
-			
-			dataFile.Close();
-		} 
-		else//随机指定填入缓冲区的数据
-		{
-			
-			for (ULONG j=0; j<m_blockSize[i]; j++)
-			{
-				m_dataFilePointer[i][j]=(BUF_TYPE)(rand()%256);
-
-			}
-		}
-		
-		
+		fillIn(filePath, i);
 	}
-
+}
+//切换到CalVer时要调用这个函数加载刻度数据文件
+void CDataFileBuf::fillWithDataFile(UINT i, CString &file) {
+	//为CalVer所用
+	fillIn(file, i);
+}
+void CDataFileBuf::fillWithDataFile(UINT i) {
+	//为数据源文件名改变所用，
+	MyListCtrl* p_actList=&(m_pdlg->m_tabMyTabCtrl.m_dlgAct->m_listctrlAct);
+	CString filePath=p_actList->GetItemText(i, 5);
+	fillIn(filePath, i);
+}
+void CDataFileBuf::increase(UINT i) {
+	//
+	UINT sz = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn[i];
+	bf[i].dbcur += sz;
+	if(bf[i].dbcur == bf[i].dbhead + bf[i].dbufsz) {
+		//
+		bf[i].dbcur = bf[i].dbhead;
+	}
+}
+void CDataFileBuf::fillInWithRandomData(UINT i) {
+	//
+}
+void CDataFileBuf::fillIn(CString &filePath, UINT i) {
+	//
+	CFileException ex;
+	char szerror[1024];
+	if (filePath != "") {
+		if(!bf[i].df.Open(_T(filePath), CFile::modeRead, &ex)) {
+			ex.GetErrorMessage(szerror, 1024);
+			AfxMessageBox(_T(szerror));
+		}
+		bf[i].df.Seek(sizeof(UINT32)*3, CFile::begin);
+		bf[i].df.Read(bf[i].dbhead, bf[i].dbufsz);
+		
+		bf[i].fileExists = TRUE;
+	} else {
+		bf[i].fileExists = FALSE;
+		fillInWithRandomData(i);
+	}
 }
 
-BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i, UINT32 subsetSize)
+BUF_TYPE* CDataFileBuf::getNextDataPointer(int i)
 {
-	m_currentDataFilePointer[i]=m_nextDataFilePointer[i];
-
-	if (m_currentDataFilePointer[i]+subsetSize<m_dataFilePointer[i]+m_realUsedBlockSize[i])
-	{
-		m_nextDataFilePointer[i]=m_currentDataFilePointer[i]+subsetSize;
-	} 
-	else
-	{
-		m_nextDataFilePointer[i]=m_dataFilePointer[i];
-	}
+	BUF_TYPE *rtn;
 	
-	return m_currentDataFilePointer[i];
+	rtn = bf[i].dbcur;
+	increase(i);
+
+	return rtn;
 }
