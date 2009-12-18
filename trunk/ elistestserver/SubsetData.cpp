@@ -46,17 +46,17 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 		
 		sz = assist->getRTCBlockDataHeaderSize();
 		b = (BUF_TYPE*)&assist->heads[i];
-		sprintf(bt, "Fill SubsetData<%d> header to 0x%lx=%ld,", i, (ULONG)pBuf, (ULONG)pBuf);
+		//sprintf(bt, "Fill SubsetData<%d> header to 0x%lx=%ld,", i, (ULONG)pBuf, (ULONG)pBuf);
 		setData(b, sz);
 
 		sz = assist->assist.totalSizeOfSubsetsPerReturn[i];
 		b = assist->dataFileBuf->getNextDataPointer(i);
-		sprintf(bt, "%s body of 0x%lx=%ld(sz=%d) to 0x%lx=%ld\n", bt, (ULONG)b, (ULONG)b, sz, (ULONG)pBuf, (ULONG)pBuf);
+		//sprintf(bt, "%s body of 0x%lx=%ld(sz=%d) to 0x%lx=%ld\n", bt, (ULONG)b, (ULONG)b, sz, (ULONG)pBuf, (ULONG)pBuf);
 		setData(b, sz);
 		
 		//for debug begin
-		assist->dataFileBuf->m_pdlg->log.Write(bt, strlen(bt));
-		assist->dataFileBuf->m_pdlg->log.Flush();
+		//assist->dataFileBuf->m_pdlg->log.Write(bt, strlen(bt));
+		//assist->dataFileBuf->m_pdlg->log.Flush();
 		//for debug end
 	}
 }

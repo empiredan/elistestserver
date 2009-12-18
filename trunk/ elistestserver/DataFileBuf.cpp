@@ -112,13 +112,13 @@ void CDataFileBuf::fillWithDataFile(UINT i) {
 	CString filePath=p_actList->GetItemText(i, 5);
 	fillIn(filePath, i);
 }
-void CDataFileBuf::increase(UINT i) {
+void CDataFileBuf::increase(UINT i, UINT disp) {
 	//
-	UINT sz = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn[i];
-	bf[i].dbcur += sz;
-	if(bf[i].dbcur == bf[i].dbhead + bf[i].dbufsz) {
+	//UINT sz = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn[i];
+	bf[i].dbcur += disp;
+	if(bf[i].dbcur >= bf[i].dbhead + bf[i].dbufsz) {
 		//
-		bf[i].dbcur = bf[i].dbhead;
+		resetCurrentPointer(i);
 	}
 }
 void CDataFileBuf::fillInWithRandomData(UINT i) {
@@ -143,12 +143,56 @@ void CDataFileBuf::fillIn(CString &filePath, UINT i) {
 	}
 }
 
-BUF_TYPE* CDataFileBuf::getNextDataPointer(int i)
+BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i)
 {
 	BUF_TYPE *rtn;
-	
 	rtn = bf[i].dbcur;
-	increase(i);
+	UINT disp = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn[i];
+	increase(i, disp);
 
 	return rtn;
+}
+
+BUF_TYPE* CDataFileBuf::getNextCalibSubsetDataPointer()
+{
+	BUF_TYPE *rtn;
+	UINT i = getCalVerBufBlockIndex();
+	rtn = bf[i].dbcur;
+	UINT disp = m_pdlg->calibpara->calulcateSubsetMasterSize();
+	increase(i, disp);
+	
+	return rtn;
+}
+
+UINT CDataFileBuf::getCalVerBufBlockIndex()
+{
+	int toolADDR = m_pdlg->calibpara->getToolADDR();
+	int subsetNo = m_pdlg->calibpara->getSubsetNo();
+	
+	MyListCtrl& actListCtrl=m_pdlg->m_tabMyTabCtrl.m_dlgAct->m_listctrlAct;
+	
+	UINT i;
+	for (i = 0;i < actListCtrl.GetItemCount();i++)
+	{
+		if ( (toolADDR==atoi(actListCtrl.GetItemText(i,1)))
+			&& (subsetNo==atoi(actListCtrl.GetItemText(i,2))) )
+		{
+			break;
+		}
+	}
+
+	return i;
+}
+
+void CDataFileBuf::resetCurrentPointer(UINT i)
+{
+	bf[i].dbcur = bf[i].dbhead;
+}
+
+void CDataFileBuf::resetCurrentPointer()
+{
+	for (UINT i=0;i<m_actNum;i++)
+	{
+		resetCurrentPointer(i);
+	}
 }

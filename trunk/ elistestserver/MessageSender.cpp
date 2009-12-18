@@ -45,8 +45,8 @@ DWORD CMessageSender::handle(LPVOID param) {
 		//AfxMessageBox(_T(oo));
 		
 		err = handler->dlg->m_psConnectSocket->Send(d->buf, d->contentlen);
-		ULONG *t;
-		char oo[1024];
+		//ULONG *t;
+		//char oo[1024];
 		if(err == SOCKET_ERROR) {
 			//AfxMessageBox(_T("Sending Messages Socket error"));
 			int err1 = WSAGetLastError();
@@ -60,10 +60,10 @@ DWORD CMessageSender::handle(LPVOID param) {
 			//handler->dlg->log.Flush();
 			continue;
 		} else {
-			t = (ULONG*)d->buf;
-			sprintf(oo, "Really Send cmdType:%lx\n",t[0]);
-			handler->dlg->log.Write(oo, strlen(oo));
-			handler->dlg->log.Flush();
+			//t = (ULONG*)d->buf;
+			//sprintf(oo, "Really Send cmdType:%lx\n",t[0]);
+			//handler->dlg->log.Write(oo, strlen(oo));
+			//handler->dlg->log.Flush();
 		}
 		//这里也不能忘记删除CFrontData类型的对象
 		//这个CFrontData类型对象可能是由定时器，或者
