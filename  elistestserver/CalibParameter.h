@@ -29,6 +29,7 @@ public:
 	CALIB_PARA cpara;
 	UINT subsetFrontSize;
 	UINT subsetMasterSize;
+	UINT subsetRawSize;
 public:
 	CCalibParameter(BUF_TYPE *buf, ULONG len);
 	virtual ~CCalibParameter();
@@ -41,10 +42,14 @@ public:
 		cpara.m_nM5Length = ntohl(cpara.m_nM5Length);
 		cpara.m_nM7Length = ntohl(cpara.m_nM7Length);
 	}
+
 	int getToolADDR();
 	int getSubsetNo(); 
+	
 	UINT calulcateSubsetFrontSize();
 	UINT calulcateSubsetMasterSize();
+	UINT getTotalCalibSubsetDataSize();
+	UINT getRawCalibSubsetDataSize();
 };
 
 #endif // !defined(AFX_CALIBPARAMETER_H__74E69434_4E47_4DB2_B4EB_EAA103C12C95__INCLUDED_)

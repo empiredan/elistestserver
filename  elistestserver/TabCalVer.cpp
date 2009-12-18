@@ -54,6 +54,7 @@ void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
 		if (acttbl->pSaList[i].toolAddress==toolADDR && acttbl->pSaList[i].subsetNo==subsetNo)
 		{
 			actNo=acttbl->pSaList[i].actNo;
+			break;
 		}
 		
 	}
@@ -61,7 +62,7 @@ void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
 	char str[50];
 		
 	itoa(actNo,str,10);
-	this->m_listctrlCalVer.InsertItem(i,str);
+	this->m_listctrlCalVer.InsertItem(0,str);
 		
 	itoa(toolADDR,str,10);
 	this->m_listctrlCalVer.SetItemText(0,1,str);
@@ -150,13 +151,15 @@ void TabCalVer::OnDblclkListCalver(NMHDR* pNMHDR, LRESULT* pResult)
 							{
 								if (m_listctrlCalVer.GetItemText(rowNo, 3)!=strFilePath)
 								{
-									this->m_pELISTestServerDlg->m_calverDataFilePathChanged=TRUE;
+									//this->m_pELISTestServerDlg->m_calverDataFilePathChanged=TRUE;
 									m_listctrlCalVer.SetItemText(rowNo, 3, strFilePath);
+									m_pELISTestServerDlg->m_subsetAssister->dataFileBuf->fillWithDataFile(rowNo, strFilePath);
 								} 
+								/*
 								else
 								{
-									this->m_pELISTestServerDlg->m_calverDataFilePathChanged=FALSE;
-								}
+									//this->m_pELISTestServerDlg->m_calverDataFilePathChanged=FALSE;
+								}*/
 							} 
 							else
 							{

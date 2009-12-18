@@ -30,9 +30,14 @@ public:
 	BUF_TYPE *store;
 	ULONG m_dataFileBufSize;//buf¥Û–°
 	CELISTestServerDlg* m_pdlg; 
-	ULONG* m_realUsedBlockSize;
+	//ULONG* m_realUsedBlockSize;
 	UINT m_actNum;
 public:
+	void resetCurrentPointer(UINT i);
+	void resetCurrentPointer();
+	UINT getCalVerBufBlockIndex();
+	UINT m_calverBufBlockIndex;
+	BUF_TYPE* getNextCalibSubsetDataPointer();
 	void create(ULONG bufsize, UINT actnum);
 	void createStore(ULONG bufsize);
 	void createLayout(UINT actnum);
@@ -44,9 +49,9 @@ public:
 	void fillWithDataFile(UINT i, CString &file);
 	void fillWithDataFile(UINT i);
 
-	BUF_TYPE* getNextDataPointer(int i);
+	BUF_TYPE* getNextDataPointer(UINT i);
 private:
-	void increase(UINT i);
+	void increase(UINT i, UINT disp);
 	void fillInWithRandomData(UINT i);
 	void fillIn(CString &filePath, UINT i);
 };

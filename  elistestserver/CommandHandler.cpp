@@ -228,19 +228,6 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	dlg->SetACTTable(tb);
 	tb->Save(dlg->log);
 
-	//下面的代码是用来调试的，正常运行时应关闭
-	/*CSubsetDataAssister *sda = new CSubsetDataAssister();
-	tb->buildSubsetDataAssister(sda, 0.5, (UINT32)0x03000000);
-	tb->Save(dlg->log);
-	sda->Save(dlg->log);
-
-	CSubsetData *csd = new CSubsetData();
-	csd->setCommandHeader(sda);
-	csd->setSubsetData(sda, tb);
-	csd->Save(sda, dlg->log);
-	*/
-	//调试代码结束
-
 	
 	//别忘了在这里要delete CMasterData类型的指针d。
 	//因为原则上，这里把这个收到的前端机发送过来的数据
@@ -297,12 +284,12 @@ void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 
 	CCalibSubset *ccss = dlg->getCalibSubset();
 	
+	dlg->getFrontDataQueue()->enQueue(ccss);
+
 	char logdata[1024];
-	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CalibStart\n");
+	sprintf(logdata, "CCommandHandler::NetCmd_CalibStart, returned one calib subset data\n");
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
-
-	dlg->getFrontDataQueue()->enQueue(ccss);
 }
 void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -447,6 +434,8 @@ void CCommandHandler::NetCmd_CtrlActDeactivate(CMasterData *d) {
 	bodyBuf = d->buf + headSize;
 
 	dlg->wms->init();
+	dlg->StopLogTimer();
+
 
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CtrlActDeactivate\n");

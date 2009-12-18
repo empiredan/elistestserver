@@ -65,3 +65,16 @@ UINT CCalibParameter::calulcateSubsetMasterSize() {
 	//status和time, 跟calib的反馈的subset不同这两个地方用的是两个long，而不是两个
 	//short
 }
+
+UINT CCalibParameter::getTotalCalibSubsetDataSize() {
+	return calulcateSubsetFrontSize();
+}
+UINT CCalibParameter::getRawCalibSubsetDataSize() {
+	UINT m2 = CUtils::modeSize(cpara.m_nM2Length);
+	UINT m5 = CUtils::modeSize(cpara.m_nM2Length);
+	UINT m7 = CUtils::modeSize(cpara.m_nM2Length);
+
+	subsetRawSize = (m2 + m5 + m7);
+
+	return subsetRawSize;
+}

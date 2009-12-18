@@ -95,10 +95,10 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	m_dataFileBufSize=5*1024*1024;
 
-	m_actDataFilePathChanged=FALSE;
-	m_actTableChanged=FALSE;
+	//m_actDataFilePathChanged=FALSE;
+	//m_actTableChanged=FALSE;
 
-	m_calverDataFilePathChanged=TRUE;
+	//m_calverDataFilePathChanged=TRUE;
 
 	m_subsetAssister=new CSubsetDataAssister;
 	m_dataFileBuf=new CDataFileBuf(this);
@@ -350,11 +350,12 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	//GetDlgItem(IDC_EDIT_SPEED)->SetWindowText("0.05");
 	//GetDlgItem(IDC_EDIT_SERVER_PORT)->SetWindowText("6050");
 	m_sPort=6050;
-	m_speedStr="0.05";
-	m_trueDepthStr="50000";
+	m_speedStr="100";
+	m_trueDepthStr="5000";
 	GetDlgItem(IDC_EDIT_DATA_BUFFER_SIZE)->SetWindowText("5");
 	((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
 	
+	m_actListRootFolder="D:\\LogData\\E130~MSF71_file1";
 	cmdh.start();
 	msgs.start();
 	ta = 5;
@@ -571,6 +572,7 @@ void CELISTestServerDlg::OnButtonCancel()
 
 void CELISTestServerDlg::HandleWorkStateChange() {
 	//
+	char loginfo[1024];
 	switch(wms->mode) {
 	case RtcSYS_IDLE_CMD:
 		/*
@@ -604,8 +606,8 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		wms->changeTime = FALSE;
 		wms->returnSubsetData = FALSE;
 
-		EnableStartLog(FALSE);
-		EnableCreateLog(FALSE);
+		//EnableStartLog(FALSE);
+		//EnableCreateLog(FALSE);
 		break;
 	case RtcSYS_STANDBY_CMD:
 		ASSERT(acttab != NULL);
@@ -632,8 +634,8 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 			wms->depthSign = 0;
 		}
 
-		EnableStartLog(TRUE);
-		EnableCreateLog(TRUE);
+		//EnableStartLog(TRUE);
+		//EnableCreateLog(TRUE);
 		break;
 	case RtcSYS_RECSTART_CMD:
 		ASSERT(acttab != NULL);
@@ -657,8 +659,8 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 			//反馈Subset数据
 			wms->returnSubsetData = TRUE;
 		}
-		EnableStartLog(TRUE);
-		EnableCreateLog(TRUE);
+		//EnableStartLog(TRUE);//以新速度log
+		//EnableCreateLog(TRUE);//开始Log
 		break;
 	case RtcSYS_CALIBSTART_CMD:
 		//重新设置DataFileBuf的缓冲区，将对应的文件
@@ -667,40 +669,128 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		//离开这个状态进入
 		break;
 	case RtcSYS_TRAINSTART_CMD:
+		StopLogTimer();
 		break;
 	default:
+		StopLogTimer();//????
+		sprintf(loginfo, "handleWorkStateChange, Un handled Workstate, StopLogTimer???\n");
+		log.Write(loginfo, strlen(loginfo));
 		break;
 	}
+
+/**
+ * CreateLogTimer的条件：
+ * （1）设置服务表后
+ * （2）从CalVer状态结束后返回Standby time状态
+ * （3）点击CreateLog（开始log）按钮
+ * （4）
+ * （5）
+ */
+/**
+ * StopLogTimer的条件：
+ * （1）系统Deactivate时，即处于NA状态
+ * （2）系统从Idle，Standby time进入CalVer状态
+ * （3）系统进入除time，depth，idle之外的其他状态
+ * （4）
+ * （5）
+ */
 
 	if(wms->old2Mode == NET_CMD_NA && wms->oldMode == NET_CMD_NA && wms->mode == RtcSYS_STANDBY_CMD) {
 		//刚刚激活服务表。
 		//重新生成缓冲区后重新构造DataFileBuf缓冲区并加载文件
 		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		
+		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
+		m_dataFileBuf->layout();
+		m_dataFileBuf->fillWithDataFile();
+		EnableCreateLog(TRUE);
+		//
 	} else if((wms->old2Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
 		(wms->old2Mode == RtcSYS_STANDBY_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_RECSTART_CMD) ) {
 		//经过了深度到时间或时间到深度模式的切换
 		//重新构造DataFileBuf缓冲区并重新加载文件
 		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+
+		//(1)stop log timer
+		StopLogTimer();
+		//(2)layout, fill
+		m_subsetAssister->dataFileBuf->layout();
+		m_subsetAssister->dataFileBuf->fillWithDataFile();
+		//(3)CreateLogTimer
+		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+		//
 	} else if(wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_CALIBSTART_CMD) {
 		//从Idle或Standby time模式进入CalVer模式
 		//要在DataFileBuf中构造CalVer文件的缓冲区
-	} else if(wms->old2Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) {
+
+		//Stop log timer
+		StopLogTimer();
+		//fill(i)===>用calver的数据文件
+		
+		//
+	} else if(wms->old2Mode == RtcSYS_CALIBSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) {
 		//从CalVer状态退出时，自动转换到Idle再到Standby time
 		//重新构造DataFileBuf缓冲区并重新加载文件
-		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		//
+		//Stop log timer原则上不需要再stop，因为在进入Calver时已经stop过了，见上
+		//fill(i)==>用ACT的数据文件
+		UINT i = m_subsetAssister->dataFileBuf->getCalVerBufBlockIndex();
+		m_subsetAssister->dataFileBuf->resetCurrentPointer(i);
+		fillDataFileBufWithAct();
+		//
 	}
+
+	sprintf(loginfo, "Old2Mode:0x%lx,OldMode:0x%lx,Mode:0x%lx;", wms->old2Mode, wms->oldMode, wms->mode);
+	sprintf(loginfo, "%sOld2Dir:%d,OldDir:%d,Dir:%d;", loginfo, wms->old2Direction, wms->oldDirection, wms->direction);
+	sprintf(loginfo, "%schangeDepth:%d,changeTime:%d, ReturnSubsetData:%d,depthSign:%d\n", loginfo, wms->changeDepth, wms->changeTime, wms->returnSubsetData, wms->depthSign);
+	log.Write(loginfo, strlen(loginfo));
+	log.Flush();
+}
+
+void CELISTestServerDlg::fillDataFileBufWithCalVer()
+{
+	
+
+	MyListCtrl& calverListCtrl=m_tabMyTabCtrl.m_dlgCalVer->m_listctrlCalVer;
+	CString filePath = calverListCtrl.GetItemText(0, 3);
+	UINT i = m_subsetAssister->dataFileBuf->getCalVerBufBlockIndex();
+	m_subsetAssister->dataFileBuf->fillWithDataFile(i, filePath);
+	
+	
+}
+
+void CELISTestServerDlg::fillDataFileBufWithAct()
+{
+	
+	UINT i = m_subsetAssister->dataFileBuf->getCalVerBufBlockIndex();
+	m_subsetAssister->dataFileBuf->fillWithDataFile(i);
+	
 }
 
 CCalibSubset* CELISTestServerDlg::getCalibSubset()
 {
+	CCalibSubset *rtn = NULL;
+	rtn = new CCalibSubset();
+	//
+	rtn->setCommandHeader(calibpara, m_subsetAssister);
+	rtn->setSubsetData(calibpara, m_subsetAssister);
 	return calibsubset;
 }
 
 void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
 	SetTimer(nIDEvent, uElapse, NULL);
 }
+/**
+ * CreateLogTimer的条件：
+ * （1）设置服务表后
+ * （2）从CalVer状态结束后返回Standby time状态
+ * （3）点击CreateLog（开始log）按钮
+ * （4）
+ * （5）
+ */
 void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
 	CreateTimer(LOGDATA_TIMER, uElapse);
+	EnableCreateLog(FALSE);
 }
 void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
 	CreateTimer(DEPTH_TIMER, uElapse);
@@ -708,6 +798,14 @@ void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
 void CELISTestServerDlg::StopTimer(UINT_PTR nIDEvent) {
 	KillTimer(nIDEvent);
 }
+/**
+ * StopLogTimer的条件：
+ * （1）系统Deactivate时，即处于NA状态
+ * （2）系统从Idle，Standby time进入CalVer状态
+ * （3）系统进入除time，depth，idle之外的其他状态
+ * （4）
+ * （5）
+ */
 void CELISTestServerDlg::StopLogTimer() {
 	StopTimer(LOGDATA_TIMER);
 }
@@ -737,20 +835,24 @@ void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
 }
 void CELISTestServerDlg::LogDataTimerHandler() {
 	//AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
+	/*
 	if (m_actTableChanged)
 	{
-		//m_dataFileBuf->clear();
-		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
-		m_dataFileBuf->layout();
-		//m_dataFileBuf->allocateDataFilePointer(m_subsetAssister->assist.shareOfCommonBuffer);
-		m_dataFileBuf->fillWithDataFile();
-		m_actTableChanged=FALSE;
+		
 	}
-	
-	
+	*/
 	//UpdateData(TRUE);
 	int direction=wms->direction;
-	SetCurrentTestTime(GetCurrentTestTime()+(UINT)m_subsetAssister->assist.logTimerElapse);
+	if (wms->changeTime)
+	{
+		SetCurrentTestTime(GetCurrentTestTime()+(UINT)m_subsetAssister->assist.logTimerElapse);
+	}
+	if (wms->changeDepth)
+	{
+		SetCurrentDepth(GetCurrentDepth()+wms->depthSign*m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
+	}
+
+	/*
 	if (wms->direction)
 	{
 		SetCurrentDepth(GetCurrentDepth()+m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
@@ -759,13 +861,16 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 	{
 		SetCurrentDepth(GetCurrentDepth()-m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
 	}
-	CSubsetData* subsetData=new CSubsetData;
-	subsetData->setCommandHeader(m_subsetAssister);
-	subsetData->setSubsetData(m_subsetAssister, acttab);
-	subsetData->Save(m_subsetAssister, log);
-	getFrontDataQueue()->enQueue(subsetData);
+	*/
+	if (wms->returnSubsetData)
+	{
+		CSubsetData* subsetData=new CSubsetData;
+		subsetData->setCommandHeader(m_subsetAssister);
+		subsetData->setSubsetData(m_subsetAssister, acttab);
+		//subsetData->Save(m_subsetAssister, log);
+		getFrontDataQueue()->enQueue(subsetData);
 
-	
+	}
 	
 }
 void CELISTestServerDlg::DepthTimerHandler() {
@@ -776,11 +881,11 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	//下面这些参数应该从根据实际模拟的进程计算出来
 	//填写
 	dpmp->ddp.corr_Depth = 10;
-	dpmp->ddp.true_Depth = 11;
-	dpmp->ddp.speed = 1;
+	dpmp->ddp.true_Depth = this->getCurrentDepthDU();
+	dpmp->ddp.speed = m_speed;
 	dpmp->ddp.totalTension = 5;
 	dpmp->ddp.differTension = 2;
-	dpmp->ddp.time = 1;
+	dpmp->ddp.time = GetCurrentTestTime();
 	dpmp->ddp.nreserved2 = 0;
 
 	//构造这个数据后将其放入SendQueue即可
@@ -799,7 +904,7 @@ void CELISTestServerDlg::SetCalibParameter(CCalibParameter *clibpara) {
 	calibpara = clibpara;
 	//在这理添加代码更新Cal/Ver的ClistTable。
 	this->m_tabMyTabCtrl.m_dlgCalVer->SetCalibParameter(clibpara,acttab);
-	
+	fillDataFileBufWithCalVer();
 	
 }
 
@@ -811,8 +916,6 @@ void CELISTestServerDlg::SetACTTable(CActTable *tb) {//091206
 	}
 	acttab = tb;
 	this->m_tabMyTabCtrl.m_dlgAct->setACTTable(acttab);
-	m_actTableChanged=TRUE;
-	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(TRUE);
 
 /*
 	char bff[8192];
@@ -1103,4 +1206,8 @@ void CELISTestServerDlg::OnButtonCreateLog()
 	}
 	
 }
+
+
+
+
 
