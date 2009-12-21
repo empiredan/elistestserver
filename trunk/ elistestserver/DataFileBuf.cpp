@@ -196,3 +196,14 @@ void CDataFileBuf::resetCurrentPointer()
 		resetCurrentPointer(i);
 	}
 }
+void CDataFileBuf::Save(CFile &log ) {
+	//
+	UINT i;
+	char b[1024];
+	sprintf(b, "BUFLAYOUT:");
+	for(i = 0; i < m_actNum; i++) {
+		sprintf(b, "%s, i=%d, bufsize:%d,head:0x%lx\n", b, i, bf[i].dbufsz, bf[i].dbhead);
+	}
+	log.Write(b, strlen(b));
+	log.Flush();
+}

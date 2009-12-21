@@ -575,34 +575,6 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 	char loginfo[1024];
 	switch(wms->mode) {
 	case RtcSYS_IDLE_CMD:
-		/*
-		if((wms->oldMode == RtcSYS_STANDBY_CMD || wms->oldMode == RtcSYS_RECSTART_CMD)) {
-			StopLogTimer();
-		}
-		EnableStartLog(FALSE);
-		EnableCreateLog(FALSE);
-		*/
-		if(wms->oldMode == RtcSYS_RECSTART_CMD) {
-			wms->changeDepth = TRUE;
-			switch(wms->oldDirection) {
-			case 0:
-				wms->depthSign = -1;
-				break;
-			case 1:
-				wms->depthSign = 1;
-				break;
-			default:
-				AfxMessageBox(_T("RtcSYS_RECSTART_CMD:should not occur"));
-				break;
-			}
-		} else if(wms->oldMode == RtcSYS_STANDBY_CMD) {
-			//深度变化规律会继续，
-			//时间归0，不动
-			//不反馈Subset数据了
-		} else if(wms->oldMode == RtcSYS_CALIBSTART_CMD) {
-			//
-		}
-		//
 		wms->changeTime = FALSE;
 		wms->returnSubsetData = FALSE;
 
@@ -611,56 +583,31 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		break;
 	case RtcSYS_STANDBY_CMD:
 		ASSERT(acttab != NULL);
-		
-		if(wms->oldMode == RtcSYS_RECSTART_CMD) {
-			//wms->changeDepth = TRUE;
-			AfxMessageBox(_T("RtcSYS_STANDBY_CMD:should come from idle or NA not RtcSYS_RECSTART_CMD"));
-		} else if(wms->oldMode == RtcSYS_CALIBSTART_CMD) {
-			//
-			AfxMessageBox(_T("RtcSYS_STANDBY_CMD:should come from idle or NA not RtcSYS_CALIBSTART_CMD"));
-		} else if(wms->oldMode == RtcSYS_IDLE_CMD) {
-			//深度变化规律会继续，
-			//时间归0
-			wms->changeTime = TRUE;
-			//反馈Subset数据
-			wms->returnSubsetData = TRUE;
-		} else {//来自NA
-			//深度不应该变化，因为方向是-1
-			//时间归0
-			wms->changeTime = TRUE;
-			//反馈Subset数据，实际测井时，仪器串不动，即使返回固定1位置数据包，
-			//数据包的内容也会有变化
-			wms->returnSubsetData = TRUE;
-			wms->depthSign = 0;
-		}
 
-		//EnableStartLog(TRUE);
-		//EnableCreateLog(TRUE);
+		if(wms->direction == 0) {
+			wms->depthSign = -1;
+		} else if(wms->direction = 1) {
+			wms->depthSign = 1;
+		} else {//-1, 
+			//wms->depthSign = 0;
+		}
+		wms->returnSubsetData = TRUE;
+		wms->changeTime = TRUE;
 		break;
 	case RtcSYS_RECSTART_CMD:
 		ASSERT(acttab != NULL);
 		
-		if(wms->oldMode == RtcSYS_STANDBY_CMD) {
-			//wms->changeDepth = TRUE;
-			AfxMessageBox(_T("RtcSYS_RECSTART_CMD:should come from idle"));
-		} else if(wms->oldMode == RtcSYS_IDLE_CMD) {
-			switch(wms->direction) {
-			case 0:
-				wms->depthSign = -1;
-				break;
-			case 1:
-				wms->depthSign = 1;
-				break;
-			}
-			//深度
-			wms->changeDepth = TRUE;
-			//时间
-			wms->changeTime = TRUE;
-			//反馈Subset数据
-			wms->returnSubsetData = TRUE;
+		if(wms->direction == 0) {
+			wms->depthSign = -1;
+		} else if(wms->direction = 1) {
+			wms->depthSign = 1;
+		} else {//-1, 
+			//wms->depthSign = 0;
+			//should not here
 		}
-		//EnableStartLog(TRUE);//以新速度log
-		//EnableCreateLog(TRUE);//开始Log
+		wms->changeDepth = TRUE;
+		wms->changeTime = TRUE;
+		wms->returnSubsetData = TRUE;
 		break;
 	case RtcSYS_CALIBSTART_CMD:
 		//重新设置DataFileBuf的缓冲区，将对应的文件
@@ -706,10 +653,13 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		EnableCreateLog(TRUE);
 		//
 	} else if((wms->old2Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
-		(wms->old2Mode == RtcSYS_STANDBY_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_RECSTART_CMD) ) {
+		(wms->old2Mode == RtcSYS_STANDBY_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_RECSTART_CMD) ||
+		(wms->old3Mode == RtcSYS_STANDBY_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_RECSTART_CMD) ||
+		(wms->old3Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD)) {
 		//经过了深度到时间或时间到深度模式的切换
 		//重新构造DataFileBuf缓冲区并重新加载文件
 		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		m_subsetAssister->Save(log);
 
 		//(1)stop log timer
 		StopLogTimer();
@@ -728,7 +678,8 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		//fill(i)===>用calver的数据文件
 		
 		//
-	} else if(wms->old2Mode == RtcSYS_CALIBSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) {
+	} else if( (wms->old2Mode == RtcSYS_CALIBSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
+		(wms->old2Mode == RtcSYS_CALIBSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ) {
 		//从CalVer状态退出时，自动转换到Idle再到Standby time
 		//重新构造DataFileBuf缓冲区并重新加载文件
 		//
@@ -740,8 +691,8 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		//
 	}
 
-	sprintf(loginfo, "Old2Mode:0x%lx,OldMode:0x%lx,Mode:0x%lx;", wms->old2Mode, wms->oldMode, wms->mode);
-	sprintf(loginfo, "%sOld2Dir:%d,OldDir:%d,Dir:%d;", loginfo, wms->old2Direction, wms->oldDirection, wms->direction);
+	sprintf(loginfo, "Old3Mode:0x%lx,Old2Mode:0x%lx,OldMode:0x%lx,Mode:0x%lx;", wms->old3Mode, wms->old2Mode, wms->oldMode, wms->mode);
+	sprintf(loginfo, "%sOld3Dir:%d,Old2Dir:%d,OldDir:%d,Dir:%d;", loginfo, wms->old3Direction, wms->old2Direction, wms->oldDirection, wms->direction);
 	sprintf(loginfo, "%schangeDepth:%d,changeTime:%d, ReturnSubsetData:%d,depthSign:%d\n", loginfo, wms->changeDepth, wms->changeTime, wms->returnSubsetData, wms->depthSign);
 	log.Write(loginfo, strlen(loginfo));
 	log.Flush();
