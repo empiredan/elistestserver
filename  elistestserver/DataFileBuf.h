@@ -54,6 +54,7 @@ private:
 	void increase(UINT i, UINT disp);
 	void fillInWithRandomData(UINT i);
 	void fillIn(CString &filePath, UINT i);
+	void Save(CFile &log);
 };
 
 #endif // !defined(AFX_DATAFILEBUF_H__32B6A05D_26E5_4A82_B9D1_825BD44433A5__INCLUDED_)

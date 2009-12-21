@@ -22,10 +22,12 @@ void CWorkModeSetter::init() {
 	returnSubsetData = FALSE;
 	depthSign = 0;
 
+	old3Mode = NET_CMD_NA;
 	old2Mode = NET_CMD_NA;
 	oldMode = NET_CMD_NA;
 	mode = NET_CMD_NA;
 	
+	old3Direction = -2;
 	old2Direction = -2;
 	oldDirection = -2;
 	direction = -2;
@@ -43,10 +45,12 @@ void CWorkModeSetter::fillWorkMode(BUF_TYPE *buf, ULONG len) {
 	UINT32 *t;
 	t = (UINT32*)buf;
 	
+	old3Mode = old2Mode;
 	old2Mode = oldMode;
 	oldMode = mode;
 	mode = ntohl(t[0]);
 
+	old3Direction = old2Direction;
 	old2Direction = oldDirection;
 	oldDirection = direction;
 	direction = ntohl(t[1]);
