@@ -135,7 +135,7 @@ void CDataFileBuf::fillIn(CString &filePath, UINT i) {
 		}
 		bf[i].df.Seek(sizeof(UINT32)*3, CFile::begin);
 		bf[i].df.Read(bf[i].dbhead, bf[i].dbufsz);
-		
+		bf[i].df.Close();
 		bf[i].fileExists = TRUE;
 	} else {
 		bf[i].fileExists = FALSE;
