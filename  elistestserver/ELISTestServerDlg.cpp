@@ -168,6 +168,9 @@ void CELISTestServerDlg::SetCurrentWorkState()
 	case RtcSYS_RECSTOP_CMD:
 		m_currentWorkStateStr="RtcSYS_RECSTOP_CMD";
 		break;
+	case RtcSYS_CALIBSTART_CMD:
+		m_currentWorkStateStr="RtcSYS_CALIBSTART_CMD";
+		break;
 	default:
 		CString ex; 
 		ex.Format("Current Work State %lx not identified!\n",wms->mode);
@@ -614,6 +617,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		//读入到相应的位置上，后来的刻度命令会从这个
 		//位置读取刻度的SubsetData
 		//离开这个状态进入
+		StopLogTimer();
 		break;
 	case RtcSYS_TRAINSTART_CMD:
 		StopLogTimer();
