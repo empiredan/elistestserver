@@ -359,6 +359,7 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
 	
 	m_actListRootFolder="D:\\LogData\\E130~MSF71_file1";
+	m_calverListRootFolder="D:\\LogData\\¿Ì¶ÈÊý¾Ý";
 	cmdh.start();
 	msgs.start();
 	ta = 5;

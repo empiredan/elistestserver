@@ -43,8 +43,8 @@ void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
 {
 	this->m_listctrlCalVer.DeleteAllItems();
 	
-	int toolADDR=clibparam->getToolADDR();
-	int subsetNo=clibparam->getSubsetNo();
+	UINT32 toolADDR=clibparam->getToolADDR();
+	UINT32 subsetNo=clibparam->getSubsetNo();
 	int actNo;
 
 	for (int i=0;i<acttbl->actNum;i++)
@@ -70,7 +70,45 @@ void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
 	itoa(subsetNo,str,10);
 	this->m_listctrlCalVer.SetItemText(0,2,str);
 		
-	
+	CString calverListRootFolder=m_pELISTestServerDlg->m_calverListRootFolder;
+	if (calverListRootFolder!=""){
+		
+		CFileFind calverDataFileFind;
+		BOOL finded = calverDataFileFind.FindFile(calverListRootFolder+"\\*.dat");//转义字符!!!	
+		BOOL dataFileFinded = finded;
+		if (finded)
+		{
+			
+			
+			while (dataFileFinded)
+			{
+				dataFileFinded = calverDataFileFind.FindNextFile();
+				CString calverDataFilePath=calverDataFileFind.GetFilePath();
+				
+				
+				UINT32 dataFileHeader[3];
+				CFile dataFile(calverDataFilePath, CFile::modeRead);
+				BUF_TYPE dataFileHeaderBuf[sizeof(UINT32)*3];
+				dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
+				dataFile.Close();
+				
+				memcpy(dataFileHeader, dataFileHeaderBuf, sizeof(UINT32)*3);
+				UINT32 toolADDRFromFile=dataFileHeader[0];
+				UINT32 subsetNoFromFile=dataFileHeader[1];
+				UINT32 dataType=dataFileHeader[2];
+				if (toolADDRFromFile==toolADDR
+					&& subsetNoFromFile==subsetNo
+					&& dataType==1)//文件格式匹配
+				{
+					this->m_listctrlCalVer.SetItemText(0,3,calverDataFilePath);
+				}
+				
+				
+			}
+		}
+		
+		calverDataFileFind.Close();
+	}
 }
 
 void TabCalVer::DoDataExchange(CDataExchange* pDX)
@@ -332,7 +370,7 @@ BOOL TabCalVer::OnInitDialog()
 	
 	lvcol.iSubItem=1;
 	lvcol.cx=90;
-	lvcol.pszText="Tool Series";
+	lvcol.pszText="Tool Address";
 	this->m_listctrlCalVer.InsertColumn(1,&lvcol);
 	
 	lvcol.iSubItem=2;
