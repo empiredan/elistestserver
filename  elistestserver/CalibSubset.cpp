@@ -66,8 +66,12 @@ void CCalibSubset::setSubsetData(CCalibParameter *ccp, CSubsetDataAssister *assi
 	//设置Calib数据的两个short头
 	b = assist->dataFileBuf->getNextCalibSubsetDataPointer();
 	shead = (ULONG*)b;
-	head[0] = (short)shead[0];
+	head[0] = (short)shead[0];//USHORT
 	head[1] = (short)shead[1];
+	if (head[1]<=0)
+	{
+		head[1]=1;
+	}
 	
 	sprintf(bt, "CalibSubsetData>> subset head orig status:0x%lx=%ld,orig time:0x%lx=%ld;", 
 		shead[0],shead[0],shead[1],shead[1]);

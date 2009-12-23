@@ -141,6 +141,7 @@ void CDataFileBuf::fillIn(CString &filePath, UINT i) {
 		bf[i].fileExists = FALSE;
 		fillInWithRandomData(i);
 	}
+	resetCurrentPointer(i);
 }
 
 BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i)

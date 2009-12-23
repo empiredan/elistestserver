@@ -730,6 +730,7 @@ CCalibSubset* CELISTestServerDlg::getCalibSubset()
 	//
 	rtn->setCommandHeader(calibpara, m_subsetAssister);
 	rtn->setSubsetData(calibpara, m_subsetAssister);
+	getFrontDataQueue()->enQueue(rtn);
 	return calibsubset;
 }
 
@@ -1150,7 +1151,7 @@ void CELISTestServerDlg::OnButtonCreateLog()
 {
 	// TODO: Add your control notification handler code here
 	
-	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
+	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {//|| wms->mode == RtcSYS_CALIBSTART_CMD
 		StopLogTimer();
 		//这个调用要在handleWorkstatechange中执行。
 		//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
