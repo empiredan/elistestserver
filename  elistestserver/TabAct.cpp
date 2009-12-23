@@ -36,6 +36,56 @@ void TabAct::setTabCtrl(MyTabCtrl* tab)
 	m_ptabCtrl=tab;
 }
 
+void TabAct::setDataFilePath(CString rootFolder, UINT i)
+{
+	if (rootFolder!=""){
+		
+		//WIN32_FIND_DATA fd;
+		//HANDLE hFind = FindFirstFile(actListRootFolder, &fd);
+		//if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
+		
+		CFileFind actDataFileFind;
+		BOOL finded=actDataFileFind.FindFile(rootFolder+"\\*.dat");//转义字符!!!	
+		BOOL dataFileFinded = finded;
+		
+		if (finded)
+		{
+			
+			
+			while (dataFileFinded)
+			{
+				dataFileFinded = actDataFileFind.FindNextFile();
+				CString actDataFilePath=actDataFileFind.GetFilePath();
+				
+				
+				UINT32 dataFileHeader[3];
+				CFile dataFile(actDataFilePath, CFile::modeRead);
+				BUF_TYPE dataFileHeaderBuf[sizeof(UINT32)*3];
+				dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
+				dataFile.Close();
+				
+				memcpy(dataFileHeader, dataFileHeaderBuf, sizeof(UINT32)*3);
+				UINT32 toolADDR=dataFileHeader[0];
+				UINT32 subsetNo=dataFileHeader[1];
+				UINT32 dataType=dataFileHeader[2];
+				if (toolADDR==atoi(m_listctrlAct.GetItemText(i, 1))
+					&& subsetNo==atoi(m_listctrlAct.GetItemText(i, 2))
+					&& dataType==0)//文件格式匹配
+				{
+					this->m_listctrlAct.SetItemText(i,5,actDataFilePath);
+				}
+				
+				
+				
+			}
+		}
+		
+		actDataFileFind.Close();
+		
+		//}
+		}
+}
+
 void TabAct::setACTTable(CActTable* acttbl)
 {
 	this->m_listctrlAct.DeleteAllItems();
@@ -43,7 +93,7 @@ void TabAct::setACTTable(CActTable* acttbl)
 	CString actListRootFolder=m_pELISTestServerDlg->m_actListRootFolder;
 	
 
-	for (int i=0;i<acttbl->actNum;i++)
+	for (UINT i=0;i<acttbl->actNum;i++)
 	{
 		char str[50];
 
@@ -75,53 +125,8 @@ void TabAct::setACTTable(CActTable* acttbl)
 		//this->m_listctrlAct.SetItemText(i,5,acttbl->pSaList[i]);
 		//this->m_listctrlAct.SetItemText(i,6,acttbl->pSaList[i]);
 
+		setDataFilePath(actListRootFolder, i);
 		
-		if (actListRootFolder!=""){
-
-			//WIN32_FIND_DATA fd;
-			//HANDLE hFind = FindFirstFile(actListRootFolder, &fd);
-			//if ((hFind != INVALID_HANDLE_VALUE) && (fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)){
-
-			CFileFind actDataFileFind;
-			BOOL finded=actDataFileFind.FindFile(actListRootFolder+"\\*.dat");//转义字符!!!	
-			BOOL dataFileFinded = finded;
-
-			if (finded)
-			{
-					
-
-				while (dataFileFinded)
-				{
-					dataFileFinded = actDataFileFind.FindNextFile();
-					CString actDataFilePath=actDataFileFind.GetFilePath();
-						
-						
-					UINT32 dataFileHeader[3];
-					CFile dataFile(actDataFilePath, CFile::modeRead);
-					BUF_TYPE dataFileHeaderBuf[sizeof(UINT32)*3];
-					dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
-					dataFile.Close();
-					
-					memcpy(dataFileHeader, dataFileHeaderBuf, sizeof(UINT32)*3);
-					UINT32 toolADDR=dataFileHeader[0];
-					UINT32 subsetNo=dataFileHeader[1];
-					UINT32 dataType=dataFileHeader[2];
-					if (toolADDR==atoi(m_listctrlAct.GetItemText(i, 1))
-						&& subsetNo==atoi(m_listctrlAct.GetItemText(i, 2))
-						&& dataType==0)//文件格式匹配
-					{
-						this->m_listctrlAct.SetItemText(i,5,actDataFilePath);
-					}
-
-						
-
-				}
-			}
-
-			actDataFileFind.Close();
-
-			//}
-		}
 
 
 
