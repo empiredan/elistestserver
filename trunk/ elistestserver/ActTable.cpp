@@ -94,7 +94,7 @@ void CActTable::reBuildSubsetDataAssister(CSubsetDataAssister *assist, float spe
 		for(i = 0; i < actNum; i++) {
 			assist->assist.shareOfCommonBuffer[i] = ((float)assist->assist.totalSizeOfSubsetsPerReturn[i])/((float)totalSubsets);
 		}
-	} else if(workState == RtcSYS_RECSTART_CMD) {//depth模式
+	} else if(workState == RtcSYS_RECSTART_CMD) {//depth模式--depth模式下最好将速度调小些，主频低于1.6GHz的最好<0.5ft/s
 		assist->assist.logTimerElapse = (UINT)(1000.0/(speed*((float)gcd)));
 		totalSubsets = 0;
 		for(i = 0; i < actNum; i++) {

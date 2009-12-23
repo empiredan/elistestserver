@@ -31,6 +31,7 @@ public:
 	void setTabCtrl(MyTabCtrl* tab);
 	void setACTTable(CActTable* acttbl);
 	void setCElisTestServerDlg(CELISTestServerDlg* dlg);
+	void setDataFilePath(CString rootFolder, UINT i);
 
 // Overrides
 	// ClassWizard generated virtual function overrides

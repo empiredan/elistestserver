@@ -943,6 +943,15 @@ void CELISTestServerDlg::OnButtonActFolder()
         //AfxMessageBox(_T(str));
 		GetDlgItem(IDC_EDIT_ACT_FOLDER)->SetWindowText(str);
 		UpdateData(TRUE);
+		TabAct* actListCtrlDlg = m_tabMyTabCtrl.m_dlgAct;
+		int itemCount = actListCtrlDlg->m_listctrlAct.GetItemCount();
+		if (itemCount > 0)
+		{
+			for (int i = 0; i < itemCount; i++)
+			{
+				actListCtrlDlg->setDataFilePath(str, i);
+			}
+		}
 		//m_actListRootFolder=str;
     } else {
         //AfxMessageBox(_T("无效的目录，请重新选择!"));
