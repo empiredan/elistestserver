@@ -4,10 +4,13 @@
 #include "Utils.h"
 #include "commands.h"
 
+#include "ELISTestServerDlg.h"
+#include "ELISTestServer.h"
 
-CActTable::CActTable(void)
+CActTable::CActTable()
 {
 	pSaList = NULL;
+	
 }
 
 CActTable::~CActTable(void)
@@ -64,13 +67,13 @@ CActTable* CActTable::AllocateActTable(unsigned char *buf, int len) {
 	return AllocateActTable(actNum, buf, len);
 }
 
-void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState) {
+void CActTable::buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState, int measure) {
 	assist->create(actNum);
-	reBuildSubsetDataAssister(assist, speed, workState);
+	reBuildSubsetDataAssister(assist, speed, workState, measure);
 }
-void CActTable::reBuildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState) {
+void CActTable::reBuildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState, int measure) {
 	ULONG i;
-	ULONG lcm, gcd;
+	//ULONG lcm, gcd;
 
 	UINT lcmgcd[2];
 
@@ -95,7 +98,22 @@ void CActTable::reBuildSubsetDataAssister(CSubsetDataAssister *assist, float spe
 			assist->assist.shareOfCommonBuffer[i] = ((float)assist->assist.totalSizeOfSubsetsPerReturn[i])/((float)totalSubsets);
 		}
 	} else if(workState == RtcSYS_RECSTART_CMD) {//depth模式--depth模式下最好将速度调小些，主频低于1.6GHz的最好<0.5ft/s
-		assist->assist.logTimerElapse = (UINT)(1000.0/(speed*((float)gcd)));
+		if (measure == nDepthInterruptMode)
+		{
+			assist->assist.logTimerElapse = 1000/(speed*gcd)+0.5;
+		} 
+		else
+		{
+			if (nDepthInterruptMode)
+			{
+				assist->assist.logTimerElapse = 1000*METRIC_DU/(speed*IMPERIAL_DU*gcd)+0.5;
+			} 
+			else
+			{
+				assist->assist.logTimerElapse = 1000*IMPERIAL_DU/(speed*METRIC_DU*gcd)+0.5;
+			}
+		}
+		//assist->assist.logTimerElapse = ceil(1000/(speed*gcd));//(UINT)(1000.0/(speed*((float)gcd)));
 		totalSubsets = 0;
 		for(i = 0; i < actNum; i++) {
 			assist->assist.subsetNumPerReturn[i] = pSaList[i].depthSampleRate/gcd;
@@ -139,7 +157,7 @@ void CActTable::calculateLCMGCD(UINT lcmgcd[]) {
 	delete []time;
 } 
 
-UINT CActTable::getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState) {
+UINT CActTable::getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState, int measure) {
 	UINT rtn;
 
 	UINT lcmgcd[2];
@@ -149,7 +167,22 @@ UINT CActTable::getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT
 	if(workState == RtcSYS_STANDBY_CMD) {//time模式
 		assist->assist.logTimerElapse = lcmgcd[0];
 	} else if(workState == RtcSYS_RECSTART_CMD) {//depth模式
-		assist->assist.logTimerElapse = (UINT)(1000.0/(speed*((float)lcmgcd[1])));
+		if (measure == nDepthInterruptMode)
+		{
+			assist->assist.logTimerElapse = 1000/(speed*gcd)+0.5;
+		} 
+		else
+		{
+			if (nDepthInterruptMode)
+			{
+				assist->assist.logTimerElapse = 1000*METRIC_DU/(speed*IMPERIAL_DU*gcd)+0.5;
+			} 
+			else
+			{
+				assist->assist.logTimerElapse = 1000*IMPERIAL_DU/(speed*METRIC_DU*gcd)+0.5;
+			}
+		}
+		//assist->assist.logTimerElapse = (UINT)(1000.0/(speed*((float)lcmgcd[1])));
 	}
 	rtn = assist->assist.logTimerElapse;
 	return rtn;
@@ -180,3 +213,10 @@ void CActTable::Save(CFile &log) {
 	log.Write(bout, strlen(bout));
 	log.Flush();
 }
+/*
+void CActTable::setParentDlg(CELISTestServerDlg *dlg)
+{
+	m_dlg = dlg;
+}
+*/
+

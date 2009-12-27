@@ -5,7 +5,7 @@
 #include "Utils.h"
 
 //#pragma once
-
+class CELISTestServerDlg;
 class RTCSubset
 {
 public:
@@ -45,6 +45,8 @@ public:
 	ULONG actNum;
 	ULONG nDepthInterruptMode;
 	RTCSubset *pSaList;
+	//CELISTestServerDlg* m_dlg;
+	LONG lcm, gcd;
 public:
 	CActTable::CActTable(void);
 	CActTable::~CActTable(void);
@@ -100,12 +102,13 @@ public:
 		return rtn;
 	}
 public:
-	void buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
-	void reBuildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState);
-	UINT getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState);
+	void buildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState, int measure);
+	void reBuildSubsetDataAssister(CSubsetDataAssister *assist, float speed, UINT workState, int measure);
+	UINT getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT workState, int measure);
 private:
 	void calculateLCMGCD(UINT lcmgcd[]);
 public:
+	//void setParentDlg(CELISTestServerDlg* dlg);
 	void Save(CFile &log);
 };
 

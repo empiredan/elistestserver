@@ -6,8 +6,8 @@
 typedef BYTE BUF_TYPE; 
 #define SOCK_RECEIVE_HEADER_LEN (2*sizeof(ULONG))
 
-#define IMPERIAL_DU ((ULONG)30480)
-#define METRIC_DU   ((ULONG)100000)
+#define IMPERIAL_DU ((LONG)30480)
+#define METRIC_DU   ((LONG)100000)
 
 
 /*!  command type*/

@@ -32,8 +32,8 @@ public:
 
 	void setTabCtrl(MyTabCtrl* tab);
 	void SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl);
-
 	void setCElisTestServerDlg(CELISTestServerDlg* dlg);
+	void setDataFilePath(CString rootFolder, UINT i);
 
 // Overrides
 	// ClassWizard generated virtual function overrides
