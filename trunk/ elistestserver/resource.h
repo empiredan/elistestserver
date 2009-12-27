@@ -67,6 +67,7 @@
 #define IDC_BUTTON_START_RELOG          1047
 #define IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT 1048
 #define IDC_STATIC_SPEED_SHOW_UNIT      1049
+#define IDC_BUTTON_STOP_LOG             1050
 
 // Next default values for new objects
 // 
@@ -74,7 +75,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        129
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1049
+#define _APS_NEXT_CONTROL_VALUE         1051
 #define _APS_NEXT_SYMED_VALUE           106
 #endif
 #endif

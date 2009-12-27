@@ -293,6 +293,11 @@ void CELISTestServerDlg::EnableCreateLog(BOOL enableButton)
 	
 }
 
+void CELISTestServerDlg::EnableStopLog(BOOL enableButton)
+{
+	GetDlgItem(IDC_BUTTON_STOP_LOG)->EnableWindow(enableButton);
+	
+}
 
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 {
@@ -331,6 +336,7 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_RADIO_IMPERIAL, OnRadioImperial)
 	ON_BN_CLICKED(IDC_RADIO_METRIC, OnRadioMetric)
 	ON_BN_CLICKED(IDC_BUTTON_CREATE_LOG, OnButtonCreateLog)
+	ON_BN_CLICKED(IDC_BUTTON_STOP_LOG, OnButtonStopLog)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -696,9 +702,9 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 	char loginfo[1024];
 	switch(wms->mode) {
 	case RtcSYS_IDLE_CMD:
+		wms->changeDepth = FALSE;
 		wms->changeTime = FALSE;
 		wms->returnSubsetData = FALSE;
-
 		//EnableStartLog(FALSE);
 		//EnableCreateLog(FALSE);
 		break;
@@ -712,8 +718,9 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		} else {//-1, 
 			//wms->depthSign = 0;
 		}
-		wms->returnSubsetData = TRUE;
+		wms->changeDepth = FALSE;
 		wms->changeTime = TRUE;
+		wms->returnSubsetData = TRUE;
 		break;
 	case RtcSYS_RECSTART_CMD:
 		ASSERT(acttab != NULL);
@@ -864,7 +871,6 @@ void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
  */
 void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
 	CreateTimer(LOGDATA_TIMER, uElapse);
-	EnableCreateLog(FALSE);
 	SetCurrentTestTime(0);
 }
 void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
@@ -985,7 +991,7 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	//填写
 	dpmp->ddp.corr_Depth = 10;
 	dpmp->ddp.true_Depth = m_currentDepthDU;//this->getCurrentDepthDU();
-	dpmp->ddp.speed = m_speed;
+	dpmp->ddp.speed = m_speedDU*60;
 	dpmp->ddp.totalTension = 5;
 	dpmp->ddp.differTension = 2;
 	dpmp->ddp.time = GetCurrentTestTime();
@@ -1205,19 +1211,20 @@ void CELISTestServerDlg::OnButtonSpeed()
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
 	GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr);
-	m_speed=atof(m_speedStr);
+	m_speed = atof(m_speedStr);
+	m_speed/= 60;
 	if (errno==ERANGE||errno==EINVAL){
 		m_speed=0.5f;
 	}
 	if (m_measure)
 	{
-		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("m/s");
-		//m_speedDU = m_speed*METRIC_DU;
+		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("m/min");
+		m_speedDU = m_speed*METRIC_DU;
 	} 
 	else
 	{
-		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("feet/s");
-		//m_speedDU = m_speed*IMPERIAL_DU;
+		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("feet/min");
+		m_speedDU = m_speed*IMPERIAL_DU;
 	}
 	
 	
@@ -1321,6 +1328,8 @@ void CELISTestServerDlg::OnButtonCreateLog()
 		//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 		m_subsetAssister->Save(log);
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+		EnableStopLog(TRUE);
+		EnableCreateLog(FALSE);
 		//SetCurrentTestTime(0);
 	} else {
 		AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time"));
@@ -1332,3 +1341,12 @@ void CELISTestServerDlg::OnButtonCreateLog()
 
 
 
+
+void CELISTestServerDlg::OnButtonStopLog() 
+{
+	// TODO: Add your control notification handler code here
+	StopLogTimer();
+	EnableStopLog(FALSE);
+	EnableCreateLog(TRUE);
+
+}
