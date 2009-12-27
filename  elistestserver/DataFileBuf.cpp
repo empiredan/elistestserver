@@ -20,7 +20,7 @@ static char THIS_FILE[]=__FILE__;
 
 CDataFileBuf::CDataFileBuf(CELISTestServerDlg* dlg)
 {
-	m_pdlg=dlg;
+	m_pdlg = dlg;
 	store = NULL;
 	bf = NULL;
 }

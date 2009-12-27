@@ -40,7 +40,7 @@ class CELISTestServerDlg : public CDialog
 public:
 	void fillDataFileBufWithAct();
 	void fillDataFileBufWithCalVer();
-	UINT getCurrentDepthDU();
+	//UINT getCurrentDepthDU();
 	int getMeasure();
 	CELISTestServerDlg(CWnd* pParent = NULL);	// standard constructor
 	virtual ~CELISTestServerDlg();
@@ -82,9 +82,11 @@ public:
 	CString m_directionStr;
 	float m_speed;
 	CString m_speedStr;
-	float m_trueDepth;
+	//float m_trueDepth;
 	CString m_trueDepthStr;
 	CString m_currentDepthStr;
+	long m_currentDepthDU;
+	//long m_speedDU;
 	CString m_currentTimeStr;
 	int m_measure;
 

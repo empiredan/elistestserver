@@ -106,7 +106,7 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	m_measure=0;
 	m_speed=0.5f;
-	m_trueDepth=500;
+	//m_trueDepth=500;
 	
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -119,6 +119,36 @@ CELISTestServerDlg::~CELISTestServerDlg()
 {
 	//delete this->m_pmasterDataQueue;
 	//m_pmasterDataQueue=NULL;
+
+	CString dataConfigFileName = "dataconfig.ini";//D:\\vc6\\MyProjects\\elis\\ELISTestServer6.3.2
+	char currentDirectoryChar[1024];
+	GetCurrentDirectory(1024, currentDirectoryChar);
+	CString dataConfigFilePath = currentDirectoryChar;
+	dataConfigFilePath+= "\\";
+	dataConfigFilePath+= dataConfigFileName;
+	
+	//_TCHAR confBuf[1024];
+	CString confStr;
+	
+	WritePrivateProfileString("Parameter Setting", "TrueDepth", m_trueDepthStr, dataConfigFilePath);
+	
+	
+	WritePrivateProfileString("Parameter Setting", "Speed", m_speedStr, dataConfigFilePath);
+	
+	confStr.Format("%d", m_measure);
+	WritePrivateProfileString("Parameter Setting", "Measure", confStr, dataConfigFilePath);
+	
+	confStr.Format("%d", m_sPort);
+	WritePrivateProfileString("Net Connection", "Port", confStr, dataConfigFilePath);
+	
+	WritePrivateProfileString("Data File", "ACTRoot", m_actListRootFolder, dataConfigFilePath);
+	
+	WritePrivateProfileString("Data File", "CALVERRoot", m_calverListRootFolder, dataConfigFilePath);
+	
+	confStr.Format("%ld", m_dataFileBufSize/(1024*1024));
+	WritePrivateProfileString("Data File", "BufSize", confStr, dataConfigFilePath);
+
+
 	m_sListenSocket.Close();
 	
 	if(m_psConnectSocket){
@@ -240,13 +270,14 @@ void CELISTestServerDlg::SetCurrentDepth(float cp)
 {
 	m_currentDepthStr.Format("%f",cp);
 	//UpdateData(FALSE);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr);
 	if (m_measure)
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr+" m");
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("m");
 	} 
 	else
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr+" feet");
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("feet");
 	}
 	
 }
@@ -352,17 +383,103 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	//GetDlgItem(IDC_EDIT_TRUE_DEPTH)->SetWindowText("50000");
 	//GetDlgItem(IDC_EDIT_SPEED)->SetWindowText("0.05");
 	//GetDlgItem(IDC_EDIT_SERVER_PORT)->SetWindowText("6050");
+
+	CString dataConfigFileName = "dataconfig.ini";//D:\\vc6\\MyProjects\\elis\\ELISTestServer6.3.2
+	char currentDirectoryChar[1024];
+	GetCurrentDirectory(1024, currentDirectoryChar);
+	CString dataConfigFilePath = currentDirectoryChar;
+	dataConfigFilePath+= "\\";
+	dataConfigFilePath+= dataConfigFileName;
+
+	LPCTSTR lpDefault;
+	INT nDefault;
+	_TCHAR confBuf[1024];
+
+	GetPrivateProfileString("Parameter Setting", "TrueDepth", lpDefault, confBuf, 1024, dataConfigFilePath);
+	m_trueDepthStr = confBuf;
+
+	GetPrivateProfileString("Parameter Setting", "Speed", lpDefault, confBuf, 1024, dataConfigFilePath);
+	m_speedStr = confBuf;
+
+	m_measure = GetPrivateProfileInt("Parameter Setting", "Measure", nDefault, dataConfigFilePath);
+
+	m_sPort = GetPrivateProfileInt("Net Connection", "Port", nDefault, dataConfigFilePath);
+
+	GetPrivateProfileString("Data File", "ACTRoot", lpDefault, confBuf, 1024, dataConfigFilePath);
+	m_actListRootFolder = confBuf;
+
+	GetPrivateProfileString("Data File", "CALVERRoot", lpDefault, confBuf, 1024, dataConfigFilePath);
+	m_calverListRootFolder = confBuf;
+
+	m_dataFileBufSize = GetPrivateProfileInt("Data File", "BufSize", nDefault, dataConfigFilePath);
+/*
+	typedef struct{
+		CString trueDepth;
+		CString speed;
+		int m_measure;
+	}ParamConf;
+
+	typedef struct{
+		UINT port;
+	}NetConf;
+
+	typedef struct{
+		CString actRoot;
+		CString calverRoot;
+		ULONG bufSize;
+	}DataFileConf;
+
+	_TCHAR* paramConfBuf = new _TCHAR[sizeof(ParamConf)];
+	_TCHAR* netConfBuf = new _TCHAR[sizeof(NetConf)];
+	_TCHAR* dataFileConfBuf = new _TCHAR[sizeof(DataFileConf)];
+
+	DWORD readSize = GetPrivateProfileSection("Parameter Setting", paramConfBuf, sizeof(ParamConf), dataConfigFilePath);
+	readSize = GetPrivateProfileSection("Net Connection", netConfBuf, sizeof(NetConf), dataConfigFilePath);
+	GetPrivateProfileSection("Data File", dataFileConfBuf, sizeof(DataFileConf), dataConfigFilePath);
+
+	ParamConf* paramConf = (ParamConf*)paramConfBuf;
+	NetConf* netConf = (NetConf*)netConfBuf;
+	DataFileConf* dataFileConf = (DataFileConf*)dataFileConfBuf;
+
+	m_trueDepthStr = paramConf->trueDepth;
+	m_speedStr = paramConf->speed;
+	m_measure = paramConf->m_measure;
+	m_sPort = netConf->port;
+	m_actListRootFolder = dataFileConf->actRoot;
+	m_calverListRootFolder = dataFileConf->calverRoot;
+	m_dataFileBufSize = dataFileConf->bufSize;
+*/
+	/*
 	m_sPort=6050;
 	m_speedStr="100";
 	m_trueDepthStr="5000";
-	GetDlgItem(IDC_EDIT_DATA_BUFFER_SIZE)->SetWindowText("5");
-	((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
+	*/
+	if (m_measure)
+	{
+		m_currentDepthDU = atof(m_trueDepthStr)*METRIC_DU;
+		((CButton*)GetDlgItem(IDC_RADIO_METRIC))->SetCheck(TRUE);
+	} 
+	else
+	{
+		m_currentDepthDU = atof(m_trueDepthStr)*IMPERIAL_DU;
+		((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
+	}
+
+	CString dataFileBufSizeStr;
+	dataFileBufSizeStr.Format("%ld", m_dataFileBufSize);
+	m_dataFileBufSize*= 1024*1024;
+	GetDlgItem(IDC_EDIT_DATA_BUFFER_SIZE)->SetWindowText(dataFileBufSizeStr);
+	//GetDlgItem(IDC_EDIT_DATA_BUFFER_SIZE)->SetWindowText("5");
+	//((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
 	
-	m_actListRootFolder="D:\\LogData\\E130~MSF71_file1";
-	m_calverListRootFolder="D:\\LogData\\刻度数据";
+	//m_actListRootFolder="D:\\LogData\\E130~MSF71_file1";
+	//m_calverListRootFolder="D:\\LogData\\刻度数据";
+
 	cmdh.start();
 	msgs.start();
 	ta = 5;
+
+	//acttab->setParentDlg(this);
 
 	UpdateData(FALSE);
 
@@ -650,7 +767,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 	if(wms->old2Mode == NET_CMD_NA && wms->oldMode == NET_CMD_NA && wms->mode == RtcSYS_STANDBY_CMD) {
 		//刚刚激活服务表。
 		//重新生成缓冲区后重新构造DataFileBuf缓冲区并加载文件
-		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode, m_measure);
 		
 		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
 		m_dataFileBuf->layout();
@@ -663,7 +780,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		(wms->old3Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD)) {
 		//经过了深度到时间或时间到深度模式的切换
 		//重新构造DataFileBuf缓冲区并重新加载文件
-		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode, m_measure);
 		m_subsetAssister->Save(log);
 
 		//(1)stop log timer
@@ -748,6 +865,7 @@ void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
 void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
 	CreateTimer(LOGDATA_TIMER, uElapse);
 	EnableCreateLog(FALSE);
+	SetCurrentTestTime(0);
 }
 void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
 	CreateTimer(DEPTH_TIMER, uElapse);
@@ -806,17 +924,45 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 	}
 	if (wms->changeDepth)
 	{
-		SetCurrentDepth(GetCurrentDepth()+wms->depthSign*m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
+		
+		if (acttab->nDepthInterruptMode)
+		{
+			m_currentDepthDU+= wms->depthSign*METRIC_DU/acttab->gcd;
+			if (m_measure)
+			{
+				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign/acttab->gcd);
+			} 
+			else
+			{
+				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign*METRIC_DU/(acttab->gcd*IMPERIAL_DU));
+			}
+			
+		} 
+		else
+		{
+			m_currentDepthDU+= wms->depthSign*IMPERIAL_DU/acttab->gcd;
+			if (m_measure)
+			{
+				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign*IMPERIAL_DU/(acttab->gcd*METRIC_DU));
+			} 
+			else
+			{
+				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign/acttab->gcd);
+			}
+
+		}
+		
+		
 	}
 
 	/*
 	if (wms->direction)
 	{
-		SetCurrentDepth(GetCurrentDepth()+m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
+		//SetCurrentDepth(GetCurrentDepth()+m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
 	} 
 	else
 	{
-		SetCurrentDepth(GetCurrentDepth()-m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
+		//SetCurrentDepth(GetCurrentDepth()-m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
 	}
 	*/
 	if (wms->returnSubsetData)
@@ -838,7 +984,7 @@ void CELISTestServerDlg::DepthTimerHandler() {
 	//下面这些参数应该从根据实际模拟的进程计算出来
 	//填写
 	dpmp->ddp.corr_Depth = 10;
-	dpmp->ddp.true_Depth = this->getCurrentDepthDU();
+	dpmp->ddp.true_Depth = m_currentDepthDU;//this->getCurrentDepthDU();
 	dpmp->ddp.speed = m_speed;
 	dpmp->ddp.totalTension = 5;
 	dpmp->ddp.differTension = 2;
@@ -1058,19 +1204,23 @@ void CELISTestServerDlg::OnButtonSpeed()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
-	if (m_measure)
-	{
-		GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr+" m/s");
-	} 
-	else
-	{
-		GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr+" feet/s");
-	}
-	
+	GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr);
 	m_speed=atof(m_speedStr);
 	if (errno==ERANGE||errno==EINVAL){
 		m_speed=0.5f;
 	}
+	if (m_measure)
+	{
+		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("m/s");
+		//m_speedDU = m_speed*METRIC_DU;
+	} 
+	else
+	{
+		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("feet/s");
+		//m_speedDU = m_speed*IMPERIAL_DU;
+	}
+	
+	
 }
 
 /*
@@ -1090,13 +1240,13 @@ void CELISTestServerDlg::OnButtonStartLog()
 {
 	// TODO: Add your control notification handler code here
 	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
-		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode);
+		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
 		StopLogTimer();
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 		//SetCurrentTestTime(0);
 	} else {
 		if(acttab != NULL) {
-			acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode);
+			acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
 		}
 		AfxMessageBox(_T("新速度已生效，系统当前状态不是StandBy Time或Record Time"));
 	}
@@ -1106,19 +1256,24 @@ void CELISTestServerDlg::OnButtonTrueDepth()
 {
 	// TODO: Add your control notification handler code here
 	UpdateData(TRUE);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr);
+	
 	if (m_measure)
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr+" m");
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("m");
+		m_currentDepthDU = atof(m_trueDepthStr)*METRIC_DU;
 	} 
 	else
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr+" feet");
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("feet");
+		m_currentDepthDU = atof(m_trueDepthStr)*IMPERIAL_DU;
 	}
-	
+	/*
 	m_trueDepth=atof(m_trueDepthStr);
 	if (errno==ERANGE||errno==EINVAL){
-		m_speed=0.5f;
+		m_trueDepth=500f;
 	}
+	*/
 	
 
 }
@@ -1141,7 +1296,7 @@ int CELISTestServerDlg::getMeasure()
 {
 	return m_measure;
 }
-
+/*
 UINT CELISTestServerDlg::getCurrentDepthDU()
 {
 	float currentDepth;
@@ -1155,7 +1310,7 @@ UINT CELISTestServerDlg::getCurrentDepthDU()
 	}
 	return (UINT)currentDepth;
 }
-
+*/
 void CELISTestServerDlg::OnButtonCreateLog() 
 {
 	// TODO: Add your control notification handler code here
@@ -1166,7 +1321,7 @@ void CELISTestServerDlg::OnButtonCreateLog()
 		//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 		m_subsetAssister->Save(log);
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-		SetCurrentTestTime(0);
+		//SetCurrentTestTime(0);
 	} else {
 		AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time"));
 	}

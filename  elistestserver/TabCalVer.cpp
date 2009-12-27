@@ -39,6 +39,49 @@ void TabCalVer::setTabCtrl(MyTabCtrl* tab)
 	m_ptabCtrl=tab;
 }
 
+void TabCalVer::setDataFilePath(CString rootFolder, UINT i)
+{
+	if (rootFolder!=""){
+		
+		CFileFind calverDataFileFind;
+		BOOL finded = calverDataFileFind.FindFile(rootFolder+"\\*.dat");//转义字符!!!	
+		BOOL dataFileFinded = finded;
+		if (finded)
+		{
+			
+			
+			while (dataFileFinded)
+			{
+				dataFileFinded = calverDataFileFind.FindNextFile();
+				CString calverDataFilePath=calverDataFileFind.GetFilePath();
+				
+				
+				UINT32 dataFileHeader[3];
+				CFile dataFile(calverDataFilePath, CFile::modeRead);
+				BUF_TYPE dataFileHeaderBuf[sizeof(UINT32)*3];
+				dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
+				dataFile.Close();
+				
+				memcpy(dataFileHeader, dataFileHeaderBuf, sizeof(UINT32)*3);
+				UINT32 toolADDRFromFile=dataFileHeader[0];
+				UINT32 subsetNoFromFile=dataFileHeader[1];
+				UINT32 dataType=dataFileHeader[2];
+				if (toolADDRFromFile==atoi(m_listctrlCalVer.GetItemText(i, 1))
+					&& subsetNoFromFile==atoi(m_listctrlCalVer.GetItemText(i, 2))
+					&& dataType==1)//文件格式匹配
+				{
+					this->m_listctrlCalVer.SetItemText(i,3,calverDataFilePath);
+				}
+				
+				
+			}
+		}
+		
+		calverDataFileFind.Close();
+	}
+
+}
+
 void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
 {
 	this->m_listctrlCalVer.DeleteAllItems();
@@ -71,44 +114,8 @@ void TabCalVer::SetCalibParameter(CCalibParameter *clibparam, CActTable* acttbl)
 	this->m_listctrlCalVer.SetItemText(0,2,str);
 		
 	CString calverListRootFolder=m_pELISTestServerDlg->m_calverListRootFolder;
-	if (calverListRootFolder!=""){
-		
-		CFileFind calverDataFileFind;
-		BOOL finded = calverDataFileFind.FindFile(calverListRootFolder+"\\*.dat");//转义字符!!!	
-		BOOL dataFileFinded = finded;
-		if (finded)
-		{
-			
-			
-			while (dataFileFinded)
-			{
-				dataFileFinded = calverDataFileFind.FindNextFile();
-				CString calverDataFilePath=calverDataFileFind.GetFilePath();
-				
-				
-				UINT32 dataFileHeader[3];
-				CFile dataFile(calverDataFilePath, CFile::modeRead);
-				BUF_TYPE dataFileHeaderBuf[sizeof(UINT32)*3];
-				dataFile.Read(dataFileHeaderBuf, sizeof(UINT32)*3);
-				dataFile.Close();
-				
-				memcpy(dataFileHeader, dataFileHeaderBuf, sizeof(UINT32)*3);
-				UINT32 toolADDRFromFile=dataFileHeader[0];
-				UINT32 subsetNoFromFile=dataFileHeader[1];
-				UINT32 dataType=dataFileHeader[2];
-				if (toolADDRFromFile==toolADDR
-					&& subsetNoFromFile==subsetNo
-					&& dataType==1)//文件格式匹配
-				{
-					this->m_listctrlCalVer.SetItemText(0,3,calverDataFilePath);
-				}
-				
-				
-			}
-		}
-		
-		calverDataFileFind.Close();
-	}
+	setDataFilePath(calverListRootFolder, 0);
+	
 }
 
 void TabCalVer::DoDataExchange(CDataExchange* pDX)
