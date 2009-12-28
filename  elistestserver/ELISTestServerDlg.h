@@ -120,7 +120,7 @@ public:
 
 	void SetCurrentWorkState();
 	void SetDirection();
-	void SetCurrentTestTime(UINT ct);
+	void SetCurrentTestTime(float ct);
 	void SetCurrentDepth(float cp);
 	float GetCurrentDepth();
 	UINT GetCurrentTestTime();
@@ -128,6 +128,7 @@ public:
 	void EnableStartLog(BOOL enableButton);
 	void EnableCreateLog(BOOL enableButton);
 	void EnableStopLog(BOOL enableButton);
+	void EnableUnitRadio(BOOL enableButton);
 	//void EnableStartRelog(BOOL enableButton);
 
 	CCalibSubset* getCalibSubset();
