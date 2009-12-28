@@ -243,9 +243,9 @@ UINT CELISTestServerDlg::GetCurrentTestTime()
 		
 	} 
 	
-	return (UINT)currentTime*1000;
+	return currentTime*1000;
 }
-void CELISTestServerDlg::SetCurrentTestTime(UINT ct)
+void CELISTestServerDlg::SetCurrentTestTime(float ct)
 {
 	m_currentTimeStr.Format("%10.2f",ct/1000.0);
 	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->SetWindowText(m_currentTimeStr);
@@ -273,11 +273,11 @@ void CELISTestServerDlg::SetCurrentDepth(float cp)
 	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr);
 	if (m_measure)
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("m");
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
 	} 
 	else
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("feet");
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");
 	}
 	
 }
@@ -297,6 +297,12 @@ void CELISTestServerDlg::EnableStopLog(BOOL enableButton)
 {
 	GetDlgItem(IDC_BUTTON_STOP_LOG)->EnableWindow(enableButton);
 	
+}
+
+void CELISTestServerDlg::EnableUnitRadio(BOOL enableButton)
+{
+	GetDlgItem(IDC_RADIO_IMPERIAL)->EnableWindow(enableButton);
+	GetDlgItem(IDC_RADIO_METRIC)->EnableWindow(enableButton);
 }
 
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
@@ -460,15 +466,24 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	m_speedStr="100";
 	m_trueDepthStr="5000";
 	*/
+	
 	if (m_measure)
 	{
 		m_currentDepthDU = atof(m_trueDepthStr)*METRIC_DU;
+		m_speed = atof(m_speedStr);
+		m_speedDU = m_speed*METRIC_DU;
 		((CButton*)GetDlgItem(IDC_RADIO_METRIC))->SetCheck(TRUE);
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
+		GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(m/min):");
 	} 
 	else
 	{
 		m_currentDepthDU = atof(m_trueDepthStr)*IMPERIAL_DU;
+		m_speed = atof(m_speedStr);
+		m_speedDU = m_speed*IMPERIAL_DU;
 		((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");
+		GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(ft/min):");
 	}
 
 	CString dataFileBufSizeStr;
@@ -771,7 +786,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
  * （5）
  */
 
-	if(wms->old2Mode == NET_CMD_NA && wms->oldMode == NET_CMD_NA && wms->mode == RtcSYS_STANDBY_CMD) {
+	if(wms->oldMode == NET_CMD_NA && wms->mode == RtcSYS_STANDBY_CMD) {
 		//刚刚激活服务表。
 		//重新生成缓冲区后重新构造DataFileBuf缓冲区并加载文件
 		acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode, m_measure);
@@ -781,10 +796,8 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		m_dataFileBuf->fillWithDataFile();
 		EnableCreateLog(TRUE);
 		//
-	} else if((wms->old2Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
-		(wms->old2Mode == RtcSYS_STANDBY_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_RECSTART_CMD) ||
-		(wms->old3Mode == RtcSYS_STANDBY_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_RECSTART_CMD) ||
-		(wms->old3Mode == RtcSYS_RECSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD)) {
+	} else if((wms->oldMode == RtcSYS_RECSTART_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
+		(wms->oldMode == RtcSYS_STANDBY_CMD && wms->mode == RtcSYS_RECSTART_CMD)) {
 		//经过了深度到时间或时间到深度模式的切换
 		//重新构造DataFileBuf缓冲区并重新加载文件
 		acttab->reBuildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode, m_measure);
@@ -798,17 +811,16 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		//(3)CreateLogTimer
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 		//
-	} else if(wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_CALIBSTART_CMD) {
+	} /*else if(wms->mode == RtcSYS_CALIBSTART_CMD) {
 		//从Idle或Standby time模式进入CalVer模式
 		//要在DataFileBuf中构造CalVer文件的缓冲区
 
 		//Stop log timer
-		StopLogTimer();
+		//StopLogTimer();
 		//fill(i)===>用calver的数据文件
 		
 		//
-	} else if( (wms->old2Mode == RtcSYS_CALIBSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
-		(wms->old2Mode == RtcSYS_CALIBSTART_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->oldMode == RtcSYS_IDLE_CMD && wms->mode == RtcSYS_STANDBY_CMD) ) {
+	} */else if(wms->oldMode == RtcSYS_CALIBSTART_CMD && wms->mode == RtcSYS_STANDBY_CMD) {
 		//从CalVer状态退出时，自动转换到Idle再到Standby time
 		//重新构造DataFileBuf缓冲区并重新加载文件
 		//
@@ -818,9 +830,12 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		m_subsetAssister->dataFileBuf->resetCurrentPointer(i);
 		fillDataFileBufWithAct();
 		//
+		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
+		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+		
 	}
 
-	sprintf(loginfo, "Old3Mode:0x%lx,Old2Mode:0x%lx,OldMode:0x%lx,Mode:0x%lx;", wms->old3Mode, wms->old2Mode, wms->oldMode, wms->mode);
+	sprintf(loginfo, "OldMode:0x%lx,Mode:0x%lx;", wms->oldMode, wms->mode);
 	sprintf(loginfo, "%sOld3Dir:%d,Old2Dir:%d,OldDir:%d,Dir:%d;", loginfo, wms->old3Direction, wms->old2Direction, wms->oldDirection, wms->direction);
 	sprintf(loginfo, "%schangeDepth:%d,changeTime:%d, ReturnSubsetData:%d,depthSign:%d\n", loginfo, wms->changeDepth, wms->changeTime, wms->returnSubsetData, wms->depthSign);
 	log.Write(loginfo, strlen(loginfo));
@@ -926,7 +941,7 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 	int direction=wms->direction;
 	if (wms->changeTime)
 	{
-		SetCurrentTestTime(GetCurrentTestTime()+(UINT)m_subsetAssister->assist.logTimerElapse);
+		SetCurrentTestTime(GetCurrentTestTime()+m_subsetAssister->assist.logTimerElapse);
 	}
 	if (wms->changeDepth)
 	{
@@ -1014,6 +1029,7 @@ void CELISTestServerDlg::SetCalibParameter(CCalibParameter *clibpara) {
 	//在这理添加代码更新Cal/Ver的ClistTable。
 	this->m_tabMyTabCtrl.m_dlgCalVer->SetCalibParameter(clibpara,acttab);
 	fillDataFileBufWithCalVer();
+
 	
 }
 
@@ -1218,12 +1234,12 @@ void CELISTestServerDlg::OnButtonSpeed()
 	}
 	if (m_measure)
 	{
-		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("m/min");
+		//GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(m/min):");
 		m_speedDU = m_speed*METRIC_DU;
 	} 
 	else
 	{
-		GetDlgItem(IDC_STATIC_SPEED_SHOW_UNIT)->SetWindowText("feet/min");
+		//GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(ft/min):");
 		m_speedDU = m_speed*IMPERIAL_DU;
 	}
 	
@@ -1246,17 +1262,35 @@ RtcSYS_STANDBY_CMD、RtcSYS_RECSTART_CMD，且
 void CELISTestServerDlg::OnButtonStartLog() 
 {
 	// TODO: Add your control notification handler code here
-	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
-		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
-		StopLogTimer();
-		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-		//SetCurrentTestTime(0);
-	} else {
-		if(acttab != NULL) {
+	CString currentDepthStr,speedStr;
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->GetWindowText(currentDepthStr);
+	GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->GetWindowText(speedStr);
+	if (currentDepthStr!="" && speedStr!="")
+	{
+		if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
 			acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
+			StopLogTimer();
+			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+			//SetCurrentTestTime(0);
+		} else {
+			if(acttab != NULL) {
+				acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
+			}
+			AfxMessageBox(_T("新速度已生效，系统当前状态不是StandBy Time或Record Time!"));
 		}
-		AfxMessageBox(_T("新速度已生效，系统当前状态不是StandBy Time或Record Time"));
 	}
+	else
+	{
+		if (currentDepthStr=="")
+		{
+			AfxMessageBox(_T("请设定深度后再开始log!"));
+		}
+		if (speedStr=="")
+		{
+			AfxMessageBox(_T("请设定速度度后再开始log!"));
+		}
+	}
+	
 }
 
 void CELISTestServerDlg::OnButtonTrueDepth() 
@@ -1267,12 +1301,12 @@ void CELISTestServerDlg::OnButtonTrueDepth()
 	
 	if (m_measure)
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("m");
+		//GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
 		m_currentDepthDU = atof(m_trueDepthStr)*METRIC_DU;
 	} 
 	else
 	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_UNIT)->SetWindowText("feet");
+		//GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");
 		m_currentDepthDU = atof(m_trueDepthStr)*IMPERIAL_DU;
 	}
 	/*
@@ -1289,6 +1323,9 @@ void CELISTestServerDlg::OnRadioImperial()
 {
 	// TODO: Add your control notification handler code here
 	m_measure=0;
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");	
+	GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(ft/min):");
+	
 	
 }
 
@@ -1296,7 +1333,8 @@ void CELISTestServerDlg::OnRadioMetric()
 {
 	// TODO: Add your control notification handler code here
 	m_measure=1;
-	
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
+	GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(m/min):");
 }
 
 int CELISTestServerDlg::getMeasure()
@@ -1321,26 +1359,42 @@ UINT CELISTestServerDlg::getCurrentDepthDU()
 void CELISTestServerDlg::OnButtonCreateLog() 
 {
 	// TODO: Add your control notification handler code here
-	
-	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {//|| wms->mode == RtcSYS_CALIBSTART_CMD
-		StopLogTimer();
-		//这个调用要在handleWorkstatechange中执行。
-		//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
-		m_subsetAssister->Save(log);
-		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-		EnableStopLog(TRUE);
-		EnableCreateLog(FALSE);
-		//SetCurrentTestTime(0);
-	} else {
-		AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time"));
+	CString currentDepthStr,speedStr;
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->GetWindowText(currentDepthStr);
+	GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->GetWindowText(speedStr);
+	if (currentDepthStr!="" && speedStr!="")
+	{
+		if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {//|| wms->mode == RtcSYS_CALIBSTART_CMD
+			StopLogTimer();
+			//这个调用要在handleWorkstatechange中执行。
+			//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+			m_subsetAssister->Save(log);
+			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+			EnableStopLog(TRUE);
+			EnableCreateLog(FALSE);
+			EnableStartLog(TRUE);
+			EnableUnitRadio(FALSE);
+			//SetCurrentTestTime(0);
+		} else {
+			AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time!"));
+		}
+	} 
+	else
+	{
+		if (currentDepthStr=="")
+		{
+			AfxMessageBox(_T("请设定深度后再开始log!"));
+		}
+		if (speedStr=="")
+		{
+			AfxMessageBox(_T("请设定速度度后再开始log!"));
+		}
+		
 	}
+
+	
 	
 }
-
-
-
-
-
 
 void CELISTestServerDlg::OnButtonStopLog() 
 {
@@ -1348,5 +1402,6 @@ void CELISTestServerDlg::OnButtonStopLog()
 	StopLogTimer();
 	EnableStopLog(FALSE);
 	EnableCreateLog(TRUE);
-
+	EnableStartLog(FALSE);
+	EnableUnitRadio(TRUE);
 }
