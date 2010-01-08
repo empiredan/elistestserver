@@ -95,18 +95,20 @@ CELISTestServerDlg::CELISTestServerDlg(CWnd* pParent /*=NULL*/)
 
 	m_dataFileBufSize=5*1024*1024;
 
-	//m_actDataFilePathChanged=FALSE;
-	//m_actTableChanged=FALSE;
-
-	//m_calverDataFilePathChanged=TRUE;
-
 	m_subsetAssister=new CSubsetDataAssister;
 	m_dataFileBuf=new CDataFileBuf(this);
 	m_subsetAssister->setDataFileBuf(m_dataFileBuf);
 
-	m_measure=0;
-	m_speed=0.5f;
+	m_measure = 1;
+	//m_speed=0.5f;
 	//m_trueDepth=500;
+
+	//m_isSpeedReceived = FALSE;
+	//m_isTrueDepthReceived = FALSE;
+	//m_isCorrectedDepthReceived = FALSE;
+	m_speedStr = NULL;
+	m_trueDepthStr = NULL;
+	m_correctedDepthStr = NULL;
 	
 	
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -130,10 +132,10 @@ CELISTestServerDlg::~CELISTestServerDlg()
 	//_TCHAR confBuf[1024];
 	CString confStr;
 	
-	WritePrivateProfileString("Parameter Setting", "TrueDepth", m_trueDepthStr, dataConfigFilePath);
+	//WritePrivateProfileString("Parameter Setting", "TrueDepth", m_trueDepthStr, dataConfigFilePath);
 	
 	
-	WritePrivateProfileString("Parameter Setting", "Speed", m_speedStr, dataConfigFilePath);
+	//WritePrivateProfileString("Parameter Setting", "Speed", m_speedStr, dataConfigFilePath);
 	
 	confStr.Format("%d", m_measure);
 	WritePrivateProfileString("Parameter Setting", "Measure", confStr, dataConfigFilePath);
@@ -231,62 +233,14 @@ void CELISTestServerDlg::SetDirection()
 	GetDlgItem(IDC_STATIC_DIRECTION_VALUE)->SetWindowText(m_directionStr);
 	//UpdateData(FALSE);
 }
-UINT CELISTestServerDlg::GetCurrentTestTime()
-{
-	//UpdateData(TRUE);
-	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->GetWindowText(m_currentTimeStr);
-	float currentTime;
-	currentTime=atof(m_currentTimeStr);
-	if (errno==ERANGE||errno==EINVAL)
-	{
-		currentTime=5.0;
-		
-	} 
-	
-	return currentTime*1000;
-}
-void CELISTestServerDlg::SetCurrentTestTime(float ct)
-{
-	m_currentTimeStr.Format("%10.2f",ct/1000.0);
-	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->SetWindowText(m_currentTimeStr);
-	//UpdateData(FALSE);
 
-}
-float CELISTestServerDlg::GetCurrentDepth()
-{
-	//UpdateData(TRUE);
-	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->GetWindowText(m_currentDepthStr);
-	float currentDepth;
-	currentDepth=atof(m_currentDepthStr);
-	if (errno==ERANGE||errno==EINVAL)
-	{
-		currentDepth=5000;
-		
-	} 
-	
-	return currentDepth;
-}
-void CELISTestServerDlg::SetCurrentDepth(float cp)
-{
-	m_currentDepthStr.Format("%f",cp);
-	//UpdateData(FALSE);
-	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr);
-	if (m_measure)
-	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
-	} 
-	else
-	{
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");
-	}
-	
-}
+/*
 void CELISTestServerDlg::EnableStartLog(BOOL enableButton)
 {
 	GetDlgItem(IDC_BUTTON_START_LOG)->EnableWindow(enableButton);
 
 }
-
+*/
 void CELISTestServerDlg::EnableCreateLog(BOOL enableButton)
 {
 	GetDlgItem(IDC_BUTTON_CREATE_LOG)->EnableWindow(enableButton);
@@ -298,13 +252,13 @@ void CELISTestServerDlg::EnableStopLog(BOOL enableButton)
 	GetDlgItem(IDC_BUTTON_STOP_LOG)->EnableWindow(enableButton);
 	
 }
-
+/*
 void CELISTestServerDlg::EnableUnitRadio(BOOL enableButton)
 {
 	GetDlgItem(IDC_RADIO_IMPERIAL)->EnableWindow(enableButton);
 	GetDlgItem(IDC_RADIO_METRIC)->EnableWindow(enableButton);
 }
-
+*/
 void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialog::DoDataExchange(pDX);
@@ -316,10 +270,10 @@ void CELISTestServerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_CALVER_FOLDER, m_calverListRootFolder);
 	DDX_Text(pDX, IDC_STATIC_MODE_VALUE, m_currentWorkStateStr);
 	DDX_Text(pDX, IDC_STATIC_DIRECTION_VALUE, m_directionStr);
-	DDX_Text(pDX, IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE, m_currentDepthStr);
+	//DDX_Text(pDX, IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE, m_currentDepthStr);
 	DDX_Text(pDX, IDC_STATIC_CURRENT_TIME_VALUE, m_currentTimeStr);
-	DDX_Text(pDX, IDC_EDIT_SPEED, m_speedStr);
-	DDX_Text(pDX, IDC_EDIT_TRUE_DEPTH, m_trueDepthStr);
+	//DDX_Text(pDX, IDC_EDIT_SPEED, m_speedStr);
+	//DDX_Text(pDX, IDC_EDIT_TRUE_DEPTH, m_trueDepthStr);
 	//}}AFX_DATA_MAP
 }
 
@@ -336,9 +290,9 @@ BEGIN_MESSAGE_MAP(CELISTestServerDlg, CDialog)
 	ON_BN_CLICKED(IDC_BUTTON_SERVER_PORT, OnButtonServerPort)
 	ON_BN_CLICKED(IDC_BUTTON_CALVER_FOLDER, OnButtonCalverFolder)
 	ON_BN_CLICKED(IDC_BUTTON_DATA_BUFFER_SIZE, OnButtonDataBufferSize)
-	ON_BN_CLICKED(IDC_BUTTON_SPEED, OnButtonSpeed)
-	ON_BN_CLICKED(IDC_BUTTON_START_LOG, OnButtonStartLog)
-	ON_BN_CLICKED(IDC_BUTTON_TRUE_DEPTH, OnButtonTrueDepth)
+	//ON_BN_CLICKED(IDC_BUTTON_SPEED, OnButtonSpeed)
+	//ON_BN_CLICKED(IDC_BUTTON_START_LOG, OnButtonStartLog)
+	//ON_BN_CLICKED(IDC_BUTTON_TRUE_DEPTH, OnButtonTrueDepth)
 	ON_BN_CLICKED(IDC_RADIO_IMPERIAL, OnRadioImperial)
 	ON_BN_CLICKED(IDC_RADIO_METRIC, OnRadioMetric)
 	ON_BN_CLICKED(IDC_BUTTON_CREATE_LOG, OnButtonCreateLog)
@@ -407,11 +361,11 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	INT nDefault;
 	_TCHAR confBuf[1024];
 
-	GetPrivateProfileString("Parameter Setting", "TrueDepth", lpDefault, confBuf, 1024, dataConfigFilePath);
-	m_trueDepthStr = confBuf;
+	//GetPrivateProfileString("Parameter Setting", "TrueDepth", lpDefault, confBuf, 1024, dataConfigFilePath);
+	//m_trueDepthStr = confBuf;
 
-	GetPrivateProfileString("Parameter Setting", "Speed", lpDefault, confBuf, 1024, dataConfigFilePath);
-	m_speedStr = confBuf;
+	//GetPrivateProfileString("Parameter Setting", "Speed", lpDefault, confBuf, 1024, dataConfigFilePath);
+	//m_speedStr = confBuf;
 
 	m_measure = GetPrivateProfileInt("Parameter Setting", "Measure", nDefault, dataConfigFilePath);
 
@@ -424,68 +378,29 @@ BOOL CELISTestServerDlg::OnInitDialog()
 	m_calverListRootFolder = confBuf;
 
 	m_dataFileBufSize = GetPrivateProfileInt("Data File", "BufSize", nDefault, dataConfigFilePath);
-/*
-	typedef struct{
-		CString trueDepth;
-		CString speed;
-		int m_measure;
-	}ParamConf;
 
-	typedef struct{
-		UINT port;
-	}NetConf;
-
-	typedef struct{
-		CString actRoot;
-		CString calverRoot;
-		ULONG bufSize;
-	}DataFileConf;
-
-	_TCHAR* paramConfBuf = new _TCHAR[sizeof(ParamConf)];
-	_TCHAR* netConfBuf = new _TCHAR[sizeof(NetConf)];
-	_TCHAR* dataFileConfBuf = new _TCHAR[sizeof(DataFileConf)];
-
-	DWORD readSize = GetPrivateProfileSection("Parameter Setting", paramConfBuf, sizeof(ParamConf), dataConfigFilePath);
-	readSize = GetPrivateProfileSection("Net Connection", netConfBuf, sizeof(NetConf), dataConfigFilePath);
-	GetPrivateProfileSection("Data File", dataFileConfBuf, sizeof(DataFileConf), dataConfigFilePath);
-
-	ParamConf* paramConf = (ParamConf*)paramConfBuf;
-	NetConf* netConf = (NetConf*)netConfBuf;
-	DataFileConf* dataFileConf = (DataFileConf*)dataFileConfBuf;
-
-	m_trueDepthStr = paramConf->trueDepth;
-	m_speedStr = paramConf->speed;
-	m_measure = paramConf->m_measure;
-	m_sPort = netConf->port;
-	m_actListRootFolder = dataFileConf->actRoot;
-	m_calverListRootFolder = dataFileConf->calverRoot;
-	m_dataFileBufSize = dataFileConf->bufSize;
-*/
-	/*
-	m_sPort=6050;
-	m_speedStr="100";
-	m_trueDepthStr="5000";
-	*/
 	
 	if (m_measure)
 	{
-		m_currentDepthDU = atof(m_trueDepthStr)*METRIC_DU;
-		m_speed = atof(m_speedStr);
-		m_speedDU = m_speed*METRIC_DU;
+		//m_currentDepthDU = atof(m_trueDepthStr)*METRIC_DU;
+		//m_speed = atof(m_speedStr);
+		//m_speedDU = m_speed*METRIC_DU;
 		((CButton*)GetDlgItem(IDC_RADIO_METRIC))->SetCheck(TRUE);
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
+		GetDlgItem(IDC_STATIC_TRUE_DEPTH_SHOW_VALUE)->SetWindowText("真实深度(meter):");
+		GetDlgItem(IDC_STATIC_CORRECTED_DEPTH_SHOW_VALUE)->SetWindowText("校正深度(meter):");
 		GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(m/min):");
 	} 
 	else
 	{
-		m_currentDepthDU = atof(m_trueDepthStr)*IMPERIAL_DU;
-		m_speed = atof(m_speedStr);
-		m_speedDU = m_speed*IMPERIAL_DU;
+		//m_currentDepthDU = atof(m_trueDepthStr)*IMPERIAL_DU;
+		//m_speed = atof(m_speedStr);
+		//m_speedDU = m_speed*IMPERIAL_DU;
 		((CButton*)GetDlgItem(IDC_RADIO_IMPERIAL))->SetCheck(TRUE);
-		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");
+		GetDlgItem(IDC_STATIC_TRUE_DEPTH_SHOW_VALUE)->SetWindowText("真实深度(feet):");
+		GetDlgItem(IDC_STATIC_CORRECTED_DEPTH_SHOW_VALUE)->SetWindowText("校正深度(feet):");
 		GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(ft/min):");
 	}
-
+	
 	CString dataFileBufSizeStr;
 	dataFileBufSizeStr.Format("%ld", m_dataFileBufSize);
 	m_dataFileBufSize*= 1024*1024;
@@ -722,6 +637,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		wms->returnSubsetData = FALSE;
 		//EnableStartLog(FALSE);
 		//EnableCreateLog(FALSE);
+		SetCurrentTestTime(0);
 		break;
 	case RtcSYS_STANDBY_CMD:
 		ASSERT(acttab != NULL);
@@ -794,7 +710,14 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		m_dataFileBuf->create(m_dataFileBufSize, acttab->actNum);
 		m_dataFileBuf->layout();
 		m_dataFileBuf->fillWithDataFile();
-		EnableCreateLog(TRUE);
+		if (m_speedStr != NULL 
+			&& m_trueDepthStr != NULL 
+			&& m_correctedDepthStr != NULL)
+		{
+			OnButtonCreateLog();
+		}
+		
+		
 		//
 	} else if((wms->oldMode == RtcSYS_RECSTART_CMD && wms->mode == RtcSYS_STANDBY_CMD) ||
 		(wms->oldMode == RtcSYS_STANDBY_CMD && wms->mode == RtcSYS_RECSTART_CMD)) {
@@ -835,6 +758,25 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		
 	}
 
+	if (wms->changeDepth)
+	{
+		m_depthDelta_Consistency = (float)wms->depthSign/acttab->gcd;
+		m_depthDelta_toImp = (float)wms->depthSign*IMPERIAL_DU/(acttab->gcd*METRIC_DU);
+		m_depthDelta_toM = (float)wms->depthSign*METRIC_DU/(acttab->gcd*IMPERIAL_DU);
+		
+		if (acttab->nDepthInterruptMode)
+		{
+			m_depthDUDelta = wms->depthSign*METRIC_DU/acttab->gcd;
+			
+		} 
+		else
+		{
+			m_depthDUDelta = wms->depthSign*IMPERIAL_DU/acttab->gcd;
+			
+		}
+		
+		
+	}
 	sprintf(loginfo, "OldMode:0x%lx,Mode:0x%lx;", wms->oldMode, wms->mode);
 	sprintf(loginfo, "%sOld3Dir:%d,Old2Dir:%d,OldDir:%d,Dir:%d;", loginfo, wms->old3Direction, wms->old2Direction, wms->oldDirection, wms->direction);
 	sprintf(loginfo, "%schangeDepth:%d,changeTime:%d, ReturnSubsetData:%d,depthSign:%d\n", loginfo, wms->changeDepth, wms->changeTime, wms->returnSubsetData, wms->depthSign);
@@ -862,7 +804,7 @@ void CELISTestServerDlg::fillDataFileBufWithAct()
 	
 }
 
-CCalibSubset* CELISTestServerDlg::getCalibSubset()
+void CELISTestServerDlg::getCalibSubset()//CCalibSubset* 
 {
 	CCalibSubset *rtn = NULL;
 	rtn = new CCalibSubset();
@@ -870,7 +812,7 @@ CCalibSubset* CELISTestServerDlg::getCalibSubset()
 	rtn->setCommandHeader(calibpara, m_subsetAssister);
 	rtn->setSubsetData(calibpara, m_subsetAssister);
 	getFrontDataQueue()->enQueue(rtn);
-	return calibsubset;
+	//return calibsubset;
 }
 
 void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
@@ -931,44 +873,43 @@ void CELISTestServerDlg::OnTimer(UINT nIDEvent) {
 }
 void CELISTestServerDlg::LogDataTimerHandler() {
 	//AfxMessageBox(_T("LogDataTimer triggered, implement me!!!"));
-	/*
-	if (m_actTableChanged)
-	{
-		
-	}
-	*/
+	
 	//UpdateData(TRUE);
 	int direction=wms->direction;
 	if (wms->changeTime)
 	{
-		SetCurrentTestTime(GetCurrentTestTime()+m_subsetAssister->assist.logTimerElapse);
+		updateCurrentTime(m_subsetAssister->assist.logTimerElapse);
 	}
 	if (wms->changeDepth)
 	{
+		m_trueDepthDU+= m_depthDUDelta;
+		m_correctedDepth+= m_depthDUDelta;
 		
 		if (acttab->nDepthInterruptMode)
 		{
-			m_currentDepthDU+= wms->depthSign*METRIC_DU/acttab->gcd;
 			if (m_measure)
 			{
-				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign/acttab->gcd);
+				updateTrueDepth(m_depthDelta_Consistency);
+				updateCorrectedDepth(m_depthDelta_Consistency);
 			} 
 			else
 			{
-				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign*METRIC_DU/(acttab->gcd*IMPERIAL_DU));
+				updateTrueDepth(m_depthDelta_toImp);
+				updateCorrectedDepth(m_depthDelta_toImp);
 			}
 			
 		} 
 		else
 		{
-			m_currentDepthDU+= wms->depthSign*IMPERIAL_DU/acttab->gcd;
 			if (m_measure)
 			{
-				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign*IMPERIAL_DU/(acttab->gcd*METRIC_DU));
+				updateTrueDepth(m_depthDelta_toM);
+				updateCorrectedDepth(m_depthDelta_toM);
 			} 
 			else
 			{
-				SetCurrentDepth(GetCurrentDepth()+(float)wms->depthSign/acttab->gcd);
+				updateTrueDepth(m_depthDelta_Consistency);
+				updateCorrectedDepth(m_depthDelta_Consistency);
 			}
 
 		}
@@ -976,16 +917,6 @@ void CELISTestServerDlg::LogDataTimerHandler() {
 		
 	}
 
-	/*
-	if (wms->direction)
-	{
-		//SetCurrentDepth(GetCurrentDepth()+m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
-	} 
-	else
-	{
-		//SetCurrentDepth(GetCurrentDepth()-m_speed*(m_subsetAssister->assist.logTimerElapse/1000));
-	}
-	*/
 	if (wms->returnSubsetData)
 	{
 		CSubsetData* subsetData=new CSubsetData;
@@ -1221,7 +1152,7 @@ void CELISTestServerDlg::OnButtonDataBufferSize()
 	
 	
 }
-
+/*
 void CELISTestServerDlg::OnButtonSpeed() 
 {
 	// TODO: Add your control notification handler code here
@@ -1245,7 +1176,7 @@ void CELISTestServerDlg::OnButtonSpeed()
 	
 	
 }
-
+*/
 /*
 这个按钮的响应改成：
 修改速度后，启用新的速度进行log数据的传输。
@@ -1259,6 +1190,7 @@ void CELISTestServerDlg::OnButtonSpeed()
 RtcSYS_STANDBY_CMD、RtcSYS_RECSTART_CMD，且
 已经初始化了服务表后才起作用
 */
+/*
 void CELISTestServerDlg::OnButtonStartLog() 
 {
 	// TODO: Add your control notification handler code here
@@ -1292,7 +1224,8 @@ void CELISTestServerDlg::OnButtonStartLog()
 	}
 	
 }
-
+*/
+/*
 void CELISTestServerDlg::OnButtonTrueDepth() 
 {
 	// TODO: Add your control notification handler code here
@@ -1309,22 +1242,33 @@ void CELISTestServerDlg::OnButtonTrueDepth()
 		//GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");
 		m_currentDepthDU = atof(m_trueDepthStr)*IMPERIAL_DU;
 	}
-	/*
-	m_trueDepth=atof(m_trueDepthStr);
-	if (errno==ERANGE||errno==EINVAL){
-		m_trueDepth=500f;
-	}
-	*/
+	
+	//m_trueDepth=atof(m_trueDepthStr);
+	//if (errno==ERANGE||errno==EINVAL){
+	//	m_trueDepth=500f;
+	//}
+	
 	
 
 }
-
+*/
 void CELISTestServerDlg::OnRadioImperial() 
 {
 	// TODO: Add your control notification handler code here
-	m_measure=0;
-	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");	
+	int old_measure = m_measure;
+	m_measure = 0;
+	GetDlgItem(IDC_STATIC_TRUE_DEPTH_SHOW)->SetWindowText("真实深度(feet):");
+	GetDlgItem(IDC_STATIC_CORRECTED_DEPTH_SHOW)->SetWindowText("校正深度(feet):");
 	GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(ft/min):");
+	if (old_measure)
+	{
+		
+		m_trueDepth*= IMPERIAL_DU/METRIC_DU;
+		m_correctedDepth*= IMPERIAL_DU/METRIC_DU;
+		m_trueDepthStr.Format("%f", m_trueDepth);
+		m_correctedDepthStr.Format("%f", m_correctedDepth);
+		
+	} 
 	
 	
 }
@@ -1332,9 +1276,21 @@ void CELISTestServerDlg::OnRadioImperial()
 void CELISTestServerDlg::OnRadioMetric() 
 {
 	// TODO: Add your control notification handler code here
+	int old_measure = m_measure;
 	m_measure=1;
 	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
+	GetDlgItem(IDC_STATIC_CORRECTED_DEPTH_SHOW)->SetWindowText("校正深度(meter):");
 	GetDlgItem(IDC_STATIC_SPEED_SHOW)->SetWindowText("速度(m/min):");
+	if (!old_measure)
+	{
+		
+		m_trueDepth*= METRIC_DU/IMPERIAL_DU;
+		m_correctedDepth*= METRIC_DU/IMPERIAL_DU;
+		m_trueDepthStr.Format("%f", m_trueDepth);
+		m_correctedDepthStr.Format("%f", m_correctedDepth);
+		
+	} 
+	
 }
 
 int CELISTestServerDlg::getMeasure()
@@ -1372,8 +1328,8 @@ void CELISTestServerDlg::OnButtonCreateLog()
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 			EnableStopLog(TRUE);
 			EnableCreateLog(FALSE);
-			EnableStartLog(TRUE);
-			EnableUnitRadio(FALSE);
+			//EnableStartLog(TRUE);
+			//EnableUnitRadio(FALSE);
 			//SetCurrentTestTime(0);
 		} else {
 			AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time!"));
@@ -1402,6 +1358,135 @@ void CELISTestServerDlg::OnButtonStopLog()
 	StopLogTimer();
 	EnableStopLog(FALSE);
 	EnableCreateLog(TRUE);
-	EnableStartLog(FALSE);
-	EnableUnitRadio(TRUE);
+	//EnableStartLog(FALSE);
+	//EnableUnitRadio(TRUE);
 }
+
+void CELISTestServerDlg::setSpeed(BUF_TYPE *buf, ULONG len)
+{
+	long * speed = (long *)buf;
+	m_speedDU = &speed;
+	//m_isSpeedReceived = TRUE;
+	if (m_measure)
+	{
+		m_speed = (float)m_speedDU/METRIC_DU;
+		m_speedStr.Format("%f", m_speed);
+	} 
+	else
+	{
+		m_speed = (float)m_speedDU/IMPERIAL_DU;
+		m_speedStr.Format("%f", m_speed); 
+	}
+
+	GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr);
+	m_speed/ = 60;
+	
+}
+
+void CELISTestServerDlg::setTrueDepth(BUF_TYPE *buf, ULONG len)
+{
+	long * trueDepth = (long *)buf;
+	m_trueDepthDU = &trueDepth;
+	//m_isTrueDepthReceived = TRUE;
+	if (m_measure)
+	{
+		m_trueDepth = (float)m_trueDepthDU/METRIC_DU;
+		
+	} 
+	else
+	{
+		m_trueDepth = (float)m_trueDepthDU/IMPERIAL_DU;
+	}
+	m_trueDepthStr.Format("%f", m_trueDepth);
+	GetDlgItem(IDC_STATIC_TRUE_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr);
+}
+
+void CELISTestServerDlg::setCorrectedDepth(BUF_TYPE *buf, ULONG len)
+{
+	long * correctedDepth = (long *)buf;
+	m_correctedDepthDU = &correctedDepth;
+	//m_isCorrectedDepthReceived = TRUE;
+	if (m_measure)
+	{
+		m_correctedDepth = (float)m_correctedDepthDU/METRIC_DU;
+	} 
+	else
+	{
+		m_correctedDepth = (float)m_correctedDepthDU/IMPERIAL_DU;
+	}
+	m_correctedDepthStr.Format("%f", m_correctedDepth);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_correctedDepthStr);
+}
+
+void CELISTestServerDlg::updateCurrentTime(float delta)
+{
+	m_currentTime+= delta;
+	m_currentTimeStr.Format(m_currentTime);
+	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->SetWindowText(m_currentTimeStr);
+}
+
+void CELISTestServerDlg::updateTrueDepth(float delta)
+{
+	m_trueDepth+= delta;
+	m_trueDepthStr.Format(m_trueDepth);
+	GetDlgItem(IDC_STATIC_TRUE_DEPTH_SHOW_VALUE)->SetWindowText(m_trueDepthStr);
+}
+
+void CELISTestServerDlg::updateCorrectedDepth(float delta)
+{
+	m_correctedDepth+= delta;
+	m_correctedDepthStr.Format(m_correctedDepth);
+	GetDlgItem(IDC_STATIC_CORRECTED_DEPTH_SHOW_VALUE)->SetWindowText(m_correctedDepthStr);
+}
+/*
+UINT CELISTestServerDlg::GetCurrentTestTime()
+{
+	//UpdateData(TRUE);
+	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->GetWindowText(m_currentTimeStr);
+	float currentTime;
+	currentTime=atof(m_currentTimeStr);
+	if (errno==ERANGE||errno==EINVAL)
+	{
+		currentTime=5.0;
+		
+	} 
+	
+	return currentTime*1000;
+}
+void CELISTestServerDlg::SetCurrentTestTime(float ct)
+{
+	m_currentTimeStr.Format("%10.2f",ct/1000.0);
+	GetDlgItem(IDC_STATIC_CURRENT_TIME_VALUE)->SetWindowText(m_currentTimeStr);
+	//UpdateData(FALSE);
+	
+}
+float CELISTestServerDlg::GetCurrentDepth()
+{
+	//UpdateData(TRUE);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->GetWindowText(m_currentDepthStr);
+	float currentDepth;
+	currentDepth=atof(m_currentDepthStr);
+	if (errno==ERANGE||errno==EINVAL)
+	{
+		currentDepth=5000;
+		
+	} 
+	
+	return currentDepth;
+}
+void CELISTestServerDlg::SetCurrentDepth(float cp)
+{
+	m_currentDepthStr.Format("%f",cp);
+	//UpdateData(FALSE);
+	GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW_VALUE)->SetWindowText(m_currentDepthStr);
+	if (m_measure)
+	{
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(meter):");
+	} 
+	else
+	{
+		GetDlgItem(IDC_STATIC_CURRENT_DEPTH_SHOW)->SetWindowText("当前深度(feet):");
+	}
+	
+}
+*/

@@ -209,8 +209,11 @@ DWORD CCommandHandler::handle(LPVOID param) {
 				handler->dlg->log.Flush();
 			break;
 		}
-	}
 
+		delete d;
+
+	}
+	
 	return 0;
 }
 
@@ -237,7 +240,7 @@ void CCommandHandler::NetCmd_InitServiceTable(CMasterData *d) {
 	//每个这样的处理函数都需要这样做。
 	//如果这里的数据需要作为长期使用的参数保存，那么
 	//应该把它们通过对应的数据结构拷贝出去。
-	delete d;
+	//delete d;
 	
 	char logdata[1024];
 	sprintf(logdata, "CCommandHandler::InitServiceTable\n");
@@ -263,10 +266,10 @@ void CCommandHandler::NetCmd_CalibPara(CMasterData *d) {
 	CCalibParameter *ccp = new CCalibParameter(bodyBuf, bodyLen);
 	dlg->SetCalibParameter(ccp);
 	
-	char logdata[1024];
-	sprintf(logdata, "CCommandHandler::NetCmd_CalibPara\n");
-	dlg->log.Write(logdata, strlen(logdata));
-	dlg->log.Flush();
+	//char logdata[1024];
+	//sprintf(logdata, "CCommandHandler::NetCmd_CalibPara\n");
+	//dlg->log.Write(logdata, strlen(logdata));
+	//dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -282,14 +285,14 @@ void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
-	CCalibSubset *ccss = dlg->getCalibSubset();
+	/*CCalibSubset *ccss  = */dlg->getCalibSubset();
 	
-	dlg->getFrontDataQueue()->enQueue(ccss);
+	//dlg->getFrontDataQueue()->enQueue(ccss);
 
-	char logdata[1024];
-	sprintf(logdata, "CCommandHandler::NetCmd_CalibStart, returned one calib subset data\n");
-	dlg->log.Write(logdata, strlen(logdata));
-	dlg->log.Flush();
+	//char logdata[1024];
+	//sprintf(logdata, "CCommandHandler::NetCmd_CalibStart, returned one calib subset data\n");
+	//dlg->log.Write(logdata, strlen(logdata));
+	//dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	BUF_TYPE *bodyBuf;
@@ -493,18 +496,54 @@ void CCommandHandler::NetCmd_DepthDirection(CMasterData *d) {
 	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_DepthSpeed(CMasterData *d) {
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
+	
+	ULONG *head;
+	ULONG cmdType, totalLen;
+	
+	head = (ULONG*)d->buf;
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
+	
+	bodyLen = totalLen - headSize;
+	bodyBuf = d->buf + headSize;
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthSpeed\n");
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_TrueDepth(CMasterData *d) {
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
+	
+	ULONG *head;
+	ULONG cmdType, totalLen;
+	
+	head = (ULONG*)d->buf;
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
+	
+	bodyLen = totalLen - headSize;
+	bodyBuf = d->buf + headSize;
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_TrueDepth\n");
 	dlg->log.Write(logdata, strlen(logdata));
 	dlg->log.Flush();
 }
 void CCommandHandler::NetCmd_CorrectedDepth(CMasterData *d) {
+	BUF_TYPE *bodyBuf;
+	ULONG bodyLen;
+	
+	ULONG *head;
+	ULONG cmdType, totalLen;
+	
+	head = (ULONG*)d->buf;
+	cmdType = ntohl(head[0]);
+	totalLen = ntohl(head[1]);
+	
+	bodyLen = totalLen - headSize;
+	bodyBuf = d->buf + headSize;
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CorrectedDepth\n");
 	dlg->log.Write(logdata, strlen(logdata));
