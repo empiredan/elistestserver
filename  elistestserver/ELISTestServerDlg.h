@@ -38,6 +38,19 @@ class CELISTestServerDlg : public CDialog
 {
 // Construction
 public:
+	float m_depthDelta_toM;
+	float m_depthDelta_toImp;
+	float m_depthDelta_Consistency;
+	long m_depthDUDelta;
+	void updateCorrectedDepth(float delta);
+	void updateTrueDepth(float delta);
+	void updateCurrentTime(float delta);
+	//BOOL m_isCorrectedDepthReceived;
+	//BOOL m_isTrueDepthReceived;
+	//BOOL m_isSpeedReceived;
+	void setCorrectedDepth(BUF_TYPE *buf, ULONG len);
+	void setSpeed(BUF_TYPE *buf, ULONG len);
+	void setTrueDepth(BUF_TYPE* buf, ULONG len);
 	void fillDataFileBufWithAct();
 	void fillDataFileBufWithCalVer();
 	//UINT getCurrentDepthDU();
@@ -73,21 +86,28 @@ public:
 	CCalibSubset* calibsubset;
 
 	ULONG m_dataFileBufSize;
-	//BOOL m_actDataFilePathChanged;//检查数据文件路径是否更新
-	//BOOL m_actTableChanged;//检查Act Table是否更新
-
-	//BOOL m_calverDataFilePathChanged;
 
     CString m_currentWorkStateStr;
 	CString m_directionStr;
-	float m_speed;
-	CString m_speedStr;
-	//float m_trueDepth;
-	CString m_trueDepthStr;
-	CString m_currentDepthStr;
-	long m_currentDepthDU;
-	long m_speedDU;
+
+	long m_speedDU;// DU per minute
+	float m_speed;// per second
+	CString m_speedStr;//per minute
+
+	long m_trueDepthDU; //DU
+	float m_trueDepth; //according to unit system
+	CString m_trueDepthStr; //according to unit system
+
+	long m_correctedDepthDU; //DU
+	float m_correctedDepth; //according to unit system
+	CString m_correctedDepthStr; //according to unit system
+
+	//CString m_currentDepthStr;
+	//long m_currentDepthDU;
+	
 	CString m_currentTimeStr;
+	float m_currentTime;
+	
 	int m_measure;
 
 	CSubsetDataAssister* m_subsetAssister;
@@ -125,13 +145,13 @@ public:
 	float GetCurrentDepth();
 	UINT GetCurrentTestTime();
 
-	void EnableStartLog(BOOL enableButton);
+	//void EnableStartLog(BOOL enableButton);
 	void EnableCreateLog(BOOL enableButton);
 	void EnableStopLog(BOOL enableButton);
-	void EnableUnitRadio(BOOL enableButton);
+	//void EnableUnitRadio(BOOL enableButton);
 	//void EnableStartRelog(BOOL enableButton);
 
-	CCalibSubset* getCalibSubset();
+	void getCalibSubset();//CCalibSubset* 
 
 	void HandleWorkStateChange();
 	//DWORD WINAPI WriteCmdRecvQueFunc(LPVOID lpParameter);
@@ -170,9 +190,9 @@ protected:
 	afx_msg void OnButtonServerPort();
 	afx_msg void OnButtonCalverFolder();
 	afx_msg void OnButtonDataBufferSize();
-	afx_msg void OnButtonSpeed();
-	afx_msg void OnButtonStartLog();
-	afx_msg void OnButtonTrueDepth();
+	//afx_msg void OnButtonSpeed();
+	//afx_msg void OnButtonStartLog();
+	//afx_msg void OnButtonTrueDepth();
 	afx_msg void OnRadioImperial();
 	afx_msg void OnRadioMetric();
 	afx_msg void OnButtonCreateLog();

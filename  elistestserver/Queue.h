@@ -66,6 +66,7 @@ DATA_TYPE* CDataQueue<DATA_TYPE>::deQueue()
 		   ::WaitForSingleObject(dataEvt.m_hObject, 3000);
 	   }
 	   if(l.Lock()) {
+		   //DATA_TYPE* elem = dataQueue.GetHead();
 		   d = dataQueue.RemoveHead();
 	   }
 	   l.Unlock();
