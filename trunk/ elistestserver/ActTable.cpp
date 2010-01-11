@@ -85,6 +85,7 @@ void CActTable::reBuildSubsetDataAssister(CSubsetDataAssister *assist, float spe
 
 	UINT totalSubsets;
 
+	speed/= 60;
 
 	if(workState == RtcSYS_STANDBY_CMD) {//timeģʽ
 		assist->assist.logTimerElapse = lcm;
@@ -163,6 +164,8 @@ UINT CActTable::getLogTimerElapse(CSubsetDataAssister *assist, float speed, UINT
 	UINT lcmgcd[2];
 
 	calculateLCMGCD(lcmgcd);
+
+	speed/= 60;
 
 	if(workState == RtcSYS_STANDBY_CMD) {//timeģʽ
 		assist->assist.logTimerElapse = lcmgcd[0];

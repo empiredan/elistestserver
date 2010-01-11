@@ -33,15 +33,18 @@
 //using namespace std;
 /////////////////////////////////////////////////////////////////////////////
 // CELISTestServerDlg dialog
+#define FLOAT_TO_STRING_FORMAT "%10.2f"
 
 class CELISTestServerDlg : public CDialog
 {
 // Construction
 public:
+	void EnableActRootFolderSelection(BOOL enableButton);
 	float m_depthDelta_toM;
 	float m_depthDelta_toImp;
 	float m_depthDelta_Consistency;
 	long m_depthDUDelta;
+	float m_timeDelta; //second
 	void updateCorrectedDepth(float delta);
 	void updateTrueDepth(float delta);
 	void updateCurrentTime(float delta);
@@ -91,7 +94,7 @@ public:
 	CString m_directionStr;
 
 	long m_speedDU;// DU per minute
-	float m_speed;// per second
+	float m_speed;// per minute
 	CString m_speedStr;//per minute
 
 	long m_trueDepthDU; //DU
@@ -106,7 +109,7 @@ public:
 	//long m_currentDepthDU;
 	
 	CString m_currentTimeStr;
-	float m_currentTime;
+	float m_currentTime; // second
 	
 	int m_measure;
 
@@ -140,10 +143,10 @@ public:
 
 	void SetCurrentWorkState();
 	void SetDirection();
-	void SetCurrentTestTime(float ct);
-	void SetCurrentDepth(float cp);
-	float GetCurrentDepth();
-	UINT GetCurrentTestTime();
+	//void SetCurrentTestTime(float ct);
+	//void SetCurrentDepth(float cp);
+	//float GetCurrentDepth();
+	//UINT GetCurrentTestTime();
 
 	//void EnableStartLog(BOOL enableButton);
 	void EnableCreateLog(BOOL enableButton);
