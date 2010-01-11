@@ -284,7 +284,14 @@ void CCommandHandler::NetCmd_CalibStart(CMasterData *d) {
 
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
-
+/*
+	CCalibSubset *rtn = NULL;
+	rtn = new CCalibSubset();
+	//
+	rtn->setCommandHeader(calibpara, m_subsetAssister);
+	rtn->setSubsetData(calibpara, m_subsetAssister);
+	dlg->getFrontDataQueue()->enQueue(rtn);
+	//return calibsubset;*/
 	/*CCalibSubset *ccss  = */dlg->getCalibSubset();
 	
 	//dlg->getFrontDataQueue()->enQueue(ccss);
