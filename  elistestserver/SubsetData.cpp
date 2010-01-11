@@ -36,13 +36,13 @@ void CSubsetData::setSubsetData(CSubsetDataAssister *assist, CActTable *acttab) 
 	//
 	UINT i;
 	//for debug begin
-	char bt[4096];
+	//char bt[4096];
 	BUF_TYPE *b;
 	UINT sz;
 	//for debug end
 	for(i = 0; i < assist->actNum; i++) {
-		assist->heads[i].currentDepth = assist->dataFileBuf->m_pdlg->m_currentDepthDU;//µ÷ÊÔ×¢ÊÍµô
-		assist->heads[i].currentTime = assist->dataFileBuf->m_pdlg->GetCurrentTestTime();//µ÷ÊÔ×¢ÊÍµô
+		assist->heads[i].currentDepth = assist->dataFileBuf->m_pdlg->m_trueDepthDU;//µ÷ÊÔ×¢ÊÍµô
+		assist->heads[i].currentTime = assist->dataFileBuf->m_pdlg->m_currentTime*1000;//µ÷ÊÔ×¢ÊÍµô
 		
 		sz = assist->getRTCBlockDataHeaderSize();
 		b = (BUF_TYPE*)&assist->heads[i];

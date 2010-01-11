@@ -508,6 +508,8 @@ void CCommandHandler::NetCmd_DepthSpeed(CMasterData *d) {
 	
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
+	dlg->setSpeed(bodyBuf, bodyLen);
+
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_DepthSpeed\n");
 	dlg->log.Write(logdata, strlen(logdata));
@@ -526,6 +528,7 @@ void CCommandHandler::NetCmd_TrueDepth(CMasterData *d) {
 	
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
+	dlg->setTrueDepth(bodyBuf, bodyLen);
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_TrueDepth\n");
 	dlg->log.Write(logdata, strlen(logdata));
@@ -544,6 +547,7 @@ void CCommandHandler::NetCmd_CorrectedDepth(CMasterData *d) {
 	
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
+	dlg->setCorrectedDepth(bodyBuf, bodyLen);
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CorrectedDepth\n");
 	dlg->log.Write(logdata, strlen(logdata));
