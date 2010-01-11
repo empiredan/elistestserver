@@ -52,8 +52,8 @@ public:
 	BUF_TYPE* getNextDataPointer(UINT i);
 private:
 	void increase(UINT i, UINT disp);
-	void fillInWithRandomData(UINT i);
-	void fillIn(CString &filePath, UINT i);
+	void fillInWithRandomData(UINT i, int size_status);
+	void fillIn(CString &filePath, UINT i, int size_status);
 	void Save(CFile &log);
 };
 

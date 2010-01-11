@@ -98,19 +98,19 @@ void CDataFileBuf::fillWithDataFile()
 	for (UINT i=0; i<m_actNum; i++)
 	{
 		CString filePath=p_actList->GetItemText(i, 5);
-		fillIn(filePath, i);
+		fillIn(filePath, i, sizeof(short));
 	}
 }
 //切换到CalVer时要调用这个函数加载刻度数据文件
 void CDataFileBuf::fillWithDataFile(UINT i, CString &file) {
 	//为CalVer所用
-	fillIn(file, i);
+	fillIn(file, i, sizeof(short));
 }
 void CDataFileBuf::fillWithDataFile(UINT i) {
 	//为数据源文件名改变所用，
 	MyListCtrl* p_actList=&(m_pdlg->m_tabMyTabCtrl.m_dlgAct->m_listctrlAct);
 	CString filePath=p_actList->GetItemText(i, 5);
-	fillIn(filePath, i);
+	fillIn(filePath, i, sizeof(long));
 }
 void CDataFileBuf::increase(UINT i, UINT disp) {
 	//
@@ -121,10 +121,24 @@ void CDataFileBuf::increase(UINT i, UINT disp) {
 		resetCurrentPointer(i);
 	}
 }
-void CDataFileBuf::fillInWithRandomData(UINT i) {
-	//
+void CDataFileBuf::fillInWithRandomData(UINT i, int size_status) {
+
+	UINT disp = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn[i];
+
+	BUF_TYPE * p_end = bf[i].dbhead + bf[i].dbufsz;
+
+	for (BUF_TYPE * p_begin = bf[i].dbhead; p_begin < p_end; )
+	{
+		memset(p_begin, 0, size_status);
+		p_begin+= size_status;
+		BUF_TYPE * p_next = p_begin + disp;
+		for ( ; p_begin < p_next; p_begin++)
+		{
+			memset(p_begin, rand()%256, 1);
+		}
+	}
 }
-void CDataFileBuf::fillIn(CString &filePath, UINT i) {
+void CDataFileBuf::fillIn(CString &filePath, UINT i, int size_status) {
 	//
 	CFileException ex;
 	char szerror[1024];
@@ -139,7 +153,7 @@ void CDataFileBuf::fillIn(CString &filePath, UINT i) {
 		bf[i].fileExists = TRUE;
 	} else {
 		bf[i].fileExists = FALSE;
-		fillInWithRandomData(i);
+		fillInWithRandomData(i, size_status);
 	}
 	resetCurrentPointer(i);
 }

@@ -856,7 +856,7 @@ void CELISTestServerDlg::CreateTimer(UINT_PTR nIDEvent, UINT uElapse) {
  */
 void CELISTestServerDlg::CreateLogTimer(UINT uElapse) {
 	CreateTimer(LOGDATA_TIMER, uElapse);
-	updateCurrentTime(0);
+	//updateCurrentTime(0);
 }
 void CELISTestServerDlg::CreateDepthTimer(UINT uElapse) {
 	CreateTimer(DEPTH_TIMER, uElapse);
@@ -1384,6 +1384,7 @@ void CELISTestServerDlg::OnButtonCreateLog()
 			//这个调用要在handleWorkstatechange中执行。
 			//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
 			m_subsetAssister->Save(log);
+			updateCurrentTime(0);
 			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 			EnableStopLog(TRUE);
 			EnableCreateLog(FALSE);
@@ -1442,6 +1443,23 @@ void CELISTestServerDlg::setSpeed(BUF_TYPE *buf, ULONG len)
 
 	GetDlgItem(IDC_STATIC_SPEED_SHOW_VALUE)->SetWindowText(m_speedStr);
 	//m_speed/= 60;
+
+	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
+		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
+		StopLogTimer();
+		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+		//SetCurrentTestTime(0);
+	} else {
+		if(acttab != NULL) {
+			acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
+		}
+		
+	}
+
+	
+	m_timeDelta = (float)m_subsetAssister->assist.logTimerElapse/1000;
+	
+	
 	
 }
 
