@@ -670,6 +670,7 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		wms->changeDepth = FALSE;
 		wms->changeTime = TRUE;
 		wms->returnSubsetData = TRUE;
+		updateCurrentTime(0);
 		break;
 	case RtcSYS_RECSTART_CMD:
 		ASSERT(acttab != NULL);
@@ -685,6 +686,11 @@ void CELISTestServerDlg::HandleWorkStateChange() {
 		wms->changeDepth = TRUE;
 		wms->changeTime = TRUE;
 		wms->returnSubsetData = TRUE;
+		if (wms->oldMode != RtcSYS_RECSTART_CMD)
+		{
+			updateCurrentTime(0);
+		}
+		
 		break;
 	case RtcSYS_CALIBSTART_CMD:
 		//重新设置DataFileBuf的缓冲区，将对应的文件
@@ -719,11 +725,12 @@ void CELISTestServerDlg::HandleWorkStateChange() {
  * （4）
  * （5）
  */
+	/*
 	if ((wms->mode != RtcSYS_IDLE_CMD) && (wms->oldMode != wms->mode))
 	{
 		updateCurrentTime(0);
 	}
-
+*/
 	if(wms->oldMode == NET_CMD_NA && wms->mode == RtcSYS_STANDBY_CMD) {
 		//刚刚激活服务表。
 		//重新生成缓冲区后重新构造DataFileBuf缓冲区并加载文件
@@ -1344,12 +1351,12 @@ void CELISTestServerDlg::OnRadioMetric()
 	} 
 	
 }
-
+/*
 int CELISTestServerDlg::getMeasure()
 {
 	return m_measure;
 }
-/*
+
 UINT CELISTestServerDlg::getCurrentDepthDU()
 {
 	float currentDepth;
@@ -1446,6 +1453,7 @@ void CELISTestServerDlg::setSpeed(BUF_TYPE *buf, ULONG len)
 
 	if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {
 		acttab->getLogTimerElapse(m_subsetAssister, m_speed, wms->mode, m_measure);
+		m_timeDelta = (float)m_subsetAssister->assist.logTimerElapse/1000;
 		StopLogTimer();
 		CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
 		//SetCurrentTestTime(0);
@@ -1457,7 +1465,7 @@ void CELISTestServerDlg::setSpeed(BUF_TYPE *buf, ULONG len)
 	}
 
 	
-	m_timeDelta = (float)m_subsetAssister->assist.logTimerElapse/1000;
+	
 	
 	
 	

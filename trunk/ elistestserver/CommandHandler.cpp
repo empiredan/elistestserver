@@ -315,6 +315,9 @@ void CCommandHandler::NetCmd_CalibStop(CMasterData *d) {
 	bodyLen = totalLen - headSize;
 	bodyBuf = d->buf + headSize;
 
+	//dlg->EnableCreateLog(TRUE);
+	//dlg->EnableStopLog(FALSE);
+
 	char logdata[1024];
 	sprintf(logdata, "Implement me!! CCommandHandler::NetCmd_CalibStop\n");
 	dlg->log.Write(logdata, strlen(logdata));

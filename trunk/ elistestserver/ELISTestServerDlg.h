@@ -57,7 +57,7 @@ public:
 	void fillDataFileBufWithAct();
 	void fillDataFileBufWithCalVer();
 	//UINT getCurrentDepthDU();
-	int getMeasure();
+	//int getMeasure();
 	CELISTestServerDlg(CWnd* pParent = NULL);	// standard constructor
 	virtual ~CELISTestServerDlg();
 
