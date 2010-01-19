@@ -105,6 +105,7 @@ void CDataFileBuf::fillWithDataFile()
 //切换到CalVer时要调用这个函数加载刻度数据文件
 void CDataFileBuf::fillWithDataFile(UINT i, CString &file) {
 	//为CalVer所用
+	bf[i].curpos = sizeof(UINT32)*3;
 	fillIn(file, i, sizeof(short));
 }
 void CDataFileBuf::fillWithDataFile(UINT i) {
@@ -152,23 +153,42 @@ void CDataFileBuf::fillIn(CString &filePath, UINT i, int size_status) {
 			AfxMessageBox(_T(szerror));
 		}
 		//ULONG df_disp = bf[i].curpos;
-		if (bf[i].curpos + bf[i].dbufsz <= bf[i].df.GetLength())
+		ULONG df_length = bf[i].df.GetLength();
+		if (bf[i].curpos <= sizeof(UINT32)*3)
 		{
-			bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
-			bf[i].df.Read(bf[i].dbhead, bf[i].dbufsz);
-			bf[i].curpos+= bf[i].dbufsz;
+			if (bf[i].curpos + bf[i].dbufsz <= df_length)
+			{
+				bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
+				bf[i].df.Read(bf[i].dbhead, bf[i].dbufsz);
+				bf[i].curpos+= bf[i].dbufsz;
+			} 
+			else
+			{
+				bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
+				bf[i].df.Read(bf[i].dbhead, df_length - bf[i].curpos);
+			}
 		} 
 		else
 		{
-			ULONG first_read = bf[i].df.GetLength() - bf[i].curpos;
-			ULONG remainder = bf[i].dbufsz - first_read;
-			bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
-			bf[i].df.Read(bf[i].dbhead, first_read);
-			bf[i].curpos = sizeof(UINT32)*3;
-			bf[i].df.Seek(bf[i].curpos, CFile::begin);
-			bf[i].df.Read(bf[i].dbhead + first_read, remainder);
-			bf[i].curpos+= remainder;
+			if (bf[i].curpos + bf[i].dbufsz <= df_length)
+			{
+				bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
+				bf[i].df.Read(bf[i].dbhead, bf[i].dbufsz);
+				bf[i].curpos+= bf[i].dbufsz;
+			} 
+			else
+			{
+				ULONG first_read = df_length - bf[i].curpos;
+				ULONG remainder = bf[i].dbufsz - first_read;
+				bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
+				bf[i].df.Read(bf[i].dbhead, first_read);
+				bf[i].curpos = sizeof(UINT32)*3;
+				bf[i].df.Seek(bf[i].curpos, CFile::begin);
+				bf[i].df.Read(bf[i].dbhead + first_read, remainder);
+				bf[i].curpos+= remainder;
+			}
 		}
+		
 		
 		bf[i].df.Close();
 		bf[i].fileExists = TRUE;
