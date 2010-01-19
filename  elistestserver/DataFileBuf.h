@@ -20,6 +20,7 @@ public:
 public:
 	typedef struct {
 		ULONG dbufsz;
+		ULONG curpos; //relative to the 3-UINT32 sized header 
 		CFile df;
 		BUF_TYPE *dbhead;
 		BUF_TYPE *dbcur;
@@ -51,7 +52,7 @@ public:
 
 	BUF_TYPE* getNextDataPointer(UINT i);
 private:
-	void increase(UINT i, UINT disp);
+	void increase(UINT i, UINT disp, int size_status);
 	void fillInWithRandomData(UINT i, int size_status);
 	void fillIn(CString &filePath, UINT i, int size_status);
 	void Save(CFile &log);

@@ -60,6 +60,7 @@ void CDataFileBuf::layout() {
 		bf[i].dbcur = c;
 		c += bufszi;
 		bf[i].dbufsz = bufszi;
+		bf[i].curpos = sizeof(UINT32)*3;
 		bf[i].fileExists = FALSE;
 	}
 }
@@ -112,12 +113,15 @@ void CDataFileBuf::fillWithDataFile(UINT i) {
 	CString filePath=p_actList->GetItemText(i, 5);
 	fillIn(filePath, i, sizeof(long));
 }
-void CDataFileBuf::increase(UINT i, UINT disp) {
+void CDataFileBuf::increase(UINT i, UINT disp, int size_status) {
 	//
 	//UINT sz = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn[i];
 	bf[i].dbcur += disp;
 	if(bf[i].dbcur >= bf[i].dbhead + bf[i].dbufsz) {
 		//
+		MyListCtrl* p_actList=&(m_pdlg->m_tabMyTabCtrl.m_dlgAct->m_listctrlAct);
+		CString filePath=p_actList->GetItemText(i, 5);
+		fillIn(filePath, i, size_status);
 		resetCurrentPointer(i);
 	}
 }
@@ -147,8 +151,25 @@ void CDataFileBuf::fillIn(CString &filePath, UINT i, int size_status) {
 			ex.GetErrorMessage(szerror, 1024);
 			AfxMessageBox(_T(szerror));
 		}
-		bf[i].df.Seek(sizeof(UINT32)*3, CFile::begin);
-		bf[i].df.Read(bf[i].dbhead, bf[i].dbufsz);
+		//ULONG df_disp = bf[i].curpos;
+		if (bf[i].curpos + bf[i].dbufsz <= bf[i].df.GetLength())
+		{
+			bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
+			bf[i].df.Read(bf[i].dbhead, bf[i].dbufsz);
+			bf[i].curpos+= bf[i].dbufsz;
+		} 
+		else
+		{
+			ULONG first_read = bf[i].df.GetLength() - bf[i].curpos;
+			ULONG remainder = bf[i].dbufsz - first_read;
+			bf[i].df.Seek(bf[i].curpos, CFile::begin);//sizeof(UINT32)*3
+			bf[i].df.Read(bf[i].dbhead, first_read);
+			bf[i].curpos = sizeof(UINT32)*3;
+			bf[i].df.Seek(bf[i].curpos, CFile::begin);
+			bf[i].df.Read(bf[i].dbhead + first_read, remainder);
+			bf[i].curpos+= remainder;
+		}
+		
 		bf[i].df.Close();
 		bf[i].fileExists = TRUE;
 	} else {
@@ -163,7 +184,7 @@ BUF_TYPE* CDataFileBuf::getNextDataPointer(UINT i)
 	BUF_TYPE *rtn;
 	rtn = bf[i].dbcur;
 	UINT disp = m_pdlg->m_subsetAssister->assist.totalSizeOfSubsetsPerReturn[i];
-	increase(i, disp);
+	increase(i, disp, sizeof(long));
 
 	return rtn;
 }
@@ -174,7 +195,7 @@ BUF_TYPE* CDataFileBuf::getNextCalibSubsetDataPointer()
 	UINT i = getCalVerBufBlockIndex();
 	rtn = bf[i].dbcur;
 	UINT disp = m_pdlg->calibpara->calulcateSubsetMasterSize();
-	increase(i, disp);
+	increase(i, disp, sizeof(short));
 	
 	return rtn;
 }
