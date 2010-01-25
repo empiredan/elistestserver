@@ -1386,22 +1386,41 @@ void CELISTestServerDlg::OnButtonCreateLog()
 	if (m_speedStr != "" 
 		&& m_trueDepthStr != "")
 	{
-		if((wms->mode == RtcSYS_STANDBY_CMD || wms->mode == RtcSYS_RECSTART_CMD) && acttab != NULL) {//|| wms->mode == RtcSYS_CALIBSTART_CMD
-			StopLogTimer();
-			//这个调用要在handleWorkstatechange中执行。
-			//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
-			m_subsetAssister->Save(log);
-			updateCurrentTime(0);
-			CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
-			EnableStopLog(TRUE);
-			EnableCreateLog(FALSE);
-			EnableActRootFolderSelection(FALSE);
-			//EnableStartLog(TRUE);
-			//EnableUnitRadio(FALSE);
-			//SetCurrentTestTime(0);
-		} else {
-			AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time!"));
+		if (acttab != NULL)
+		{
+			if(wms->mode == RtcSYS_STANDBY_CMD) {//|| wms->mode == RtcSYS_CALIBSTART_CMD
+				StopLogTimer();
+				//这个调用要在handleWorkstatechange中执行。
+				//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+				m_subsetAssister->Save(log);
+				updateCurrentTime(0);
+				CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+				EnableStopLog(TRUE);
+				EnableCreateLog(FALSE);
+				EnableActRootFolderSelection(FALSE);
+				//EnableStartLog(TRUE);
+				//EnableUnitRadio(FALSE);
+				//SetCurrentTestTime(0);
+			} else if (wms->mode == RtcSYS_RECSTART_CMD)
+			{
+				StopLogTimer();
+				//这个调用要在handleWorkstatechange中执行。
+				//acttab->buildSubsetDataAssister(m_subsetAssister, m_speed, wms->mode);
+				m_subsetAssister->Save(log);
+				if (wms->oldMode != RtcSYS_RECSTART_CMD)
+					updateCurrentTime(0);
+				CreateLogTimer(m_subsetAssister->assist.logTimerElapse);
+				EnableStopLog(TRUE);
+				EnableCreateLog(FALSE);
+				EnableActRootFolderSelection(FALSE);
+				//EnableStartLog(TRUE);
+				//EnableUnitRadio(FALSE);
+				//SetCurrentTestTime(0);
+			}else {
+				AfxMessageBox(_T("系统当前状态不是StandBy Time或Record Time!"));
+			}
 		}
+		
 	} 
 	else
 	{
@@ -1428,6 +1447,7 @@ void CELISTestServerDlg::OnButtonStopLog()
 	EnableStopLog(FALSE);
 	EnableCreateLog(TRUE);
 	EnableActRootFolderSelection(TRUE);
+	wms->oldMode = wms->mode;
 	//EnableStartLog(FALSE);
 	//EnableUnitRadio(TRUE);
 }
